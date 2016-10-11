@@ -1,5 +1,8 @@
-clc
-clear
+function [] = fcnVAP_MAIN(flagRELAX, flagSTEADY, valAREA, valSPAN, valCMAC, valWEIGHT, ...
+    seqALPHA, seqBETA, valKINV, valDENSITY, valPANELS, matGEOM, vecSYM, ...
+    vecAIRFOIL, vecN, vecM, valVSPANELS, matVSGEOM, valFPANELS, matFGEOM, ...
+    valFTURB, valFPWIDTH, valDELTAE, valDELTIME, valMAXTIME, valMINTIME, ...
+    valINTERF)
 
 warning off
 
@@ -29,33 +32,33 @@ disp(' ');
 
 %% Reading in geometry
 
-% strFILE = 'inputs/VAP christmas.txt';
-% strFILE = 'inputs/VAP input.txt';
+% % strFILE = 'inputs/VAP christmas.txt';
+% % strFILE = 'inputs/VAP input.txt';
+% %
+% % [flagRELAX, flagSTEADY, valAREA, valSPAN, valCMAC, valWEIGHT, ...
+% %     seqALPHA, seqBETA, valKINV, valDENSITY, valPANELS, matGEOM, vecSYM, ...
+% %     vecAIRFOIL, vecN, vecM, valVSPANELS, matVSGEOM, valFPANELS, matFGEOM, ...
+% %     valFTURB, valFPWIDTH, valDELTAE, valDELTIME, valMAXTIME, valMINTIME, ...
+% %     valINTERF] = fcnVAPREAD(strFILE);
+% %
+% % seqALPHA = [10];
+% 
+% % strFILE = 'inputs/input.txt';
+% % strFILE = 'inputs/Config 1.txt';
+% strFILE = 'inputs/Config 2.txt';
 % 
 % [flagRELAX, flagSTEADY, valAREA, valSPAN, valCMAC, valWEIGHT, ...
 %     seqALPHA, seqBETA, valKINV, valDENSITY, valPANELS, matGEOM, vecSYM, ...
 %     vecAIRFOIL, vecN, vecM, valVSPANELS, matVSGEOM, valFPANELS, matFGEOM, ...
 %     valFTURB, valFPWIDTH, valDELTAE, valDELTIME, valMAXTIME, valMINTIME, ...
-%     valINTERF] = fcnVAPREAD(strFILE);
+%     valINTERF] = fcnFWREAD(strFILE);
 % 
-% seqALPHA = [10];
-
-% strFILE = 'inputs/input.txt';
-% strFILE = 'inputs/Config 1.txt';
-strFILE = 'inputs/Config 2.txt';
-
-[flagRELAX, flagSTEADY, valAREA, valSPAN, valCMAC, valWEIGHT, ...
-    seqALPHA, seqBETA, valKINV, valDENSITY, valPANELS, matGEOM, vecSYM, ...
-    vecAIRFOIL, vecN, vecM, valVSPANELS, matVSGEOM, valFPANELS, matFGEOM, ...
-    valFTURB, valFPWIDTH, valDELTAE, valDELTIME, valMAXTIME, valMINTIME, ...
-    valINTERF] = fcnFWREAD(strFILE);
-
-
-valMAXTIME  = 25;   
-flagRELAX   = 1;
+% 
+% valMAXTIME  = 500;
+% flagRELAX   = 0;
 flagPRINT   = 1;
 flagPLOT    = 0;
-flagVERBOSE = 0;
+flagVERBOSE = 1;
 
 %% Discretize geometry into DVEs
 
@@ -212,15 +215,15 @@ for ai = 1:length(seqALPHA)
             
             if flagPRINT == 1 && valTIMESTEP == 1
                 fprintf(' TIMESTEP    CL          CDI\n'); %header
-                fprintf('----------------------------------------------\n'); 
+                fprintf('----------------------------------------------\n');
             end
             if flagPRINT == 1
                 fprintf('  %4d     %0.5f     %0.5f\n',valTIMESTEP,vecCL(valTIMESTEP,ai),vecCDI(valTIMESTEP,ai)); %valTIMESTEP
             end
             
-%             fprintf('\n\tTimestep = %0.0f', valTIMESTEP);
-%             fprintf('\tCL = %0.5f',vecCL(valTIMESTEP,ai));
-%             fprintf('\tCDi = %0.5f',vecCDI(valTIMESTEP,ai));
+            %             fprintf('\n\tTimestep = %0.0f', valTIMESTEP);
+            %             fprintf('\tCL = %0.5f',vecCL(valTIMESTEP,ai));
+            %             fprintf('\tCDi = %0.5f',vecCDI(valTIMESTEP,ai));
         end
         
         %% Viscous wrapper
@@ -229,7 +232,7 @@ for ai = 1:length(seqALPHA)
             vecDVELFREE, vecDVELIND, vecDVESFREE, vecDVESIND, vecDVEPANEL, vecDVELE, vecDVEWING, vecN, vecM, vecDVEAREA, ...
             matCENTER, vecDVEHVCRD, vecAIRFOIL, flagVERBOSE, vecSYM, valVSPANELS, matVSGEOM, valFPANELS, matFGEOM, valFTURB, ...
             valFPWIDTH, valINTERF, vecDVEROLL);
-                
+        
     end
 end
 
@@ -241,23 +244,23 @@ if flagPLOT == 1
     [hFig2] = fcnPLOTBODY(flagVERBOSE, valNELE, matDVE, matVLST, matCENTER);
     [hFig2] = fcnPLOTWAKE(flagVERBOSE, hFig2, valWNELE, matWDVE, matWVLST, matWCENTER);
     [hLogo] = fcnPLOTLOGO(0.97,0.03,14,'k','none');
-
-%     figure(1);
-%     plot(1:valTIMESTEP, eltime)
-%     xlabel('Timestep','FontSize',15)
-%     ylabel('Time per timestep (s)', 'FontSize',15)
-%     box on
-%     grid on
-%     axis tight
-%
-%     figure(3);
-%     plot(1:valTIMESTEP, ttime)
-%     xlabel('Timestep','FontSize',15)
-%     ylabel('Total time (s)', 'FontSize',15)
-%     box on
-%     grid on
-%     axis tight
-
+    
+    %     figure(1);
+    %     plot(1:valTIMESTEP, eltime)
+    %     xlabel('Timestep','FontSize',15)
+    %     ylabel('Time per timestep (s)', 'FontSize',15)
+    %     box on
+    %     grid on
+    %     axis tight
+    %
+    %     figure(3);
+    %     plot(1:valTIMESTEP, ttime)
+    %     xlabel('Timestep','FontSize',15)
+    %     ylabel('Total time (s)', 'FontSize',15)
+    %     box on
+    %     grid on
+    %     axis tight
+    
 end
 
 %% Viscous wrapper
