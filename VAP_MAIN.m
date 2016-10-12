@@ -37,12 +37,8 @@ disp(' ');
 %     vecAIRFOIL, vecN, vecM, valVSPANELS, matVSGEOM, valFPANELS, matFGEOM, ...
 %     valFTURB, valFPWIDTH, valDELTAE, valDELTIME, valMAXTIME, valMINTIME, ...
 %     valINTERF] = fcnVAPREAD(strFILE);
-% 
-% seqALPHA = [10];
 
-% strFILE = 'inputs/input.txt';
-% strFILE = 'inputs/Config 1.txt';
-strFILE = 'inputs/Config 2.txt';
+strFILE = 'inputs/input-SC.txt';
 
 [flagRELAX, flagSTEADY, valAREA, valSPAN, valCMAC, valWEIGHT, ...
     seqALPHA, seqBETA, valKINV, valDENSITY, valPANELS, matGEOM, vecSYM, ...
@@ -50,11 +46,8 @@ strFILE = 'inputs/Config 2.txt';
     valFTURB, valFPWIDTH, valDELTAE, valDELTIME, valMAXTIME, valMINTIME, ...
     valINTERF] = fcnFWREAD(strFILE);
 
-
-valMAXTIME  = 25;   
-flagRELAX   = 1;
 flagPRINT   = 1;
-flagPLOT    = 0;
+flagPLOT    = 1;
 flagVERBOSE = 0;
 
 %% Discretize geometry into DVEs

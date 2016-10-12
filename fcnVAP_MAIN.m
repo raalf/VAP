@@ -1,4 +1,4 @@
-function [] = fcnVAP_MAIN(flagRELAX, flagSTEADY, valAREA, valSPAN, valCMAC, valWEIGHT, ...
+function [vecCLv, vecCD, vecCDi, vecVINF, vecCLDIST, matXYZDIST, vecAREADIST] = fcnVAP_MAIN(flagRELAX, flagSTEADY, valAREA, valSPAN, valCMAC, valWEIGHT, ...
     seqALPHA, seqBETA, valKINV, valDENSITY, valPANELS, matGEOM, vecSYM, ...
     vecAIRFOIL, vecN, vecM, valVSPANELS, matVSGEOM, valFPANELS, matFGEOM, ...
     valFTURB, valFPWIDTH, valDELTAE, valDELTIME, valMAXTIME, valMINTIME, ...
@@ -6,25 +6,31 @@ function [] = fcnVAP_MAIN(flagRELAX, flagSTEADY, valAREA, valSPAN, valCMAC, valW
 
 warning off
 
-disp('===========================================================================');
-disp('+---------------+');
-disp('| RYERSON       |       VAP (Based on FreeWake 2015)');
-disp('| APPLIED       |       Running Version 2016.09');
-disp('| AERODYNAMICS  |       Includes stall model');
-disp('| LABORATORY OF |       No trim solution');
-disp('| FLIGHT        |        .                             .');
-disp('+---------------+       //                             \\');
-disp('                       //                               \\');
-disp('                      //                                 \\');
-disp('                     //                _._                \\');
-disp('                  .---.              .//|\\.              .---.');
-disp('         ________/ .-. \_________..-~ _.-._ ~-..________ / .-. \_________');
-disp('                 \ ~-~ /   /H-     `-=.___.=-''     -H\   \ ~-~ /');
-disp('                   ~~~    / H          [H]          H \    ~~~');
-disp('                         / _H_         _H_         _H_ \');
-disp('                           UUU         UUU         UUU');
-disp('===========================================================================');
-disp(' ');
+flagPRINT   = 0;
+flagPLOT    = 1;
+flagVERBOSE = 0;
+
+if flagPRINT == 1;
+    disp('===========================================================================');
+    disp('+---------------+');
+    disp('| RYERSON       |       VAP (Based on FreeWake 2015)');
+    disp('| APPLIED       |       Running Version 2016.09');
+    disp('| AERODYNAMICS  |       Includes stall model');
+    disp('| LABORATORY OF |       No trim solution');
+    disp('| FLIGHT        |        .                             .');
+    disp('+---------------+       //                             \\');
+    disp('                       //                               \\');
+    disp('                      //                                 \\');
+    disp('                     //                _._                \\');
+    disp('                  .---.              .//|\\.              .---.');
+    disp('         ________/ .-. \_________..-~ _.-._ ~-..________ / .-. \_________');
+    disp('                 \ ~-~ /   /H-     `-=.___.=-''     -H\   \ ~-~ /');
+    disp('                   ~~~    / H          [H]          H \    ~~~');
+    disp('                         / _H_         _H_         _H_ \');
+    disp('                           UUU         UUU         UUU');
+    disp('===========================================================================');
+    disp(' ');
+end
 
 %% Best Practices
 % 1. Define wing from one wingtip to another in one direction
@@ -42,23 +48,21 @@ disp(' ');
 % %     valINTERF] = fcnVAPREAD(strFILE);
 % %
 % % seqALPHA = [10];
-% 
+%
 % % strFILE = 'inputs/input.txt';
 % % strFILE = 'inputs/Config 1.txt';
 % strFILE = 'inputs/Config 2.txt';
-% 
+%
 % [flagRELAX, flagSTEADY, valAREA, valSPAN, valCMAC, valWEIGHT, ...
 %     seqALPHA, seqBETA, valKINV, valDENSITY, valPANELS, matGEOM, vecSYM, ...
 %     vecAIRFOIL, vecN, vecM, valVSPANELS, matVSGEOM, valFPANELS, matFGEOM, ...
 %     valFTURB, valFPWIDTH, valDELTAE, valDELTIME, valMAXTIME, valMINTIME, ...
 %     valINTERF] = fcnFWREAD(strFILE);
-% 
-% 
+%
+%
 % valMAXTIME  = 500;
 % flagRELAX   = 0;
-flagPRINT   = 1;
-flagPLOT    = 0;
-flagVERBOSE = 1;
+
 
 %% Discretize geometry into DVEs
 
@@ -83,8 +87,15 @@ valWSIZE = length(nonzeros(vecDVETE)); % Amount of wake DVEs shed each timestep
 
 % Preallocating for a turbo-boost in performance
 vecCL = zeros(valMAXTIME, length(seqALPHA));
-vecCDI = zeros(valMAXTIME, length(seqALPHA));
+vecCDi = zeros(valMAXTIME, length(seqALPHA));
 vecE = zeros(valMAXTIME, length(seqALPHA));
+
+vecCLv = zeros(length(seqALPHA),1);
+vecCD = zeros(length(seqALPHA),1);
+vecVINF = zeros(length(seqALPHA),1);
+vecCLDIST = zeros(length(seqALPHA),sum(vecN));
+matXYZDIST = zeros(sum(vecN), 3, length(seqALPHA));
+vecAREADIST = zeros(length(seqALPHA), sum(vecN));
 
 for ai = 1:length(seqALPHA)
     
@@ -97,9 +108,11 @@ for ai = 1:length(seqALPHA)
     
     for bi = 1:length(seqBETA)
         
-        fprintf('      ANGLE OF ATTACK = %0.3f DEG\n',seqALPHA(ai));
-        fprintf('    ANGLE OF SIDESLIP = %0.3f DEG\n',seqBETA(bi));
-        fprintf('\n');
+        if flagPRINT == 1;
+            fprintf('      ANGLE OF ATTACK = %0.3f DEG\n',seqALPHA(ai));
+            fprintf('    ANGLE OF SIDESLIP = %0.3f DEG\n',seqBETA(bi));
+            fprintf('\n');
+        end
         
         valBETA = deg2rad(seqBETA(bi));
         
@@ -205,7 +218,7 @@ for ai = 1:length(seqALPHA)
             
             %% Forces
             
-            [vecCL(valTIMESTEP,ai), vecCDI(valTIMESTEP,ai), vecE(valTIMESTEP,ai), vecDVENFREE, vecDVENIND, ...
+            [vecCL(valTIMESTEP,ai), vecCDi(valTIMESTEP,ai), vecE(valTIMESTEP,ai), vecDVENFREE, vecDVENIND, ...
                 vecDVELFREE, vecDVELIND, vecDVESFREE, vecDVESIND] = ...
                 fcnFORCES(matCOEFF, vecK, matDVE, valNELE, matCENTER, matVLST, vecUINF, vecDVELESWP,...
                 vecDVEMCSWP, vecDVEHVSPN, vecDVEROLL, vecDVEPITCH, vecDVEYAW, vecDVELE, vecDVETE, matADJE,...
@@ -218,25 +231,25 @@ for ai = 1:length(seqALPHA)
                 fprintf('----------------------------------------------\n');
             end
             if flagPRINT == 1
-                fprintf('  %4d     %0.5f     %0.5f\n',valTIMESTEP,vecCL(valTIMESTEP,ai),vecCDI(valTIMESTEP,ai)); %valTIMESTEP
+                fprintf('  %4d     %0.5f     %0.5f\n',valTIMESTEP,vecCL(valTIMESTEP,ai),vecCDi(valTIMESTEP,ai)); %valTIMESTEP
             end
             
-            %             fprintf('\n\tTimestep = %0.0f', valTIMESTEP);
-            %             fprintf('\tCL = %0.5f',vecCL(valTIMESTEP,ai));
-            %             fprintf('\tCDi = %0.5f',vecCDI(valTIMESTEP,ai));
         end
         
         %% Viscous wrapper
-        
-        [vecCLv(1,ai), vecCD(1,ai)] = fcnVISCOUS(vecCL(end,ai), vecCDI(end,ai), valWEIGHT, valAREA, valDENSITY, valKINV, vecDVENFREE, vecDVENIND, ...
+        [vecCLv(ai,1), vecCD(ai,1), vecVINF(ai,1), vecCLDIST(ai,:), matXYZDIST(:,:,ai), vecAREADIST(ai,:)] = fcnVISCOUS(vecCL(end,ai), vecCDi(end,ai), valWEIGHT, valAREA, valDENSITY, valKINV, vecDVENFREE, vecDVENIND, ...
             vecDVELFREE, vecDVELIND, vecDVESFREE, vecDVESIND, vecDVEPANEL, vecDVELE, vecDVEWING, vecN, vecM, vecDVEAREA, ...
-            matCENTER, vecDVEHVCRD, vecAIRFOIL, flagVERBOSE, vecSYM, valVSPANELS, matVSGEOM, valFPANELS, matFGEOM, valFTURB, ...
+            matCENTER, vecDVEHVCRD, vecAIRFOIL, 0, vecSYM, valVSPANELS, matVSGEOM, valFPANELS, matFGEOM, valFTURB, ...
             valFPWIDTH, valINTERF, vecDVEROLL);
-        
+              
     end
 end
 
-fprintf('\n');
+vecCDi = vecCDi(end,:);
+
+if flagPRINT == 1;
+    fprintf('\n');
+end
 
 %% Plotting
 
