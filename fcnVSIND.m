@@ -1,4 +1,4 @@
-function [aloc, bloc, cloc] = fcnVSIND(hspan, phi, fp_0, k)
+function [aloc, bloc, cloc] = fcnVSIND(hspan, hchord, phi, fp_0, k)
 % This function finds the influence of a semi-infinite vortex sheet on a
 % point
 
@@ -101,33 +101,42 @@ mu2_2(gamma1.*t2 + delta1 - rt_2.*rho < 0) = mu2_2(gamma1.*t2 + delta1 - rt_2.*r
 mu2_2(gamma2.*t2 + delta2 < 0 & gamma1.*t2 + delta1 - rt_2.*rho > 0) = ...
     mu2_2(gamma2.*t2 + delta2 < 0 & gamma1.*t2 + delta1 - rt_2.*rho > 0) + 2*pi;
 
-% Using half span instead of half chord - unconfirmed if this is OK
+% now uses hchord
 idx31 = abs(phi) > dbl_eps;
-mu3_1(idx31) = 0.0001.*hspan(idx31) + mu3_1(idx31);
-mu3_2(idx31) = 0.0001.*hspan(idx31) + mu3_2(idx31);
+mu3_1(idx31) = 0.0001.*hchord(idx31) + mu3_1(idx31);
+mu3_2(idx31) = 0.0001.*hchord(idx31) + mu3_2(idx31);
 
 %%
 % 
 % G25b = zeros(len,1);
 % G25c = zeros(len,1);
-G26a = zeros(len,1);
+% G26a = zeros(len,1);
 G21b = zeros(len,1);
 G21c = zeros(len,1);
-
-
 
 G25b = -0.5.*log((k + zeta_0sq + t2s)./(k + zeta_0sq + t1s));
 G25c = -hspan.*log((k + zeta_0sq + t1s).*(k + zeta_0sq + t2s));
 
+
 idx70 = abs(t1) > dbl_eps;
-G25c(idx70) = G25c(idx70) + t1(idx70).*log(zeta_0(idx70) + t1s(idx70));
+% G25c(idx70) = G25c(idx70) + t1(idx70).*log(zeta_0(idx70) + t1s(idx70)); before speed boost
+G25c70 = G25c + t1.*log(zeta_0 + t1s); %speed boost without index
+G25c(idx70) = G25c70(idx70); %speed boost index
 
 idx71 = abs(t2) > dbl_eps;
-G25c(idx71) = G25c(idx71) - t2(idx71).*log(zeta_0(idx71) + t2s(idx71));
+% G25c(idx71) = G25c(idx71) - t2(idx71).*log(zeta_0(idx71) + t2s(idx71)); before speed boost
+G25c71 = G25c - t2.*log(zeta_0 + t2s); %speed boost without index
+G25c(idx71) = G25c71(idx71); %speed boost index
+
+
+
 
 % Eqn A2-9
 % G25 = (0.5.*log(k + t2.^2 + zeta_0sq)) - (0.5.*log(k + t1.^2 + zeta_0sq));
-G25 = (0.5.*log(t2s + zeta_0sq)) - (0.5.*log(t1s + zeta_0sq));
+% G25 = (0.5.*log(t2s + zeta_0sq)) - (0.5.*log(t1s + zeta_0sq)); before speed boost
+G25 = (log(t2s + zeta_0sq) - log(t1s + zeta_0sq))./2;
+
+
 
 % Eqn A2-3
 % G21 = ((beta1./(2.*rho)).*log(mu1_2) + (beta2./rho).*mu2_2) - ((beta1./(2.*rho)).*log(mu1_1) + (beta2./rho).*mu2_1);
@@ -185,7 +194,8 @@ c27 = repmat(2,len,1);
 idx30 = abs(zeta_0) <= dbl_eps & abs(le_vect) > dbl_eps;
 G21(idx30) = 0;
 G21b(idx30) = b21(idx30).*beta1(idx30).*(0.5.*log(mu1_2(idx30)./mu1_1(idx30)) + G25b(idx30))./rho(idx30);
-G21c(idx30) = b21(idx30).*beta1(idx30).*(eta_0(idx30).*log((mu1_2(idx30)+k(idx30))./(mu1_1(idx30)+k(idx30))) + G25c(idx30))./rho(idx30);
+% G21c(idx30) = b21(idx30).*beta1(idx30).*(eta_0(idx30).*log((mu1_2(idx30)+k(idx30))./(mu1_1(idx30)+k(idx30))) + G25c(idx30))./rho(idx30);
+G21c(idx30) = b21(idx30).*beta1(idx30).*(eta_0(idx30).*log((mu1_2(idx30))./(mu1_1(idx30))) + G25c(idx30))./rho(idx30);
 G22(idx30) = 0;
 G26(idx30) = 0;
 

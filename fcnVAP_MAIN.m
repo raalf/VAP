@@ -6,7 +6,7 @@ function [vecCLv, vecCD, vecCDi, vecVINF, vecCLDIST, matXYZDIST, vecAREADIST] = 
 
 warning off
 
-flagPRINT   = 0;
+flagPRINT   = 1;
 flagPLOT    = 1;
 flagVERBOSE = 0;
 
