@@ -18,35 +18,33 @@ z = [...
 
 load('Standard Cirrus Input.mat');
 
-% valMAXTIME = 15;
-% 
-% %% Lopping off the end of the wing, to make room for the winglet
-% 
-% out_len = (sqrt(sum(abs(matGEOM(2,1:3,2)-matGEOM(1,1:3,2)).^2)));
-% out_vec = (matGEOM(2,1:3,2) - matGEOM(1,1:3,2))./out_len; % Unit vector of outboard leading edge
-% 
-% lop_loc = out_vec*zp(1); % Where we will cut the wing
-% 
-% tr = matGEOM(2,4,2)/matGEOM(1,4,2);
-% matGEOM(2,4,2) = matGEOM(1,4,2)*tr*(1+(zp(1)/out_len)); % Finding the chord at the cut
-% 
-% matGEOM(2,5,2) = matGEOM(2,5,2)*(1-(zp(1)/out_len)); % Finding the twist angle at the cut
-% matGEOM(2,1:3,2) = matGEOM(2,1:3,2) - lop_loc; % Making the cut
-% 
-% %% Adding on split tips
-% 
-% valPANELS = 7;
-% vecAIRFOIL = [1 1 7 6 6 6 6]';
-% vecN = [6 8 3 2 2 4 4]';
-% vecM = [1 1 1 1 1 1 1]';
-% 
-% % Forward tip (upper)
-% matGEOM(:,:,4) = [matGEOM(2,:,2); z(1,:)];
-% matGEOM(:,:,5) = [z(1,:); z(2,:)];
-% 
-% % Rear tip (lower)
-% matGEOM(:,:,6) = [matGEOM(2,:,2); z(3,:)];
-% matGEOM(:,:,7) = [z(3,:); z(4,:)];
+%% Lopping off the end of the wing, to make room for the winglet
+
+out_len = (sqrt(sum(abs(matGEOM(2,1:3,2)-matGEOM(1,1:3,2)).^2)));
+out_vec = (matGEOM(2,1:3,2) - matGEOM(1,1:3,2))./out_len; % Unit vector of outboard leading edge
+
+lop_loc = out_vec*zp(1); % Where we will cut the wing
+
+tr = matGEOM(2,4,2)/matGEOM(1,4,2);
+matGEOM(2,4,2) = matGEOM(1,4,2)*tr*(1+(zp(1)/out_len)); % Finding the chord at the cut
+
+matGEOM(2,5,2) = matGEOM(2,5,2)*(1-(zp(1)/out_len)); % Finding the twist angle at the cut
+matGEOM(2,1:3,2) = matGEOM(2,1:3,2) - lop_loc; % Making the cut
+
+%% Adding on split tips
+
+valPANELS = 7;
+vecAIRFOIL = [1 1 7 6 6 6 6]';
+vecN = [6 8 3 2 2 4 4]';
+vecM = [1 1 1 1 1 1 1]';
+
+% Forward tip (upper)
+matGEOM(:,:,4) = [matGEOM(2,:,2); z(1,:)];
+matGEOM(:,:,5) = [z(1,:); z(2,:)];
+
+% Rear tip (lower)
+matGEOM(:,:,6) = [matGEOM(2,:,2); z(3,:)];
+matGEOM(:,:,7) = [z(3,:); z(4,:)];
 
 %% Running VAP2
 
