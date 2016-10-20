@@ -1,19 +1,12 @@
 function [out] = fcnOBJFUNC(zp)
 % clc
 % clear
-% zp(1) = 1.5; % Distance along the leading edge from the wingtip where we will cut the wing
-% zp(2:21) = [...
-%     0.310000 7.450000 0.900000 0.130000 0.5 ...
-%     0.320000 7.500000 0.610000 0.080000 1 ...
-%     0.520000 7.460000 0.420000 0.130000 0 ...
-%     0.560000 7.500000 0.610000 0.090000 0 ...
-%     ];
 
 z = [...
-    zp(2:6); ... % Forward transition panel lower
-    zp(7:11); ... % Forward outward panel lower
-    zp(12:16); ... % Rear transition panel upper
-    zp(17:21); ... % Rear outward panel upper
+    zp(6:10); ... % forward inboard
+    zp(11:15); ... % forward outboard
+    zp(16:20); ... % rear inboard
+    zp(21:25); ... % rear outboard
     ];
 
 load('Standard Cirrus Input.mat');
@@ -33,18 +26,20 @@ matGEOM(2,1:3,2) = matGEOM(2,1:3,2) - lop_loc; % Making the cut
 
 %% Adding on split tips
 
-valPANELS = 7;
-vecAIRFOIL = [1 1 7 6 6 6 6]';
-vecN = [6 8 3 2 2 4 4]';
-vecM = [1 1 1 1 1 1 1]';
+valPANELS = 9;
+vecAIRFOIL = [1 1 7 6 6 6 6 6 6]';
+vecN = [6 8 3 2 4 4 2 4 4]';
+vecM = [1 1 1 1 1 1 1 1 1]';
 
-% Forward tip (upper)
-matGEOM(:,:,4) = [matGEOM(2,:,2); z(1,:)];
-matGEOM(:,:,5) = [z(1,:); z(2,:)];
+% Front (upper)
+matGEOM(:,:,4) = [matGEOM(2,:,2); [matGEOM(2,1,2) matGEOM(2,2,2) + 0.1 matGEOM(2,3,2) + 0.05 zp(2) zp(3)] ]; % front transition
+matGEOM(:,:,5) = [matGEOM(2,:,4); z(1,:)]; % front inboard
+matGEOM(:,:,6) = [z(1,:); z(2,:)]; % front outboard
 
-% Rear tip (lower)
-matGEOM(:,:,6) = [matGEOM(2,:,2); z(3,:)];
-matGEOM(:,:,7) = [z(3,:); z(4,:)];
+% Rear (lower)
+matGEOM(:,:,7) = [matGEOM(2,:,2); [matGEOM(2,1,2) + zp(2) + 0.1 matGEOM(2,2,2) + 0.1 matGEOM(2,3,2) zp(4) zp(5)] ]; % rear transition
+matGEOM(:,:,8) = [matGEOM(2,:,7); z(3,:)]; % rear inboard
+matGEOM(:,:,9) = [z(3,:); z(4,:)]; % rear inboard
 
 %% Running VAP2
 
