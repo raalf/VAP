@@ -42,13 +42,15 @@ matGEOM(:,:,8) = [matGEOM(2,:,7); z(3,:)]; % rear inboard
 matGEOM(:,:,9) = [z(3,:); z(4,:)]; % rear inboard
 
 %% Running VAP2
-
+try
 [vecCLv, vecCD, vecCDi, vecVINF, vecCLDIST, matXYZDIST, vecAREADIST] = fcnVAP_MAIN(flagRELAX, flagSTEADY, valAREA, valSPAN, valCMAC, valWEIGHT, ...
     seqALPHA, seqBETA, valKINV, valDENSITY, valPANELS, matGEOM, vecSYM, ...
     vecAIRFOIL, vecN, vecM, valVSPANELS, matVSGEOM, valFPANELS, matFGEOM, ...
     valFTURB, valFPWIDTH, valDELTAE, valDELTIME, valMAXTIME, valMINTIME, ...
     valINTERF);
-
+catch
+   zp 
+end
 %% Root bending
 % At alpha = 5 degrees
 % section cl * y location * density * 0.5 * section area * V_inf^2
