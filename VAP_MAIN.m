@@ -29,26 +29,26 @@ disp(' ');
 
 %% Reading in geometry
 
-% strFILE = 'inputs/VAP christmas.txt';
-% strFILE = 'inputs/VAP input.txt';
+strFILE = 'inputs/MA11x7.txt';
+%strFILE = 'inputs/VAP input.txt';
 % 
-% [flagRELAX, flagSTEADY, valAREA, valSPAN, valCMAC, valWEIGHT, ...
-%     seqALPHA, seqBETA, valKINV, valDENSITY, valPANELS, matGEOM, vecSYM, ...
-%     vecAIRFOIL, vecN, vecM, valVSPANELS, matVSGEOM, valFPANELS, matFGEOM, ...
-%     valFTURB, valFPWIDTH, valDELTAE, valDELTIME, valMAXTIME, valMINTIME, ...
-%     valINTERF] = fcnVAPREAD(strFILE);
-% 
-% seqALPHA = [10];
-
-% strFILE = 'inputs/input.txt';
-% strFILE = 'inputs/Config 1.txt';
-strFILE = 'inputs/Config 2.txt';
-
 [flagRELAX, flagSTEADY, valAREA, valSPAN, valCMAC, valWEIGHT, ...
     seqALPHA, seqBETA, valKINV, valDENSITY, valPANELS, matGEOM, vecSYM, ...
     vecAIRFOIL, vecN, vecM, valVSPANELS, matVSGEOM, valFPANELS, matFGEOM, ...
     valFTURB, valFPWIDTH, valDELTAE, valDELTIME, valMAXTIME, valMINTIME, ...
-    valINTERF] = fcnFWREAD(strFILE);
+    valINTERF] = fcnVAPREAD(strFILE);
+
+% seqALPHA = [10];
+
+% strFILE = 'inputs/input.txt';
+% strFILE = 'inputs/Config 1.txt';
+% strFILE = 'inputs/Config 1.txt';
+
+% [flagRELAX, flagSTEADY, valAREA, valSPAN, valCMAC, valWEIGHT, ...
+%     seqALPHA, seqBETA, valKINV, valDENSITY, valPANELS, matGEOM, vecSYM, ...
+%     vecAIRFOIL, vecN, vecM, valVSPANELS, matVSGEOM, valFPANELS, matFGEOM, ...
+%     valFTURB, valFPWIDTH, valDELTAE, valDELTIME, valMAXTIME, valMINTIME, ...
+%     valINTERF] = fcnFWREAD(strFILE);
 
 % matGEOM(2,5,2) = 0;
 
@@ -157,6 +157,10 @@ for ai = 1:length(seqALPHA)
             %% Moving the wing
             [matVLST, matCENTER, matNEWWAKE, matNPNEWWAKE] = fcnMOVEWING(valALPHA, valBETA, valDELTIME, matVLST, matCENTER, matDVE, vecDVETE, matNPVLST);
             
+            %% Moving rotor
+%             [matNEWWAKE, matNPNEWWAKE] = fcnMOVEWING(valALPHA, valBETA, valDELTIME, matVLST, matCENTER, matDVE, vecDVETE, matNPVLST);
+%             [matVLST, matCENTER, vecROTORIG] = fcnMOVEROTOR(vecROTORIG, valALPHAR, valAZNUM, valJ, matVLST, matCENTER);
+%             
             %% Generating new wake elements
             [matWAKEGEOM, matNPWAKEGEOM, vecWDVEHVSPN, vecWDVEHVCRD, vecWDVEROLL, vecWDVEPITCH, vecWDVEYAW, vecWDVELESWP, ...
                 vecWDVEMCSWP, vecWDVETESWP, vecWDVEAREA, matWDVENORM, matWVLST, matWDVE, valWNELE, matWCENTER, matWCOEFF, vecWK, matWADJE, matNPVLST, vecWDVEPANEL, valLENWADJE, vecWDVESYM, vecWDVETIP, vecWKGAM, vecWDVEWING] ...

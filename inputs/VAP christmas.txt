@@ -4,9 +4,9 @@ NO TRIM
 Please note that the program uses equal, number and : signs as special recognizers!
 
 Relaxed wake (yes 1, no 0):		flagRELAX =		1
-Steady (1) or unsteady (2):		flagSTEADY =	1
+Steady (1) or unsteady (2):		flagSTEADY =	2
 
-Max. number of time steps:		valMAXTIME 	=	10
+Max. number of time steps:		valMAXTIME 	=	30
 Min. number of time steps: 		valMINTIME 	= 	7
 Width of each time step (sec):	valDELTIME 	=	0.250000
 Convergence delta-span effic.:	valDELTAE 	=	0.000000	(0 if only timestepping)
@@ -81,7 +81,7 @@ xleft		yleft		zleft		chord		epsilon
 0.700000	3.000000	-0.400000	0.800000	4.000000
 
 Panel #:7. 
-Number of spanwise elements:	vecN 		= 2. 
+Number of spanwise elements:	vecN 		= 20. 
 Number of chordwise elements: 	vecM 		= 1.
 Airfoil number: 				vecAIRFOIL 	= 7
 Symmetry edge (0, 1 or 2): 		vecSYM 		= 1;
