@@ -3,23 +3,22 @@ Input file in m/N/sec
 NO TRIM
 Please note that the program uses equal, number and : signs as special recognizers!
 
-Relaxed wake (yes 1, no 0):		flagRELAX =		1
-Steady (1) or unsteady (2):		flagSTEADY =	2
+Relaxed wake (yes 1, no 0):		flagRELAX 	=	1
+Steady (1) or unsteady (2):		flagSTEADY 	=	1
 
-Max. number of time steps:		valMAXTIME 	=	30
-Min. number of time steps: 		valMINTIME 	= 	7
-Number of azmith locations		valAZNUM 	=	0.250000
+Max. number of time steps:		valMAXTIME 	=	60
+Min. number of time steps: 		valMINTIME 	= 	1
+Number of azmith locations		valAZNUM 	=	30
 Convergence delta-span effic.:	valDELTAE 	=	0.000000	(0 if only timestepping)
 
-AOA sequence: 			seqALPHAR 	= 	5
-Advance ratio 			valJ		= 	0.1
+AOA sequence: 			seqALPHAR 	= 	30
+Advance ratio 			valJ		= 	0.5
 Density:				valDENSITY 	= 	1.2250
 Kinematic viscosity:	valKINV		=	1.460000e-05
 
-Reference area:				valAREA 	=	11
-Reference diameter:			valDia		=	11
-Mean aerodynamic chord: 	valCMAC 	=	1
-Aircraft weight (N):		valWEIGHT 	=	2950
+Reference area:				valAREA 	=	300
+Reference diameter:			valDIA		=	0.2794
+Rotation axis x y z 	 	vecROTAX	= 	0.008765 0 -0.006728 
 
 No. of panels:	valPANELS =	9
 
@@ -32,8 +31,8 @@ Number of chordwise elements: 	vecM 		= 2.
 Airfoil number: 				vecAIRFOIL 	= 6
 Symmetry edge (0, 1 or 2): 		vecSYM 		= 0;
 xleft		yleft		zleft		chord		epsilon
-0.000000	0.000000	0.000000	0.027900	0.000000
-0.000000	0.022100	0.000000	0.027900	0.000000
+0.000000	0.000000	0.000000	0.022100	37.51000
+0.000000	0.022100	0.000000	0.022100	37.51000
 
 Panel #:2. 
 Number of spanwise elements:	vecN 		= 2. 
@@ -41,8 +40,8 @@ Number of chordwise elements: 	vecM 		= 2.
 Airfoil number: 				vecAIRFOIL 	= 6
 Symmetry edge (0, 1 or 2): 		vecSYM 		= 0;
 xleft		yleft		zleft		chord		epsilon
-0.000000	0.022100	0.000000	0.027900	0.000000
-0.000700	0.041900	0.000000	0.023500	0.000000
+0.000000	0.022100	0.000000	0.022100	37.51000
+-0.000700	0.041900	0.000000	0.023500	35.96000
 
 Panel #:3. 
 Number of spanwise elements:	vecN 		= 2. 
@@ -50,8 +49,8 @@ Number of chordwise elements: 	vecM 		= 2.
 Airfoil number: 				vecAIRFOIL 	= 6
 Symmetry edge (0, 1 or 2): 		vecSYM 		= 0;
 xleft		yleft		zleft		chord		epsilon
-0.000700	0.041900	0.000000	0.023500	0.000000
-0.000550	0.055800	0.000000	0.024000	0.000000
+-0.000700	0.041900	0.000000	0.023500	35.96000
+-0.000950	0.055800	0.000000	0.024000	28.98000
 
 Panel #:4. 
 Number of spanwise elements:	vecN 		= 2. 
@@ -59,8 +58,8 @@ Number of chordwise elements: 	vecM 		= 2.
 Airfoil number: 				vecAIRFOIL 	= 6
 Symmetry edge (0, 1 or 2): 		vecSYM 		= 0;
 xleft		yleft		zleft		chord		epsilon
-0.000550	0.055800	0.000000	0.024000	0.000000
-0.001300	0.069800	0.000000	0.024700	0.000000
+-0.000950	0.055800	0.000000	0.024000	28.98000
+-0.001300	0.069800	0.000000	0.024700	23.68000
 
 Panel #:5. 
 Number of spanwise elements:	vecN 		= 2. 
@@ -68,8 +67,8 @@ Number of chordwise elements: 	vecM 		= 2.
 Airfoil number: 				vecAIRFOIL 	= 6
 Symmetry edge (0, 1 or 2): 		vecSYM 		= 0;
 xleft		yleft		zleft		chord		epsilon
-0.001300	0.069800	0.000000	0.024700	0.000000
-0.000950	0.083700	0.000000	0.024000	0.000000
+-0.001300	0.069800	0.000000	0.024700	23.68000
+-0.000950	0.083700	0.000000	0.024000	19.84000
 
 Panel #:6. 
 Number of spanwise elements:	vecN 		= 2. 
@@ -77,8 +76,8 @@ Number of chordwise elements: 	vecM 		= 2.
 Airfoil number: 				vecAIRFOIL 	= 6
 Symmetry edge (0, 1 or 2): 		vecSYM 		= 0;
 xleft		yleft		zleft		chord		epsilon
-0.000950	0.083700	0.000000	0.024000	0.000000
--0.00015	0.097700	0.000000	0.021800	0.000000
+-0.000950	0.083700	0.000000	0.024000	19.84000
+0.000150	0.097700	0.000000	0.021800	16.86000
 
 Panel #:7. 
 Number of spanwise elements:	vecN 		= 2. 
@@ -86,8 +85,8 @@ Number of chordwise elements: 	vecM 		= 2.
 Airfoil number: 				vecAIRFOIL 	= 6
 Symmetry edge (0, 1 or 2): 		vecSYM 		= 0;
 xleft		yleft		zleft		chord		epsilon
--0.00015	0.097700	0.000000	0.021800	0.000000
--0.00018	0.111600	0.000000	0.018600	0.000000
+0.000150	0.097700	0.000000	0.021800	16.86000
+0.001750	0.111600	0.000000	0.018600	14.82000
 
 Panel #:8. 
 Number of spanwise elements:	vecN 		= 2. 
@@ -95,8 +94,8 @@ Number of chordwise elements: 	vecM 		= 2.
 Airfoil number: 				vecAIRFOIL 	= 6
 Symmetry edge (0, 1 or 2): 		vecSYM 		= 0;
 xleft		yleft		zleft		chord		epsilon
--0.00018	0.111600	0.000000	0.018600	0.000000
--0.00335	0.125600	0.000000	0.015400	0.000000
+0.001750	0.111600	0.000000	0.018600	14.82000
+0.003350	0.125600	0.000000	0.015400	13.40000
 
 Panel #:9. 
 Number of spanwise elements:	vecN 		= 2. 
@@ -104,19 +103,8 @@ Number of chordwise elements: 	vecM 		= 2.
 Airfoil number: 				vecAIRFOIL 	= 6
 Symmetry edge (0, 1 or 2): 		vecSYM 		= 0;
 xleft		yleft		zleft		chord		epsilon
--0.00335	0.125600	0.000000	0.015400	0.000000
--0.00635	0.139500	0.000000	0.009400	0.000000
-
-%<- special identifier
-Vertical tail information:
-Number of panels (max 5)  	valVSPANELS = 0
-no.	chord	area	airfoil
-
-Fuselage information:
-Number of sections (max 20) 	valFPANELS 	=	0
-Width of each section  			valFPWIDTH	=	0
-Panel where transition occurs 	valFTURB 	=	0
-No.	Diamter
+0.003350	0.125600	0.000000	0.015400	13.40000
+0.006350	0.139500	0.000000	0.009400	13.23000
 
 Interference drag 	valINTERF 	= 0.0 %
 ##############

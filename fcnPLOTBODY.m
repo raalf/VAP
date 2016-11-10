@@ -4,7 +4,7 @@ hFig2 = figure(2);
 clf(2);
 
 patch('Faces',matDVE,'Vertices',matVLST,'FaceColor','r')
-hold on
+%hold on
 
 
 alpha(0.5)
@@ -22,7 +22,7 @@ if verbose == 1
         
 end
 
-hold off
+%hold off
 
 box on
 grid on
