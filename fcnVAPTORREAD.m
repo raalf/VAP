@@ -1,5 +1,5 @@
 function [flagRELAX, flagSTEADY, valMAXTIME, valMINTIME, valAZNUM, ...
-    valDELTAE, seqALPHAR, valJ, valDENSITY, valKINV, valAREA, valDIA,...
+    valDELTAE, seqALPHAR, valJ, valRPM, valDENSITY, valKINV, valAREA, valDIA,...
     vecROTAX, valPANELS, matGEOM, vecAIRFOIL, vecN, vecM, vecSYM, ...
     valINTERF] = fcnVAPTORREAD(strFILE)
 
@@ -16,6 +16,7 @@ function [flagRELAX, flagSTEADY, valMAXTIME, valMINTIME, valAZNUM, ...
 
 %   seqALPHAR - sequence of rotor plane angle of attacks
 %   valJ - Advance ratio
+%   valRPM - Rotor rpm
 %   valDENSITY - fluid density, kg/m^3
 %   valKINV - kinematic viscosity (1.46e-05 as standard)
 
@@ -94,6 +95,14 @@ while(ch~='=');
     ch = fscanf(fp,'%c',1);
 end
 valJ = fscanf(fp,'%lf');
+
+% Reading rotor rpm
+% Reading advanced ratio to be considered
+ch = fscanf(fp,'%c',1);
+while(ch~='=');
+    ch = fscanf(fp,'%c',1);
+end
+valRPM = fscanf(fp,'%lf');
 
 % Reading density
 ch = fscanf(fp,'%c',1);
