@@ -30,8 +30,8 @@ strFILE = 'inputs/ROTORINPUT_MA11by7.txt';
 
 [flagRELAX, flagSTEADY, valMAXTIME, valMINTIME, valAZNUM, valDELTAE, ...
     seqALPHAR, valJ, valRPM, valDENSITY, valKINV, valAREA, valDIA, ...
-    vecROTAX, valPANELS, matGEOM, vecAIRFOIL, vecN, vecM, vecSYM, ...
-    valINTERF] = fcnVAPTORREAD(strFILE);
+    valNUMB ,vecROTAX, valPANELS, matGEOM, vecAIRFOIL, vecN, vecM, ....
+    vecSYM, valINTERF] = fcnVAPTORREAD(strFILE);
 
 flagPRINT   = 1;
 flagPLOT    = 1;
@@ -60,7 +60,6 @@ valWSIZE = length(nonzeros(vecDVETE)); % Amount of wake DVEs shed each timestep
     vecDVETESWP, vecDVEHVSPN, vecDVEHVCRD,vecSYM);
 
 %% Alpha Loop
-
 % Preallocating for a turbo-boost in performance
 vecCL = zeros(valMAXTIME, length(seqALPHAR));
 vecCDI = zeros(valMAXTIME, length(seqALPHAR));
@@ -187,7 +186,7 @@ for ai = 1:length(seqALPHAR)
             vecWDVEHVSPN, vecWDVESYM, vecWDVETIP, vecWKGAM);
         [matWCOEFF] = fcnSOLVEWD(matWD, vecWR, valWNELE, vecWKGAM, ...
             vecWDVEHVSPN);        
-
+        
     end
 end
 

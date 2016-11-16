@@ -1,6 +1,6 @@
 function [flagRELAX, flagSTEADY, valMAXTIME, valMINTIME, valAZNUM, ...
     valDELTAE, seqALPHAR, valJ, valRPM, valDENSITY, valKINV, valAREA, valDIA,...
-    vecROTAX, valPANELS, matGEOM, vecAIRFOIL, vecN, vecM, vecSYM, ...
+    valNUMB, vecROTAX, valPANELS, matGEOM, vecAIRFOIL, vecN, vecM, vecSYM, ...
     valINTERF] = fcnVAPTORREAD(strFILE)
 
 % INPUT:
@@ -22,6 +22,7 @@ function [flagRELAX, flagSTEADY, valMAXTIME, valMINTIME, valAZNUM, ...
 
 %   valAREA - projected wing area (m^2)
 %   valDIA - propeller diameter (m)
+%   valNUMB - numbers of blades per rotor
 %   vecROTAX - rotation axis [x y z] (m)
 
 %   valPANELS - number of wing panels
@@ -118,7 +119,7 @@ while(ch~='=');
 end
 valKINV = fscanf(fp,'%lf');
 %% Reading Rotor Reference Values
-% Reading reference aero
+% Reading reference area
 ch = fscanf(fp,'%c',1);
 while(ch~='=');
     ch = fscanf(fp,'%c',1);
@@ -132,6 +133,14 @@ while(ch~='=');
 end
 valDIA = fscanf(fp,'%lf');
 
+% Reading number of blades per rotor
+ch = fscanf(fp,'%c',1);
+while(ch~='=');
+    ch = fscanf(fp,'%c',1);
+end
+valNUMB = fscanf(fp,'%lf');
+
+% Reading rotational axis
 ch = fscanf(fp,'%c',1);
 while(ch~='=');
     ch = fscanf(fp,'%c',1);

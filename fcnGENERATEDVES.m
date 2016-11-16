@@ -34,7 +34,7 @@ function [matCENTER, vecDVEHVSPN, vecDVEHVCRD, vecDVELESWP, vecDVEMCSWP, vecDVET
 %   vecDVEPITCH - valNELE x 1 vector of DVE pitch angles (about y-axis) (radians)
 %   vecDVEYAW - valNELE x 1 vector of DVE yaw angles (about z-axis) (radians)
 %   vecDVEAREA - valNELE x 1 vector of DVE area
-%   vecDVENORM -  valNELE x 3 matrix of DVE normal vectors
+%   matDVENORM -  valNELE x 3 matrix of DVE normal vectors
 %   matVLST - ? x 3 list of unique vertices, columns are (x,y,z) values
 %   valNELE - total number of DVEs
 %   matDVE - matrix of which DVE uses which vertices from the above list
@@ -117,8 +117,6 @@ for i = 1:valPANELS;
     idxStart = vecEnd(i)-count+1;
     idxEnd = vecEnd(i);
     
-    
-
     vecDVEPANEL(idxStart:idxEnd,:) = repmat(i,count,1);
     
     % Write DVE WING Index
@@ -167,13 +165,7 @@ matNPVLST = nonplanerVLST(idxVLST,:);
 [ matADJE, vecDVESYM, vecDVETIP, vecDVELE, vecDVETE ] = fcnDVEADJT( imP1, imP2, imP3, imP4, valNELE, vecDVEPANEL, vecSYM );
 
 
+%% Account for Multiple Blades
+
 
 end
-
-
-
-
-
-
-
-

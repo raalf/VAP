@@ -6,9 +6,9 @@ Please note that the program uses equal, number and : signs as special recognize
 Relaxed wake (yes 1, no 0):		flagRELAX =		1
 Steady (1) or unsteady (2):		flagSTEADY =	2
 
-Max. number of time steps:		valMAXTIME 	=	30
+Max. number of time steps:		valMAXTIME 	=	0
 Min. number of time steps: 		valMINTIME 	= 	7
-Width of each time step (sec):	valDELTIME 	=	0.250000
+Width of each time step (sec):	valDELTIME 	=	1
 Convergence delta-span effic.:	valDELTAE 	=	0.000000	(0 if only timestepping)
 
 AOA sequence: 			seqALPHA 	= 	5
