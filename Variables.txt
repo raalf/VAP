@@ -35,7 +35,7 @@ valINTERF - interference drag value (%)
 From geometry generation:
 vecCENTER - valNELE x 3 matrix of (x,y,z) locations of DVE control points
 vecDVEHVSPN - valNELE x 1 vector of DVE half spans
-vecDVEHVCRD - valNELE x 1 vector of DVE half chords
+vecDVEHVCRD 1 valNELE x 1 vector of DVE half chords
 vecDVELESWP - valNELE x 1 vector of DVE leading edge sweep (radians)
 vecDVEMCSWP - valNELE x 1 vector of DVE mid-chord sweep (radians)
 vecDVETESWP - valNELE x 1 vector of DVE trailing-edge sweep (radians)

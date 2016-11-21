@@ -12,15 +12,15 @@ Number of azmith locations		valAZNUM 	=	40
 Convergence delta-span effic.:	valDELTAE 	=	0.000000	(0 if only timestepping)
 
 AOA sequence: 			seqALPHAR 	= 	30
-Advance ratio 			valJ		= 	0.5
+Advance ratio 			valJ		= 	1
 Rotor RPM				valRPM		=	3000 
 Density:				valDENSITY 	= 	1.2250
 Kinematic viscosity:	valKINV		=	1.460000e-05
 
-Reference area:				valAREA 	=	300
+Reference area (one blade):	valAREA 	=	300
 Reference diameter:			valDIA		=	0.2794
-Number of blades			valNUMB		=	2
-Rotation axis x y z 	 	vecROTAX	= 	0.008765 0 -0.006728 
+Number of blades			valNUMB		=	3
+Rotation axis x y z 	 	vecROTAX	= 	0.008765 0.0 -0.006728 
 
 No. of panels:	valPANELS =	9
 
