@@ -29,43 +29,34 @@ disp(' ');
 
 %% Reading in geometry
 
-% strFILE = 'input/ROTORINPUT_MA11by7.txt';
+% strFILE = 'inputs/VAP christmas.txt';
+% strFILE = 'inputs/VAP input.txt';
 % 
 % [flagRELAX, flagSTEADY, valAREA, valSPAN, valCMAC, valWEIGHT, ...
 %     seqALPHA, seqBETA, valKINV, valDENSITY, valPANELS, matGEOM, vecSYM, ...
 %     vecAIRFOIL, vecN, vecM, valVSPANELS, matVSGEOM, valFPANELS, matFGEOM, ...
 %     valFTURB, valFPWIDTH, valDELTAE, valDELTIME, valMAXTIME, valMINTIME, ...
-%     valINTERF] = fcnRVAPREAD(strFILE);
+%     valINTERF] = fcnVAPREAD(strFILE);
+% 
+% seqALPHA = [10];
 
-%strFILE = 'inputs/MA11x7.txt';
-strFILE = 'inputs/VAP input.txt';
-
+strFILE = 'inputs/input.txt';
+% strFILE = 'inputs/Config 1.txt';
+% strFILE = 'inputs/Config 2.txt';
 [flagRELAX, flagSTEADY, valAREA, valSPAN, valCMAC, valWEIGHT, ...
     seqALPHA, seqBETA, valKINV, valDENSITY, valPANELS, matGEOM, vecSYM, ...
     vecAIRFOIL, vecN, vecM, valVSPANELS, matVSGEOM, valFPANELS, matFGEOM, ...
     valFTURB, valFPWIDTH, valDELTAE, valDELTIME, valMAXTIME, valMINTIME, ...
-    valINTERF] = fcnVAPREAD(strFILE);
+    valINTERF] = fcnFWREAD(strFILE);
 
-% seqALPHA = [10];
+% flagRELAX = 0;
+valMAXTIME = 68;
 
-% strFILE = 'inputs/input.txt';
-% strFILE = 'inputs/Config 1.txt';
-% strFILE = 'inputs/Config 1.txt';
-
-% [flagRELAX, flagSTEADY, valAREA, valSPAN, valCMAC, valWEIGHT, ...
-%     seqALPHA, seqBETA, valKINV, valDENSITY, valPANELS, matGEOM, vecSYM, ...
-%     vecAIRFOIL, vecN, vecM, valVSPANELS, matVSGEOM, valFPANELS, matFGEOM, ...
-%     valFTURB, valFPWIDTH, valDELTAE, valDELTIME, valMAXTIME, valMINTIME, ...
-%     valINTERF] = fcnFWREAD(strFILE);
-
-% matGEOM(2,5,2) = 0;
-
-% valMAXTIME  = 40;   
-% flagRELAX   = 1;
 flagPRINT   = 1;
 flagPLOT    = 1;
 flagPLOTWAKEVEL = 0;
 flagVERBOSE = 0;
+
 
 %% Discretize geometry into DVEs
 
@@ -165,10 +156,6 @@ for ai = 1:length(seqALPHA)
             %% Moving the wing
             [matVLST, matCENTER, matNEWWAKE, matNPNEWWAKE] = fcnMOVEWING(valALPHA, valBETA, valDELTIME, matVLST, matCENTER, matDVE, vecDVETE, matNPVLST);
             
-            %% Moving rotor
-%             [matNEWWAKE, matNPNEWWAKE] = fcnMOVEWING(valALPHA, valBETA, valDELTIME, matVLST, matCENTER, matDVE, vecDVETE, matNPVLST);
-%             [matVLST, matCENTER, vecROTORIG] = fcnMOVEROTOR(vecROTORIG, valALPHAR, valAZNUM, valJ, matVLST, matCENTER);
-%             
             %% Generating new wake elements
             [matWAKEGEOM, matNPWAKEGEOM, vecWDVEHVSPN, vecWDVEHVCRD, vecWDVEROLL, vecWDVEPITCH, vecWDVEYAW, vecWDVELESWP, ...
                 vecWDVEMCSWP, vecWDVETESWP, vecWDVEAREA, matWDVENORM, matWVLST, matWDVE, valWNELE, matWCENTER, matWCOEFF, vecWK, matWADJE, matNPVLST, vecWDVEPANEL, valLENWADJE, vecWDVESYM, vecWDVETIP, vecWKGAM, vecWDVEWING] ...
@@ -222,7 +209,7 @@ for ai = 1:length(seqALPHA)
                 vecDVEMCSWP, vecDVEHVSPN, vecDVEHVCRD,vecDVEROLL, vecDVEPITCH, vecDVEYAW, vecDVELE, vecDVETE, matADJE,...
                 valWNELE, matWDVE, matWVLST, matWCOEFF, vecWK, vecWDVEHVSPN, vecWDVEHVCRD,vecWDVEROLL, vecWDVEPITCH, vecWDVEYAW, ...
                 vecWDVELESWP, vecWDVETESWP, valWSIZE, valTIMESTEP, vecSYM, vecDVETESWP, valAREA, valSPAN, valBETA, ...
-                vecDVEWING, vecN, vecM, vecDVEPANEL);
+                vecDVEWING, vecWDVEWING,vecN, vecM, vecDVEPANEL);
             
             if flagPRINT == 1 && valTIMESTEP == 1
                 fprintf(' TIMESTEP    CL          CDI\n'); %header
