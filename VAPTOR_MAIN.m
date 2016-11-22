@@ -183,7 +183,7 @@ for ai = 1:length(seqALPHAR)
              valWSIZE, vecWKGAM(end-valWSIZE+1:end), vecWDVEHVSPN(end- ...
              valWSIZE+1:end));
         
-        %% Generate rotor resultant
+        %% Generate rotor resultantc
         % Calculate inflow velocity
         [matUINF] = fcnUINFROT(matCENTER, vecROTAX, valTIMESTEP, ...
         valRPM, valALPHAR, valAZNUM, valDIA, valJ);
@@ -200,8 +200,8 @@ for ai = 1:length(seqALPHAR)
         [matWD, vecWR] = fcnWDWAKE([1:valWNELE]', matWADJE, ...
             vecWDVEHVSPN, vecWDVESYM, vecWDVETIP, vecWKGAM);
         [matWCOEFF] = fcnSOLVEWD(matWD, vecWR, valWNELE, vecWKGAM, ...
-            vecWDVEHVSPN);        
-     
+            vecWDVEHVSPN);   
+          
     end
 end
 

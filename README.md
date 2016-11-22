@@ -17,7 +17,8 @@ Current State:
 	- Solve wing D-Matrix with wake-induced velocities
     - Generate rotor resultant
 	- Solve entire WD-Matrix
+- Incorporate multiple blades
 
 Next To-Do:
-- Incorporate multiple blades
 - Calculate forces
+- Relax wake

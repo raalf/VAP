@@ -36,7 +36,6 @@ function [flagRELAX, flagSTEADY, valMAXTIME, valMINTIME, valAZNUM, ...
 %   valINTERF - interference drag value (%)
 
 fp = fopen(strFILE);
-
 %% Reading header flags
 % Reading relaxed wake flag
 ch = fscanf(fp,'%c',1);
