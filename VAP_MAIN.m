@@ -52,10 +52,10 @@ disp(' ');
 % % flagRELAX = 0;
 % valMAXTIME = 68;
 % 
-% flagPRINT   = 1;
-% flagPLOT    = 1;
-% flagPLOTWAKEVEL = 0;
-% flagVERBOSE = 0;
+flagPRINT   = 1;
+flagPLOT    = 1;
+flagPLOTWAKEVEL = 0;
+flagVERBOSE = 0;
 
 load('matlab.mat');
 
