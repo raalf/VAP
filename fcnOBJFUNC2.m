@@ -1,4 +1,4 @@
-function [out] = fcnOBJFUNC(zp)
+function [out] = fcnOBJFUNC2(zp)
 % clc
 % clear
 
@@ -41,7 +41,7 @@ matGEOM(:,:,7) = [matGEOM(2,:,2); [matGEOM(2,1,2) + zp(2) + 0.1 matGEOM(2,2,2) +
 matGEOM(:,:,8) = [matGEOM(2,:,7); z(3,:)]; % rear inboard
 matGEOM(:,:,9) = [z(3,:); z(4,:)]; % rear inboard
 
-%% Running VAP2
+% %% Running VAP2
 try
 [vecCLv, vecCD, vecCDi, vecVINF, vecCLDIST, matXYZDIST, vecAREADIST] = fcnVAP_MAIN(flagRELAX, flagSTEADY, valAREA, valSPAN, valCMAC, valWEIGHT, ...
     seqALPHA, seqBETA, valKINV, valDENSITY, valPANELS, matGEOM, vecSYM, ...
@@ -116,8 +116,8 @@ out = [invVxcMAX_low invVxcMAX_med invVxcMAX_high root_bending highspeed_cd];
 
 %% Writing iteration
 
-fp2 = fopen('optihistory2.txt','at');
-fprintf(fp2,'%f %f ', out, zp);
-fprintf(fp2,'\r\n');
-fclose(fp2);
+% fp2 = fopen('optihistory2.txt','at');
+% fprintf(fp2,'%f %f ', out, zp);
+% fprintf(fp2,'\r\n');
+% fclose(fp2);
 

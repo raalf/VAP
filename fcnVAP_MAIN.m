@@ -6,8 +6,8 @@ function [vecCLv, vecCD, vecCDI, vecVINF, vecCLDIST, matXYZDIST, vecAREADIST] = 
 
 warning off
 
-flagPRINT   = 0;
-flagPLOT    = 0;
+flagPRINT   = 1;
+flagPLOT    = 1;
 flagVERBOSE = 0;
 flagPLOTWAKEVEL = 0;
 
@@ -102,11 +102,9 @@ for ai = 1:length(seqALPHA)
     
     for bi = 1:length(seqBETA)
         
-        if flagPRINT == 1;
-            fprintf('      ANGLE OF ATTACK = %0.3f DEG\n',seqALPHA(ai));
-            fprintf('    ANGLE OF SIDESLIP = %0.3f DEG\n',seqBETA(bi));
-            fprintf('\n');
-        end
+        fprintf('      ANGLE OF ATTACK = %0.3f DEG\n',seqALPHA(ai));
+        fprintf('    ANGLE OF SIDESLIP = %0.3f DEG\n',seqBETA(bi));
+        fprintf('\n');
         
         valBETA = deg2rad(seqBETA(bi));
         
@@ -218,7 +216,7 @@ for ai = 1:length(seqALPHA)
                 vecDVEMCSWP, vecDVEHVSPN, vecDVEHVCRD,vecDVEROLL, vecDVEPITCH, vecDVEYAW, vecDVELE, vecDVETE, matADJE,...
                 valWNELE, matWDVE, matWVLST, matWCOEFF, vecWK, vecWDVEHVSPN, vecWDVEHVCRD,vecWDVEROLL, vecWDVEPITCH, vecWDVEYAW, ...
                 vecWDVELESWP, vecWDVETESWP, valWSIZE, valTIMESTEP, vecSYM, vecDVETESWP, valAREA, valSPAN, valBETA, ...
-                vecDVEWING, vecN, vecM, vecDVEPANEL);
+                vecDVEWING, vecWDVEWING,vecN, vecM, vecDVEPANEL);
             
             if flagPRINT == 1 && valTIMESTEP == 1
                 fprintf(' TIMESTEP    CL          CDI\n'); %header
@@ -234,19 +232,16 @@ for ai = 1:length(seqALPHA)
         end
         
         %% Viscous wrapper
-        [vecCLv(ai,1), vecCD(ai,1), vecVINF(ai,1), vecCLDIST(ai,:), matXYZDIST(:,:,ai), vecAREADIST(ai,:)] = fcnVISCOUS(vecCL(end,ai), vecCDI(end,ai), valWEIGHT, valAREA, valDENSITY, valKINV, vecDVENFREE, vecDVENIND, ...
+        
+        [vecCLv(1,ai), vecCD(1,ai)] = fcnVISCOUS(vecCL(end,ai), vecCDI(end,ai), valWEIGHT, valAREA, valDENSITY, valKINV, vecDVENFREE, vecDVENIND, ...
             vecDVELFREE, vecDVELIND, vecDVESFREE, vecDVESIND, vecDVEPANEL, vecDVELE, vecDVEWING, vecN, vecM, vecDVEAREA, ...
-            matCENTER, vecDVEHVCRD, vecAIRFOIL, 0, vecSYM, valVSPANELS, matVSGEOM, valFPANELS, matFGEOM, valFTURB, ...
+            matCENTER, vecDVEHVCRD, vecAIRFOIL, flagVERBOSE, vecSYM, valVSPANELS, matVSGEOM, valFPANELS, matFGEOM, valFTURB, ...
             valFPWIDTH, valINTERF, vecDVEROLL);
                 
     end
 end
 
-vecCDI = vecCDI(end,:);
-
-if flagPRINT == 1;
-    fprintf('\n');
-end
+fprintf('\n');
 
 %% Plotting
 
@@ -277,7 +272,3 @@ if flagPLOT == 1
 %     axis tight
 
 end
-
-%% Viscous wrapper
-
-% whos
