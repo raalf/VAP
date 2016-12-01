@@ -53,14 +53,14 @@ strSTRUCT_INPUT = 'inputs/Struct_Input.txt';
 %     valFTURB, valFPWIDTH, valDELTAE, valDELTIME, valMAXTIME, valMINTIME, ...
 %     valINTERF] = fcnFWREAD(strFILE);
 
-% matGEOM(2,5,2) = 0;
+% flagRELAX = 0;
+valMAXTIME = 68;
 
-% valMAXTIME  = 40;   
-% flagRELAX   = 1;
 flagPRINT   = 1;
 flagPLOT    = 1;
 flagPLOTWAKEVEL = 0;
 flagVERBOSE = 1;
+
 
 %% Discretize geometry into DVEs
 
