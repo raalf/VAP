@@ -1,0 +1,40 @@
+Input file for VAP Structural Dynamics Package
+Input file m/N/sec
+Please note that the program uses equal, number and : signs as special recognizers!
+
+----------------------
+Stiffness Distribution
+----------------------
+
+	Bending (E*Ix)
+		A Coefficient: vec_EIx = 11406
+		B Coefficient: vec_EIx = -188282
+		C Coefficient: vec_EIx = 793632
+
+	Torsion (G*Jt):
+		A Coefficient: vec_GJt = 361.92
+		B Coefficient: vec_GJt = -23848
+		C Coefficient: vec_GJt = 192242
+
+--------
+Geometry
+--------
+
+	Elastic Axis (X_ea):
+		A Coefficient: vec_EA = -0.0013
+		B Coefficient: vec_EA = 0.0511
+		C Coefficient: vec_EA = 0.3168
+
+	Center of Gravity (X_cg):
+		A Coefficient: vec_CG = 0
+		B Coefficient: vec_CG = 0
+		C Coefficient: vec_CG = 0
+
+-----------------
+Mass Distribution
+-----------------
+
+	Linear Mass (mu):
+		A Coefficient: vec_LM = 0.0624
+		B Coefficient: vec_LM = -1.9378
+		C Coefficient: vec_LM = 14.966
