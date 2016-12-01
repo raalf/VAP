@@ -1,4 +1,4 @@
-function [vecDEFLECTION, vecTWIST, vecBEAM] = fcnWINGTWISTBEND(valDELTIME, valTIMESTEP, vecLIFT, vecMOM, matDEFLECTION, matTWIST, vecSPANAREA, matSPANINERTIA, vecLINMASS, vecTORSIONRIGIDITY, vecMASS2SHEAR, valYMODULUS, valNSELE, valSPAN, vecDEFLECTION, vecTWIST, vecBEAM, valINITCOND, valDY)
+function [vecDEFLECTION, vecTWIST, vecBEAM] = fcnWINGTWISTBEND(valDELTIME, valTIMESTEP, vecLIFT, vecMOM, matDEFLECTION, matTWIST, vecSPANAREA, matEIx, vecLM, matGJt, vecLSM, valYMODULUS, valNSELE, valSPAN, vecDEFLECTION, vecTWIST, vecBEAM, valINITCOND, valDY)
 %% Function Inputs
 %
 % valDELTIME - Timestep size (s)
@@ -98,15 +98,15 @@ else
         %% Geometric property assembly
 
         % Assemble mass matrix
-        matMASS = [vecLINMASS(yy-2), -vecLINMASS(yy-2).*vecMASS2SHEAR(yy-2); -vecLINMASS(yy-2).*vecMASS2SHEAR(yy-2), vecLINMASS(yy-2).*(vecMASS2SHEAR(yy-2)+(vecTORSIONRIGIDITY(yy-2)./(vecSPANAREA(yy-2))))];
+        matMASS = [vecLM(yy-2), -vecLM(yy-2).*vecLSM(yy-2); -vecLM(yy-2).*vecLSM(yy-2), vecLM(yy-2).*(vecLSM(yy-2)+(matGJt(yy-2)./(vecSPANAREA(yy-2))))];
 
         % Assemble load matrix
         matLOAD = [vecLIFT(yy-2); vecMOM(yy-2)];
 
         % Assemble stiffness matrices
-        matK_1 = [valYMODULUS.*matSPANINERTIA(3,yy-2), 0; 0, 0]; % Need to figure out second derivative of I (I'')... standy by
-        matK_2 = [valYMODULUS.*matSPANINERTIA(2,yy-2), 0; 0, 0]; % Need to figure out derivative of I (I')
-        matK_3 = [valYMODULUS.*matSPANINERTIA(1,yy-2), 0; 0, -vecTORSIONRIGIDITY(yy-2)];
+        matK_1 = [valYMODULUS.*matEIx(3,yy-2), 0; 0, 0]; % Need to figure out second derivative of I (I'')... standy by
+        matK_2 = [valYMODULUS.*matEIx(2,yy-2), 0; 0, 0]; % Need to figure out derivative of I (I')
+        matK_3 = [valYMODULUS.*matEIx(1,yy-2), 0; 0, -matGJt(yy-2)];
 
         %% Finite difference relations for partial derivatives
 

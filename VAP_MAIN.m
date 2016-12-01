@@ -30,25 +30,28 @@ disp(' ');
 %% Reading in geometry
 
 % strFILE = 'inputs/VAP christmas.txt';
-% strFILE = 'inputs/VAP input.txt';
-% 
-% [flagRELAX, flagSTEADY, valAREA, valSPAN, valCMAC, valWEIGHT, ...
-%     seqALPHA, seqBETA, valKINV, valDENSITY, valPANELS, matGEOM, vecSYM, ...
-%     vecAIRFOIL, vecN, vecM, valVSPANELS, matVSGEOM, valFPANELS, matFGEOM, ...
-%     valFTURB, valFPWIDTH, valDELTAE, valDELTIME, valMAXTIME, valMINTIME, ...
-%     valINTERF] = fcnVAPREAD(strFILE);
-% 
-% seqALPHA = [10];
-
-% strFILE = 'inputs/input.txt';
-% strFILE = 'inputs/Config 1.txt';
-strFILE = 'inputs/Config 2.txt';
+strFILE = 'inputs/VAP_SB14.txt';
+strSTRUCT_INPUT = 'inputs/Struct_Input.txt';
 
 [flagRELAX, flagSTEADY, valAREA, valSPAN, valCMAC, valWEIGHT, ...
     seqALPHA, seqBETA, valKINV, valDENSITY, valPANELS, matGEOM, vecSYM, ...
     vecAIRFOIL, vecN, vecM, valVSPANELS, matVSGEOM, valFPANELS, matFGEOM, ...
     valFTURB, valFPWIDTH, valDELTAE, valDELTIME, valMAXTIME, valMINTIME, ...
-    valINTERF] = fcnFWREAD(strFILE);
+    valINTERF] = fcnVAPREAD(strFILE);
+
+[vecEIxCOEFF, vecGJtCOEFF, vecEACOEFF, vecCGCOEFF, vecLMCOEFF] = fcnSTRUCTREAD(strSTRUCT_INPUT);
+
+% seqALPHA = [2];
+
+% strFILE = 'inputs/input.txt';
+% strFILE = 'inputs/Config 1.txt';
+% strFILE = 'inputs/Config 2.txt';
+
+% [flagRELAX, flagSTEADY, valAREA, valSPAN, valCMAC, valWEIGHT, ...
+%     seqALPHA, seqBETA, valKINV, valDENSITY, valPANELS, matGEOM, vecSYM, ...
+%     vecAIRFOIL, vecN, vecM, valVSPANELS, matVSGEOM, valFPANELS, matFGEOM, ...
+%     valFTURB, valFPWIDTH, valDELTAE, valDELTIME, valMAXTIME, valMINTIME, ...
+%     valINTERF] = fcnFWREAD(strFILE);
 
 % matGEOM(2,5,2) = 0;
 
@@ -57,7 +60,7 @@ strFILE = 'inputs/Config 2.txt';
 flagPRINT   = 1;
 flagPLOT    = 1;
 flagPLOTWAKEVEL = 0;
-flagVERBOSE = 0;
+flagVERBOSE = 1;
 
 %% Discretize geometry into DVEs
 
@@ -68,6 +71,9 @@ flagVERBOSE = 0;
     vecDVEPANEL] = fcnGENERATEDVES(valPANELS, matGEOM, vecSYM, vecN, vecM);
 
 valWSIZE = length(nonzeros(vecDVETE)); % Amount of wake DVEs shed each timestep
+
+%% Discretize geometry into structural parameters
+[matEIx, matGJt, vecEA, vecCG, vecLM, vecLSM] = fcnSTRUCTDIST(vecN,valSPAN,valPANELS,vecDVEHVSPN,vecDVELE,vecEIxCOEFF,vecGJtCOEFF,vecEACOEFF,vecCGCOEFF,vecLMCOEFF);
 
 %% Add boundary conditions to D-Matrix
 
@@ -205,12 +211,12 @@ for ai = 1:length(seqALPHA)
             %% Forces
             
             [vecCL(valTIMESTEP,ai), vecCLF(valTIMESTEP,ai),vecCLI(valTIMESTEP,ai),vecCDI(valTIMESTEP,ai), vecE(valTIMESTEP,ai), vecDVENFREE, vecDVENIND, ...
-                vecDVELFREE, vecDVELIND, vecDVESFREE, vecDVESIND] = ...
+                vecDVELFREE, vecDVELIND, vecDVESFREE, vecDVESIND, vecCLDIST] = ...
                 fcnFORCES(matCOEFF, vecK, matDVE, valNELE, matCENTER, matVLST, vecUINF, vecDVELESWP,...
                 vecDVEMCSWP, vecDVEHVSPN, vecDVEHVCRD,vecDVEROLL, vecDVEPITCH, vecDVEYAW, vecDVELE, vecDVETE, matADJE,...
                 valWNELE, matWDVE, matWVLST, matWCOEFF, vecWK, vecWDVEHVSPN, vecWDVEHVCRD,vecWDVEROLL, vecWDVEPITCH, vecWDVEYAW, ...
                 vecWDVELESWP, vecWDVETESWP, valWSIZE, valTIMESTEP, vecSYM, vecDVETESWP, valAREA, valSPAN, valBETA, ...
-                vecDVEWING, vecN, vecM, vecDVEPANEL);
+                vecDVEWING, vecN, vecM, vecDVEPANEL, vecDVEAREA);
             
             if flagPRINT == 1 && valTIMESTEP == 1
                 fprintf(' TIMESTEP    CL          CDI\n'); %header
@@ -266,6 +272,8 @@ if flagPLOT == 1
 %     axis tight
 
 end
+
+[vecSPANAREAWING, vecSPANAREATAIL] = fcnWINGSTRUCTGEOMETRY(vecDVEHVCRD,vecN,vecM,vecDVEWING,vecDVELE,vecDVEPANEL,vecAIRFOIL,valPANELS);
 
 %% Viscous wrapper
 
