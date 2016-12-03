@@ -10,6 +10,8 @@ z = [...
     ];
 
 load('Standard Cirrus Input.mat');
+flagRELAX = 1;
+valMAXTIME = 22;
 
 %% Lopping off the end of the wing, to make room for the winglet
 
@@ -116,8 +118,8 @@ out = [invVxcMAX_low invVxcMAX_med invVxcMAX_high root_bending highspeed_cd];
 
 %% Writing iteration
 
-% fp2 = fopen('optihistory2.txt','at');
-% fprintf(fp2,'%f %f ', out, zp);
-% fprintf(fp2,'\r\n');
-% fclose(fp2);
+fp2 = fopen('optihistory2r.txt','at');
+fprintf(fp2,'%f %f ', out, zp);
+fprintf(fp2,'\r\n');
+fclose(fp2);
 
