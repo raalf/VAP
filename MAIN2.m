@@ -117,7 +117,7 @@ options = gaoptimset(options,'PlotFcns', {  @gaplotbestf @gaplotbestindiv @gaplo
 options = gaoptimset(options,'Vectorized', 'off');
 options = gaoptimset(options,'UseParallel', 1 );
 options = gaoptimset(options,'Generations',1000,'StallGenLimit', 50);
-[x,fval,exitflag,output,population,score] = gamultiobj(@fcnOBJFUNC,nvars,A,b,Aeq,beq,lb,ub,[],options);
+[x,fval,exitflag,output,population,score] = gamultiobj(@fcnOBJFUNC2,nvars,A,b,Aeq,beq,lb,ub,[],options);
 
 
 
