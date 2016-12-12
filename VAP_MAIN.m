@@ -9,17 +9,20 @@ disp('| RYERSON       |       VAP (Based on FreeWake 2015)');
 disp('| APPLIED       |       Running Version 2016.09');
 disp('| AERODYNAMICS  |       Includes stall model');
 disp('| LABORATORY OF |       No trim solution');
-disp('| FLIGHT        |        .                             .');
-disp('+---------------+       //                             \\');
-disp('                       //                               \\');
-disp('                      //                                 \\');
-disp('                     //                _._                \\');
-disp('                  .---.              .//|\\.              .---.');
-disp('         ________/ .-. \_________..-~ _.-._ ~-..________ / .-. \_________');
-disp('                 \ ~-~ /   /H-     `-=.___.=-''     -H\   \ ~-~ /');
-disp('                   ~~~    / H          [H]          H \    ~~~');
-disp('                         / _H_         _H_         _H_ \');
-disp('                           UUU         UUU         UUU');
+disp('| FLIGHT        |       o                         o');
+disp('+---------------+        \                       /');
+disp('                          \                     /');
+disp('                           \                   /');
+disp('                            \       -^-       /');
+disp('                             \    _([|])_    /');
+disp('                             _\__/ \   / \__/_');
+disp('   +X+````````\\\\\\NAVY\\\\\___/\  \ /  /\___/////NAVY//////''''''''+X+');
+disp('              /             ||  \ \_(o)_/ /  ||             \');
+disp('            +X+     "```````\\__//\__^__/\\__//```````"     +X+');
+disp('                              |H|   |H|   |H|');
+disp('   ___________________________/______Y______\_______________');
+disp('                            {}+      |      +{}');
+disp('                                   {}+{}');
 disp('===========================================================================');
 disp(' ');
 
@@ -54,12 +57,12 @@ strSTRUCT_INPUT = 'inputs/Struct_Input.txt';
 %     valINTERF] = fcnFWREAD(strFILE);
 
 % flagRELAX = 0;
-valMAXTIME = 68;
+% valMAXTIME = 68;
 
 flagPRINT   = 1;
 flagPLOT    = 1;
 flagPLOTWAKEVEL = 0;
-flagVERBOSE = 1;
+flagVERBOSE = 0;
 
 
 %% Discretize geometry into DVEs
@@ -163,6 +166,7 @@ for ai = 1:length(seqALPHA)
             %% Moving the wing
             [matVLST, matCENTER, matNEWWAKE, matNPNEWWAKE] = fcnMOVEWING(valALPHA, valBETA, valDELTIME, matVLST, matCENTER, matDVE, vecDVETE, matNPVLST);
             
+            [vecSPNWSECRD, vecSPNWSEAREA, matQTRCRD, vecQTRCRD] = fcnWINGSTRUCTGEOM(vecDVEWING, vecDVELE, vecDVEPANEL, vecM, vecN, vecDVEHVCRD, matDVE, matVLST, vecDVEAREA);
             %% Generating new wake elements
             [matWAKEGEOM, matNPWAKEGEOM, vecWDVEHVSPN, vecWDVEHVCRD, vecWDVEROLL, vecWDVEPITCH, vecWDVEYAW, vecWDVELESWP, ...
                 vecWDVEMCSWP, vecWDVETESWP, vecWDVEAREA, matWDVENORM, matWVLST, matWDVE, valWNELE, matWCENTER, matWCOEFF, vecWK, matWADJE, matNPVLST, vecWDVEPANEL, valLENWADJE, vecWDVESYM, vecWDVETIP, vecWKGAM, vecWDVEWING] ...
@@ -211,12 +215,12 @@ for ai = 1:length(seqALPHA)
             %% Forces
             
             [vecCL(valTIMESTEP,ai), vecCLF(valTIMESTEP,ai),vecCLI(valTIMESTEP,ai),vecCDI(valTIMESTEP,ai), vecE(valTIMESTEP,ai), vecDVENFREE, vecDVENIND, ...
-                vecDVELFREE, vecDVELIND, vecDVESFREE, vecDVESIND, vecCLDIST] = ...
+                vecDVELFREE, vecDVELIND, vecDVESFREE, vecDVESIND, vecLIFTDIST, vecMOMDIST] = ...
                 fcnFORCES(matCOEFF, vecK, matDVE, valNELE, matCENTER, matVLST, vecUINF, vecDVELESWP,...
                 vecDVEMCSWP, vecDVEHVSPN, vecDVEHVCRD,vecDVEROLL, vecDVEPITCH, vecDVEYAW, vecDVELE, vecDVETE, matADJE,...
                 valWNELE, matWDVE, matWVLST, matWCOEFF, vecWK, vecWDVEHVSPN, vecWDVEHVCRD,vecWDVEROLL, vecWDVEPITCH, vecWDVEYAW, ...
                 vecWDVELESWP, vecWDVETESWP, valWSIZE, valTIMESTEP, vecSYM, vecDVETESWP, valAREA, valSPAN, valBETA, ...
-                vecDVEWING, vecN, vecM, vecDVEPANEL, vecDVEAREA);
+                vecDVEWING, vecWDVEWING, vecN, vecM, vecDVEPANEL, vecDVEAREA, vecSPNWSECRD, vecSPNWSEAREA, matQTRCRD, valDENSITY);
             
             if flagPRINT == 1 && valTIMESTEP == 1
                 fprintf(' TIMESTEP    CL          CDI\n'); %header
@@ -272,8 +276,6 @@ if flagPLOT == 1
 %     axis tight
 
 end
-
-[vecSPANAREAWING, vecSPANAREATAIL] = fcnWINGSTRUCTGEOMETRY(vecDVEHVCRD,vecN,vecM,vecDVEWING,vecDVELE,vecDVEPANEL,vecAIRFOIL,valPANELS);
 
 %% Viscous wrapper
 

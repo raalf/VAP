@@ -1,0 +1,11 @@
+function [vecLIFTDIST, vecMOMDIST] = fcnFORCEDIST(vecCLDIST,matQTRCRD,vecUINF,vecSPNWSEAREA,valDENSITY,matCLDIST,vecSPNWSECRD)
+
+% vecLIFTDIST = 0.5*valDENSITY*norm(vecUINF)*norm(vecUINF).*vecSPNWSEAREA.*vecCLDIST;
+vecLIFTDIST = 0.5*valDENSITY*60*60.*vecSPNWSEAREA.*vecCLDIST;
+
+% matMOMDIST = 0.5*valDENSITY*norm(vecUINF)*norm(vecUINF).*vecSPNWSEAREA.*(sum(vecSPNWSECRD)/size(vecSPNWSECRD,1)).*matCLDIST.*matQTRCRD;
+matMOMDIST = 0.5*valDENSITY*60*60.*vecSPNWSEAREA.*(sum(vecSPNWSECRD)/size(vecSPNWSECRD,1)).*matCLDIST.*matQTRCRD;
+
+vecMOMDIST = sum(matMOMDIST,2);
+
+end
