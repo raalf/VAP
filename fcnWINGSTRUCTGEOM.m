@@ -1,5 +1,18 @@
 function [vecSPNWSECRD, vecSPNWSEAREA, matQTRCRD, vecQTRCRD] = fcnWINGSTRUCTGEOM(vecDVEWING, vecDVELE, vecDVEPANEL, vecM, vecN, vecDVEHVCRD, matDVE, matVLST, vecDVEAREA)
-    
+
+% This function computes necessary vectors for force and moment
+% distributions.
+%
+% INPUT:
+%
+% OUTPUT:
+% vecSPNWSECRD - 1 x sum(vecN) vector containing the chord length at the
+% mid-point of each spanwise station
+% vecSPANWSEAREA - 1 x sum(vecN) vector containing the planform area at
+% each spanwise station
+% matQTRCRD - sum(vecN) x vecM matrix of the distance from the mid-point of
+% each DVE LE to the quarter chord line
+
     vecSPNWSECRD = [];
     vecSPNWSEAREA = [];
     [ledves, ~, ~] = find(vecDVELE > 0);
