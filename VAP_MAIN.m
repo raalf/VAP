@@ -58,7 +58,11 @@ flagPLOTWAKEVEL = 0;
 flagVERBOSE = 0;
 
 load('matlab.mat');
-
+% flagRELAX = 0;
+seqALPHA = 10;
+% valMAXTIME = 23;
+valDELTIME = 0.05;
+% matGEOM(2,2,5) = 2.2
 
 %% Discretize geometry into DVEs
 

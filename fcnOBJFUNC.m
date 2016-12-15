@@ -13,7 +13,7 @@ valKINV = 1.460000e-05;
 valDENSITY = 1.2;
 
 valDELTAE = 0;
-valDELTIME = 0.01;
+valDELTIME = 0.05;
 valMAXTIME = 30;
 valMINTIME = 25;
 
@@ -28,12 +28,12 @@ matGEOM(:,:,1) = [zp(1:5); zp(6:10)];
 matGEOM(:,:,2) = [zp(6:10); zp(11:15)];
 matGEOM(:,:,3) = [zp(11:15); zp(16:20)];
 matGEOM(:,:,4) = [zp(16:20); zp(21:25)];
-matGEOM(:,:,5) = [zp(21:25); zp(25:30)];
+matGEOM(:,:,5) = [zp(21:25); zp(26:30)];
 
-vecN = [3 3 3 3 3];
-vecM = [1 1 1 1 1];
+vecN = [3 3 3 3 3]';
+vecM = [1 1 1 1 1]';
 
-vecAIRFOIL = [9 9 9 9 9];
+vecAIRFOIL = [9 9 9 9 9]';
 
 valVSPANELS = 0;
 matVSGEOM = [];
@@ -46,6 +46,8 @@ valFPWIDTH = 0;
 valAREA = sum(mean(matGEOM(:,4,:),1).*(matGEOM(2,2,:) - matGEOM(1,2,:)));
 
 valSPAN = matGEOM(2,2,5)*2;
+
+valCMAC = 1;
 
 %% Running VAP2
 try
