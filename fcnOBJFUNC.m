@@ -2,42 +2,54 @@ function [out] = fcnOBJFUNC(zp)
 % clc
 % clear
 
-z = [...
-    zp(2:6);
-    zp(7:11); ...
-    zp(12:16); ... 
-    ];
+%%
+flagRELAX = 1;
+flagSTEADY = 1;
 
-load('Standard Cirrus Input.mat');
+valWEIGHT = 7*9.81;
+seqALPHA = [4:1:11];
+seqBETA = 0;
+valKINV = 1.460000e-05;
+valDENSITY = 1.2;
 
-%% Lopping off the end of the wing, to make room for the winglet
+valDELTAE = 0;
+valDELTIME = 0.01;
+valMAXTIME = 30;
+valMINTIME = 25;
 
-out_len = (sqrt(sum(abs(matGEOM(2,1:3,2)-matGEOM(1,1:3,2)).^2)));
-out_vec = (matGEOM(2,1:3,2) - matGEOM(1,1:3,2))./out_len; % Unit vector of outboard leading edge
+valINTERF = 20;
+%%
 
-lop_loc = out_vec*zp(1); % Where we will cut the wing
+valPANELS = 5;
 
-tr = matGEOM(2,4,2)/matGEOM(1,4,2);
-matGEOM(2,4,2) = matGEOM(1,4,2)*tr*(1+(zp(1)/out_len)); % Finding the chord at the cut
+vecSYM = 1;
 
-matGEOM(2,5,2) = matGEOM(2,5,2)*(1-(zp(1)/out_len)); % Finding the twist angle at the cut
-matGEOM(2,1:3,2) = matGEOM(2,1:3,2) - lop_loc; % Making the cut
+matGEOM(:,:,1) = [zp(1:5); zp(6:10)];
+matGEOM(:,:,2) = [zp(6:10); zp(11:15)];
+matGEOM(:,:,3) = [zp(11:15); zp(16:20)];
+matGEOM(:,:,4) = [zp(16:20); zp(21:25)];
+matGEOM(:,:,5) = [zp(21:25); zp(25:30)];
 
-%% Adding on split tips
+vecN = [3 3 3 3 3];
+vecM = [1 1 1 1 1];
 
-valPANELS = 6;
-vecAIRFOIL = [1 1 7 6 6 6]';
-vecN = [6 8 3 2 4 4]';
-vecM = [1 1 1 1 1 1]';
+vecAIRFOIL = [9 9 9 9 9];
 
-matGEOM(:,:,4) = [matGEOM(2,:,2); z(1,:) ]; % front transition
-matGEOM(:,:,5) = [matGEOM(2,:,4); z(2,:)]; % front inboard
-matGEOM(:,:,6) = [z(2,:); z(3,:)]; % front outboard
+valVSPANELS = 0;
+matVSGEOM = [];
+valFPANELS = 0;
+matFGEOM = [];
+valFTURB = 0;
+valFPWIDTH = 0;
 
+%%
+valAREA = sum(mean(matGEOM(:,4,:),1).*(matGEOM(2,2,:) - matGEOM(1,2,:)));
 
-% %% Running VAP2
+valSPAN = matGEOM(2,2,5)*2;
+
+%% Running VAP2
 try
-[vecCLv, vecCD, vecCDi, vecVINF, vecCLDIST, matXYZDIST, vecAREADIST] = fcnVAP_MAIN(flagRELAX, flagSTEADY, valAREA, valSPAN, valCMAC, valWEIGHT, ...
+[vecCLv, vecCD, vecCDi, vecVINF, vecCLDIST, matXYZDIST, vecAREADIST, vecDVEAREA] = fcnVAP_MAIN(flagRELAX, flagSTEADY, valAREA, valSPAN, valCMAC, valWEIGHT, ...
     seqALPHA, seqBETA, valKINV, valDENSITY, valPANELS, matGEOM, vecSYM, ...
     vecAIRFOIL, vecN, vecM, valVSPANELS, matVSGEOM, valFPANELS, matFGEOM, ...
     valFTURB, valFPWIDTH, valDELTAE, valDELTIME, valMAXTIME, valMINTIME, ...
@@ -45,69 +57,31 @@ try
 catch
    zp 
 end
-%% Root bending
-% At alpha = 5 degrees
-% section cl * y location * density * 0.5 * section area * V_inf^2
-% Includes tail, which is a constant offset
-
-idx = find(seqALPHA == 5);
-root_bending = sum(vecCLDIST(idx,:).*matXYZDIST(:,2,idx)'.*valDENSITY.*vecAREADIST(idx,:).*(vecVINF(idx)^2));
 
 %% High speed drag coefficient
 % Drag coefficient at 51 m/s
 
 highspeed_cd = interp1(vecVINF,vecCD,51,'linear','extrap');
 
-%% Cross-country speed
+%% Estimating wing weight
 
-[LDfit, ~] = fcnCREATEFIT(seqALPHA, vecCLv./vecCD);
-[CLfit, ~] = fcnCREATEFIT(seqALPHA, vecCLv);
-[CDfit, ~] = fcnCREATEFIT(seqALPHA, vecCD);
-[Vinffit, ~] = fcnCREATEFIT(seqALPHA, vecVINF);
-[Cdifit, ~] = fcnCREATEFIT(seqALPHA, vecCDi);
+rho_cloth = 0.2; % 200 grams per m^2, 6oz carbon fiber
 
-range_vxc = 1.5:0.25:13.5;
-CL = CLfit(range_vxc);
-CD = CDfit(range_vxc);
-LD = LDfit(range_vxc);
-Vcruise = Vinffit(range_vxc);
-wglide = Vcruise.*(CD./CL);
-[~, LDindex] = max(LD);
+w_cloth = rho_cloth*sum(vecDVEAREA);
+w_resin = w_cloth*0.6; % Idealy 60-40 cloth-resin but we know we won't be perfect
 
-Rthermal = 150;
-Rrecip = 1/Rthermal;
-WSroh = 2*valWEIGHT/(valAREA*valDENSITY);
+w_struct = 1; % 1 kg for misc. structural components? Maybe?
 
-k = 1;
+wing_weight = (w_cloth + w_resin)*2 + w_struct; % Top and bottom of the wing in 6oz carbon
 
-for wmaxth = 2:3:8
-    
-    j = 1;
-    
-    for i = LDindex:size(CL)
-        wclimb(j,1) = fcnMAXCLIMB(CL(i), CD(i), Rrecip, wmaxth, WSroh);
-        j = j + 1;
-    end
-    
-    [wclimbMAX, indexWC] = max(wclimb);
-    
-    for i = 1:size(CL)
-        V(i,1) = (Vcruise(i)*wclimbMAX)/(wglide(i)+wclimbMAX);
-    end
-    
-    [VxcMAX, cruiseIndex] = max(V);
-    invVxcMAX(k,1) = 1/VxcMAX;
-    Vxc(k,:) = [wmaxth VxcMAX];
-    k = k + 1;
-    
-end
+%%
+drag = vecCD.*0.5.*valDENSITY.*(vecVINF.^2).*valAREA;
 
-invVxcMAX_low = invVxcMAX(1,1);
-invVxcMAX_med = invVxcMAX(ceil(end/2),1);
-invVxcMAX_high = invVxcMAX(end,1);
+preq = drag.*vecVINF;
 
-out = [invVxcMAX_low invVxcMAX_med invVxcMAX_high root_bending highspeed_cd];
+w_sink = vecVINF.*vecCD./vecCLv;
 
+out = [wing_weight min(preq) min(w_sink) mean(preq(3:7)) mean(w_sink(3:7)) mean(preq) mean(w_sink) highspeed_cd];
 %% Writing iteration
 
 fp2 = fopen('optihistory1.txt','at');

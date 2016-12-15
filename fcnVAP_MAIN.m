@@ -1,4 +1,4 @@
-function [vecCLv, vecCD, vecCDI, vecVINF, vecCLDIST, matXYZDIST, vecAREADIST] = fcnVAP_MAIN(flagRELAX, flagSTEADY, valAREA, valSPAN, valCMAC, valWEIGHT, ...
+function [vecCLv, vecCD, vecCDI, vecVINF, vecCLDIST, matXYZDIST, vecAREADIST, vecDVEAREA] = fcnVAP_MAIN(flagRELAX, flagSTEADY, valAREA, valSPAN, valCMAC, valWEIGHT, ...
     seqALPHA, seqBETA, valKINV, valDENSITY, valPANELS, matGEOM, vecSYM, ...
     vecAIRFOIL, vecN, vecM, valVSPANELS, matVSGEOM, valFPANELS, matFGEOM, ...
     valFTURB, valFPWIDTH, valDELTAE, valDELTIME, valMAXTIME, valMINTIME, ...
@@ -102,11 +102,9 @@ for ai = 1:length(seqALPHA)
     
     for bi = 1:length(seqBETA)
         
-        if flagPRINT == 1
-            fprintf('      ANGLE OF ATTACK = %0.3f DEG\n',seqALPHA(ai));
-            fprintf('    ANGLE OF SIDESLIP = %0.3f DEG\n',seqBETA(bi));
-            fprintf('\n');
-        end
+        fprintf('      ANGLE OF ATTACK = %0.3f DEG\n',seqALPHA(ai));
+        fprintf('    ANGLE OF SIDESLIP = %0.3f DEG\n',seqBETA(bi));
+        fprintf('\n');
         
         valBETA = deg2rad(seqBETA(bi));
         
