@@ -5,7 +5,7 @@ warning off
 
 disp('===========================================================================');
 disp('+---------------+');
-disp('| RYERSON       |       VAP (Based on FreeWake 2015)');
+disp('| RYERSON       |       VAPCITY (Based on FreeWake 2015)');
 disp('| APPLIED       |       Running Version 2016.09');
 disp('| AERODYNAMICS  |       Includes stall model');
 disp('| LABORATORY OF |       No trim solution');
@@ -16,11 +16,11 @@ disp('                           \                   /');
 disp('                            \       -^-       /');
 disp('                             \    _([|])_    /');
 disp('                             _\__/ \   / \__/_');
-disp('   +X+````````\\\\\\NAVY\\\\\___/\  \ /  /\___/////NAVY//////''''''''+X+');
+disp('   +X+````````\\\\\\RCAF\\\\\___/\  \ /  /\___/////RCAF//////''''''''+X+');
 disp('              /             ||  \ \_(o)_/ /  ||             \');
 disp('            +X+     "```````\\__//\__^__/\\__//```````"     +X+');
 disp('                              |H|   |H|   |H|');
-disp('   ___________________________/______Y______\_______________');
+disp('   ___________________________/______Y______\___________________________');
 disp('                            {}+      |      +{}');
 disp('                                   {}+{}');
 disp('===========================================================================');
@@ -37,7 +37,7 @@ strFILE = 'inputs/VAP_SB14.txt';
 strSTRUCT_INPUT = 'inputs/Struct_Input.txt';
 
 [flagRELAX, flagSTEADY, valAREA, valSPAN, valCMAC, valWEIGHT, ...
-    seqALPHA, seqBETA, valKINV, valDENSITY, valPANELS, matGEOM, vecSYM, ...
+    seqALPHA, seqBETA, valKINV, valVINF, valDENSITY, valPANELS, matGEOM, vecSYM, ...
     vecAIRFOIL, vecN, vecM, valVSPANELS, matVSGEOM, valFPANELS, matFGEOM, ...
     valFTURB, valFPWIDTH, valDELTAE, valDELTIME, valMAXTIME, valMINTIME, ...
     valINTERF] = fcnVAPREAD(strFILE);
@@ -163,7 +163,7 @@ for ai = 1:length(seqALPHA)
             %   Calculate cn, cl, cy, cdi
             %   Calculate viscous effects
             
-            %% Moving the wing
+            %% Moving the wing and structure
             [matVLST, matCENTER, matNEWWAKE, matNPNEWWAKE] = fcnMOVEWING(valALPHA, valBETA, valDELTIME, matVLST, matCENTER, matDVE, vecDVETE, matNPVLST);
             
             [vecSPNWSECRD, vecSPNWSEAREA, matQTRCRD, vecQTRCRD] = fcnWINGSTRUCTGEOM(vecDVEWING, vecDVELE, vecDVEPANEL, vecM, vecN, vecDVEHVCRD, matDVE, matVLST, vecDVEAREA);
@@ -220,7 +220,7 @@ for ai = 1:length(seqALPHA)
                 vecDVEMCSWP, vecDVEHVSPN, vecDVEHVCRD,vecDVEROLL, vecDVEPITCH, vecDVEYAW, vecDVELE, vecDVETE, matADJE,...
                 valWNELE, matWDVE, matWVLST, matWCOEFF, vecWK, vecWDVEHVSPN, vecWDVEHVCRD,vecWDVEROLL, vecWDVEPITCH, vecWDVEYAW, ...
                 vecWDVELESWP, vecWDVETESWP, valWSIZE, valTIMESTEP, vecSYM, vecDVETESWP, valAREA, valSPAN, valBETA, ...
-                vecDVEWING, vecWDVEWING, vecN, vecM, vecDVEPANEL, vecDVEAREA, vecSPNWSECRD, vecSPNWSEAREA, matQTRCRD, valDENSITY);
+                vecDVEWING, vecWDVEWING, vecN, vecM, vecDVEPANEL, vecDVEAREA, vecSPNWSECRD, vecSPNWSEAREA, matQTRCRD, valDENSITY, valVINF);
             
             if flagPRINT == 1 && valTIMESTEP == 1
                 fprintf(' TIMESTEP    CL          CDI\n'); %header
@@ -229,6 +229,9 @@ for ai = 1:length(seqALPHA)
             if flagPRINT == 1
                 fprintf('  %4d     %0.5f     %0.5f\n',valTIMESTEP,vecCL(valTIMESTEP,ai),vecCDI(valTIMESTEP,ai)); %valTIMESTEP
             end
+            
+%             [vecDEFLECTION, vecTWIST] = fcnWINGTWISTBEND(valDELTIME, valTIMESTEP, vecLIFTDIST, vecMOMDIST, matDEFLECTION, matTWIST, vecSPANAREA,...
+%                 matEIx, vecLM, matGJt, vecLSM, valYMODULUS, valNSELE, valSPAN, vecDEFLECTION, vecTWIST, vecBEAM, valINITCOND, valDY);
             
 %             fprintf('\n\tTimestep = %0.0f', valTIMESTEP);
 %             fprintf('\tCL = %0.5f',vecCL(valTIMESTEP,ai));

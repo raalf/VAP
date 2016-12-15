@@ -1,4 +1,4 @@
-function [vecDEFLECTION, vecTWIST, vecBEAM] = fcnWINGTWISTBEND(valDELTIME, valTIMESTEP, vecLIFT, vecMOM, matDEFLECTION, matTWIST, vecSPANAREA, matEIx, vecLM, matGJt, vecLSM, valYMODULUS, valNSELE, valSPAN, vecDEFLECTION, vecTWIST, vecBEAM, valINITCOND, valDY)
+function [vecDEFLECTION, vecTWIST] = fcnWINGTWISTBEND(vecLIFTDIST, vecMOMDIST, matDEFLECTION, matTWIST, vecSPANAREA, matEIx, vecLM, matGJt, vecLSM, valYMODULUS, vecN, valSPAN, vecDEFLECTION, vecTWIST, vecBEAM, valINITCOND, valDY)
 %% Function Inputs
 %
 % valDELTIME - Timestep size (s)
@@ -40,6 +40,11 @@ function [vecDEFLECTION, vecTWIST, vecBEAM] = fcnWINGTWISTBEND(valDELTIME, valTI
 %
 % valNSELE - Number of spanwise elements
 %
+valNSELE = size(vecN,1);
+
+valTIMESTEP = 0;
+
+valDELTIME = sqrt(150000*valDY^4/valYMODULUS);
 %% Beam boundary conditions
    
 if valTIMESTEP == 1
@@ -101,7 +106,7 @@ else
         matMASS = [vecLM(yy-2), -vecLM(yy-2).*vecLSM(yy-2); -vecLM(yy-2).*vecLSM(yy-2), vecLM(yy-2).*(vecLSM(yy-2)+(matGJt(yy-2)./(vecSPANAREA(yy-2))))];
 
         % Assemble load matrix
-        matLOAD = [vecLIFT(yy-2); vecMOM(yy-2)];
+        matLOAD = [vecLIFTDIST(yy-2); vecMOMDIST(yy-2)];
 
         % Assemble stiffness matrices
         matK_1 = [valYMODULUS.*matEIx(3,yy-2), 0; 0, 0]; % Need to figure out second derivative of I (I'')... standy by

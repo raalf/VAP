@@ -1,5 +1,5 @@
 function [flagRELAX, flagSTEADY, valAREA, valSPAN, valCMAC, valWEIGHT, ...
-    seqALPHA, seqBETA, valKINV, valDENSITY, valPANELS, matGEOM, vecSYM, ...
+    seqALPHA, seqBETA, valKINV, valVINF, valDENSITY, valPANELS, matGEOM, vecSYM, ...
     vecAIRFOIL, vecN, vecM, valVSPANELS, matVSGEOM, valFPANELS, matFGEOM, ...
     valFTURB, valFPWIDTH, valDELTAE, valDELTIME, valMAXTIME, valMINTIME, ...
     valINTERF] = fcnVAPREAD(strFILE)
@@ -19,6 +19,7 @@ function [flagRELAX, flagSTEADY, valAREA, valSPAN, valCMAC, valWEIGHT, ...
 %   seqBETA - sequence of betas to analyze
 %   valKINV - kinematic viscosity (1.46e-05 as standard)
 %   valDENSITY - fluid density, kg/m^3
+%   valVINF - total freestream velocity, m/s
 
 %   valPANELS - number of wing panels
 %   matGEOM - 2 x 5 x valPANELS matrix, with (x,y,z) coords of edge points, and chord and twist at each edge
@@ -112,12 +113,19 @@ while(ch~='=');
 end
 valDENSITY = fscanf(fp,'%lf');
 
-% Reading density
+% Reading kinematic viscosity
 ch = fscanf(fp,'%c',1);
 while(ch~='=');
     ch = fscanf(fp,'%c',1);
 end
 valKINV = fscanf(fp,'%lf');
+
+% Reading freestream velocity
+ch = fscanf(fp,'%c',1);
+while(ch~='=');
+    ch = fscanf(fp,'%c',1);
+end
+valVINF = fscanf(fp,'%lf');
 %% Reading Aircraft Reference Values
 % Reading wing area
 ch = fscanf(fp,'%c',1);
