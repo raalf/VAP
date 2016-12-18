@@ -39,39 +39,39 @@ Panel boundary conditions:
 Defines leading edge of wing, all measured in metres:
 
 Panel #:1. Number of spanwise elements (n) = 3. Airfoil number = 9
-Neighbouring panels (0 for none) left: 0 right: 2
+Neighbouring panels (0 for none) left: 0 right: 0
 xleft	yleft	zleft	chord	epsilon	Bound.Cond.
-0.000000	0.000000	-0.000000	0.938133	0.000000	10
+0.000000000000000	0.000000000000000	-0.000000000000000	0.938133329426571	0.000000000000000	220
 xright	yright	zright	chord	epsilon	Bound.Cond.
-0.000000	0.800000	0.000000	0.271057	-1.208635	220
+0.000000000013608	0.800000000010692	0.000000000000000	0.271057230136484	-1.208635394598137	220
 
 Panel #:2. Number of spanwise elements (n) = 3. Airfoil number = 9
-Neighbouring panels (0 for none) left: 1 right: 3
+Neighbouring panels (0 for none) left: 0 right: 0
 xleft	yleft	zleft	chord	epsilon	Bound.Cond.
-0.000000	0.800000	0.000000	0.271057	-1.208635	220
+0.000000000013608	0.800000000010692	0.000000000000000	0.271057230136484	-1.208635394598137	220
 xright	yright	zright	chord	epsilon	Bound.Cond.
-0.300000	2.100000	0.120302	0.271057	0.604823	220
+0.299999999990832	2.100000000003086	0.120301908987578	0.271057230119472	0.604823328042698	220
 
 Panel #:3. Number of spanwise elements (n) = 3. Airfoil number = 9
-Neighbouring panels (0 for none) left: 2 right: 4
+Neighbouring panels (0 for none) left: 0 right: 0
 xleft	yleft	zleft	chord	epsilon	Bound.Cond.
-0.300000	2.100000	0.120302	0.271057	0.604823	220
+0.299999999990832	2.100000000003086	0.120301908987578	0.271057230119472	0.604823328042698	220
 xright	yright	zright	chord	epsilon	Bound.Cond.
-0.300000	2.150000	0.120302	0.040000	-0.395639	220
+0.299999999998672	2.150000000006414	0.120301908995757	0.040000000014423	-0.395639344804838	220
 
 Panel #:4. Number of spanwise elements (n) = 3. Airfoil number = 9
-Neighbouring panels (0 for none) left: 3 right: 5
+Neighbouring panels (0 for none) left: 0 right: 0
 xleft	yleft	zleft	chord	epsilon	Bound.Cond.
-0.300000	2.150000	0.120302	0.040000	-0.395639	220
+0.299999999998672	2.150000000006414	0.120301908995757	0.040000000014423	-0.395639344804838	220
 xright	yright	zright	chord	epsilon	Bound.Cond.
-0.300000	2.165000	0.130302	0.040000	-0.222971	220
+0.300000000005637	2.165000000009951	0.130301909003503	0.040000000007478	-0.222970540456124	220
 
 Panel #:5. Number of spanwise elements (n) = 3. Airfoil number = 9
-Neighbouring panels (0 for none) left: 4 right: 0
+Neighbouring panels (0 for none) left: 0 right: 0
 xleft	yleft	zleft	chord	epsilon	Bound.Cond.
-0.300000	2.165000	0.130302	0.040000	-0.222971	220
+0.300000000005637	2.165000000009951	0.130301909003503	0.040000000007478	-0.222970540456124	220
 xright	yright	zright	chord	epsilon	Bound.Cond.
-0.300000	2.180000	0.140302	0.020000	0.680980	100
+0.300000000005637	2.180000000014332	0.140301909012731	0.020000000012393	0.680979649789286	220
 
 %<- special identifier
 Vertical tail information:
