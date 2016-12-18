@@ -5,4 +5,8 @@ clear
 
 % [aloc bloc cloc] = fcnVSIND(test_vecDVEHVSPN, test_vecDVEHVCRD, test_vecDVELESWP, test_xsiA, test_vecK)
 
-load('troubl3.mat');
+load('trouble3.mat');
+
+wings = 1;
+
+fcnFWWRITE
