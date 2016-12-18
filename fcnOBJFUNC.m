@@ -14,7 +14,7 @@ valDENSITY = 1.2;
 
 valDELTAE = 0;
 valDELTIME = 0.05;
-valMAXTIME = 20;
+valMAXTIME = 25;
 valMINTIME = 15;
 
 valINTERF = 20;
