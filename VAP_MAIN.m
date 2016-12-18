@@ -57,11 +57,11 @@ flagPLOT    = 1;
 flagPLOTWAKEVEL = 0;
 flagVERBOSE = 0;
 
-load('matlab.mat');
+load('troubl3.mat');
 
 % valMAXTIME = 0;
 % flagRELAX = 0;
-seqALPHA = 11;
+% seqALPHA = 11;
 % valMAXTIME = 23;
 % valDELTIME = 0.05;
 % matGEOM(2,2,5) = 2.2

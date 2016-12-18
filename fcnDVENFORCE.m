@@ -109,7 +109,7 @@ nfree = ((A .*2 .* vecDVEHVSPN'+  C./3.*2.*vecDVEHVSPN'.*vecDVEHVSPN'.*vecDVEHVS
 %	3 velocities are average of element center and upstream DVE center
 
 % element leading edge midpoint of LE elements only:
-xle = (matVLST(matDVE(idx1,1),:) + matVLST(matDVE(idx1,2),:))/2;
+xle = (matVLST(matDVE(idx1,1),:) + matVLST(matDVE(idx1,2),:))./2;
 
 % fpg will be all points that we grab velocity at. It will be
 % valNELE x XYZ x 3 for now, then we will reshape after

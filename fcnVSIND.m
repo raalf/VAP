@@ -269,7 +269,7 @@ cloc(idx_LE,1:2) = zeros(size(cloc(idx_LE,1:2)));
 % Reverted to GB's method, seems to work better (less singularities) T.D.K 2016-10-05
 % Bramesfelds:
 bloc(idx_LE,3) = 0.5.*log((t1s(idx_LE) + k(idx_LE))./(t2s(idx_LE) + k(idx_LE)));
-cloc(idx_LE,3) = -4.*hspan(idx_LE) + eta_0(idx_LE).*2.*bloc(idx_LE,3);
+cloc(idx_LE,3) = -4.*hspan(idx_LE,1) + eta_0(idx_LE,1).*2.*bloc(idx_LE,3);
 
 end
 
