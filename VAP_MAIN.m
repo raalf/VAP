@@ -58,6 +58,8 @@ flagPLOTWAKEVEL = 0;
 flagVERBOSE = 0;
 
 load('matlab.mat');
+
+% valMAXTIME = 0;
 % flagRELAX = 0;
 seqALPHA = 11;
 % valMAXTIME = 23;
@@ -232,10 +234,10 @@ for ai = 1:length(seqALPHA)
         
         %% Viscous wrapper
         
-        [vecCLv(1,ai), vecCD(1,ai)] = fcnVISCOUS(vecCL(end,ai), vecCDI(end,ai), valWEIGHT, valAREA, valDENSITY, valKINV, vecDVENFREE, vecDVENIND, ...
-            vecDVELFREE, vecDVELIND, vecDVESFREE, vecDVESIND, vecDVEPANEL, vecDVELE, vecDVEWING, vecN, vecM, vecDVEAREA, ...
-            matCENTER, vecDVEHVCRD, vecAIRFOIL, flagVERBOSE, vecSYM, valVSPANELS, matVSGEOM, valFPANELS, matFGEOM, valFTURB, ...
-            valFPWIDTH, valINTERF, vecDVEROLL);
+%         [vecCLv(1,ai), vecCD(1,ai)] = fcnVISCOUS(vecCL(end,ai), vecCDI(end,ai), valWEIGHT, valAREA, valDENSITY, valKINV, vecDVENFREE, vecDVENIND, ...
+%             vecDVELFREE, vecDVELIND, vecDVESFREE, vecDVESIND, vecDVEPANEL, vecDVELE, vecDVEWING, vecN, vecM, vecDVEAREA, ...
+%             matCENTER, vecDVEHVCRD, vecAIRFOIL, flagVERBOSE, vecSYM, valVSPANELS, matVSGEOM, valFPANELS, matFGEOM, valFTURB, ...
+%             valFPWIDTH, valINTERF, vecDVEROLL);
                 
     end
 end
