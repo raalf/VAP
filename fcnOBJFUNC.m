@@ -3,7 +3,7 @@ function [out] = fcnOBJFUNC(zp)
 % clear
 
 %%
-flagRELAX = 1;
+flagRELAX = 0;
 flagSTEADY = 1;
 
 valWEIGHT = 7*9.81;
@@ -14,8 +14,8 @@ valDENSITY = 1.2;
 
 valDELTAE = 0;
 valDELTIME = 0.05;
-valMAXTIME = 30;
-valMINTIME = 25;
+valMAXTIME = 20;
+valMINTIME = 15;
 
 valINTERF = 20;
 %%
@@ -63,7 +63,7 @@ end
 %% High speed drag coefficient
 % Drag coefficient at 51 m/s
 
-highspeed_cd = interp1(vecVINF,vecCD,51,'linear','extrap');
+% highspeed_cd = interp1(vecVINF,vecCD,25,'linear','extrap');
 
 %% Estimating wing weight
 
@@ -74,7 +74,7 @@ w_resin = w_cloth*0.6; % Idealy 60-40 cloth-resin but we know we won't be perfec
 
 w_struct = 1; % 1 kg for misc. structural components? Maybe?
 
-wing_weight = (w_cloth + w_resin)*2 + w_struct; % Top and bottom of the wing in 6oz carbon
+wing_weight = (w_cloth + w_resin)*4 + w_struct; % Top and bottom of the wing in 6oz carbon
 
 %%
 drag = vecCD.*0.5.*valDENSITY.*(vecVINF.^2).*valAREA;
@@ -83,10 +83,10 @@ preq = drag.*vecVINF;
 
 w_sink = vecVINF.*vecCD./vecCLv;
 
-out = [wing_weight min(preq) min(w_sink) mean(preq(3:7)) mean(w_sink(3:7)) mean(preq) mean(w_sink) highspeed_cd];
+out = [wing_weight min(preq) min(w_sink) mean(preq(3:7)) mean(w_sink(3:7)) mean(preq) mean(w_sink)];
 %% Writing iteration
 
-fp2 = fopen('optihistory1.txt','at');
+fp2 = fopen('optihistory1f.txt','at');
 fprintf(fp2,'%f %f ', out, zp);
 fprintf(fp2,'\r\n');
 fclose(fp2);
