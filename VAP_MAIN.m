@@ -230,8 +230,8 @@ for ai = 1:length(seqALPHA)
                 fprintf('  %4d     %0.5f     %0.5f\n',valTIMESTEP,vecCL(valTIMESTEP,ai),vecCDI(valTIMESTEP,ai)); %valTIMESTEP
             end
             
-%             [vecDEFLECTION, vecTWIST] = fcnWINGTWISTBEND(valDELTIME, valTIMESTEP, vecLIFTDIST, vecMOMDIST, matDEFLECTION, matTWIST, vecSPANAREA,...
-%                 matEIx, vecLM, matGJt, vecLSM, valYMODULUS, valNSELE, valSPAN, vecDEFLECTION, vecTWIST, vecBEAM, valINITCOND, valDY);
+            [vecDEF, vecTWIST, vecTDOT, vecHDOT] = fcnWINGTWISTBEND(vecLIFTDIST, vecMOMDIST, matEIx, vecLM, matGJt,...
+                vecLSM, vecN, valSPAN, vecDVEHVSPN);
             
 %             fprintf('\n\tTimestep = %0.0f', valTIMESTEP);
 %             fprintf('\tCL = %0.5f',vecCL(valTIMESTEP,ai));
