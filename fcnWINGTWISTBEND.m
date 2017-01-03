@@ -1,33 +1,28 @@
-function [vecDEF, vecTWIST, vecTDOT, vecHDOT] = fcnWINGTWISTBEND(vecLIFTDIST, vecMOMDIST, matEIx, vecLM, matGJt, vecLSM, vecN, valSPAN, vecDVEHVSPN)
-%% Function Inputs
+function [vecDEF, vecTWIST, matDEFGLOB, matTWISTGLOB, matDEF] = fcnWINGTWISTBEND(vecLIFTDIST, vecMOMDIST, matEIx, vecLM, matGJt, vecLSM, vecN, valSPAN, vecDVEHVSPN, valTIMESTEP, matDEFGLOB, matTWISTGLOB)
+% This function computes the spanwise deflection and twist using an
+% explicit finite difference method given a loading and structural
+% distribution.
 %
-% valDELTIME - Timestep size (s)
+% INPUTS:
 %
 % valTIMESTEP - Current timestep number
 %
-% vecLIFT - 1 x n vector with the lift values at each node, where n is the
-% number of spanwise stations
-%
-% vecMOM - 1 x n vector with aerodynamic moment at each node, where n is
+% vecLIFTDIST - 1 x n vector with the lift values at each node, where n is
 % the number of spanwise stations
 %
-% matDEFLECTION - valTIMESTEP x n matrix containing the deflection at each
-% spanwise station. Rows are solutions at each previous timestep(s),
-% columns are spanwise locations.
-%
-% matTWIST - valTIMESTEP x n matrix containing the twist at each spanwise
-% station. Rows are solutions at previous timestep(s), columns are spanwise
-% locations.
+% vecMOMDIST - 1 x n vector with aerodynamic moment at each node, where n
+% is the number of spanwise stations
 %
 % vecSPANAREA - 1 x n vector containing the structural cross sectional area
 % at each spanwise location, where n is the number of spanwise stations
 %
-% matSPANINERTIA - 3 x n matrix containing the area moment of inertia at
-% each spanwise station, where n is the number of spanwise stations. The
-% first row represents Ixx, the second row Ixx', and the third row Ixx''
+% matEIx - n x 3 matrix containing the bending stiffness at each spanwise
+% station, where n is the number of spanwise stations. The first column
+% represents EIx, the second column EIx', and the third column EIx''
 %
-% vecLINMASS - 1 x (n-1) vector containing the linear mass in kg/m of each
-% element, where n is the number of spanwise stations.
+% matGJt - n x 2 matrix containing the torsional stiffness distribution at
+% each spanwise node, where n is the number of spanwise stations. The first
+% row is GJt and the secon GJt'
 %
 % vecTORSIONRIGIDITY - 1 x n vector containing the torsional rigidity (GJ)
 % at each spanwise station, where n is the number of spanwise stations.
@@ -53,7 +48,7 @@ valDELTIME = sqrt(1.5*valDY^4/710^2);
 
 vecBEAM = 0:valDY:valSPAN/2;
 
-Jy = (-0.0034*vecBEAM + 0.0471*ones(1,length(vecBEAM)))' ;
+Jy = (9e-5*vecBEAM - 0.0043*vecBEAM + 0.0486)' ;
 
 vecDEF = zeros(1,valNSELE+4);
 vecTWIST = zeros(1,valNSELE+4);
@@ -68,13 +63,14 @@ tk = 0.02 ;
 Tk = 0.15 ;
 vecSPANAREA = pi*tk*C*(1 + Tk) ;
 
+% Temporary AC location calculation
 LSAC = 0.0062*vecBEAM.*vecBEAM.*vecBEAM - 0.0533*vecBEAM.*vecBEAM + 0.1403*vecBEAM + 0.7029;
 
 vecLSM = 0.1*LSAC;
 
 %% Beam boundary conditions
 
-for valSTRUCTTIME = 1:1700
+for valSTRUCTTIME = 1:30000
    
     if valSTRUCTTIME == 1
         
@@ -129,8 +125,9 @@ for valSTRUCTTIME = 1:1700
 
             % Assemble stiffness matrices
             matK_1 = [matEIx(yy-2,3), 0; 0, 0];
-            matK_2 = [matEIx(yy-2,2), 0; 0, 0]; 
-            matK_3 = [matEIx(yy-2,1), 0; 0, -matGJt(yy-2)];
+            matK_2 = [matEIx(yy-2,2), 0; 0, -matGJt(yy-2,2)]; 
+            matK_3 = [matEIx(yy-2,1), 0; 0, -matGJt(yy-2,1)];
+            matB = [0 0;0 100];
 
             %% Finite difference relations for partial derivatives
 
@@ -140,6 +137,9 @@ for valSTRUCTTIME = 1:1700
                 matDEF(valSTRUCTTIME-1,yy-1))/(valDY)^3;
             valU_yyyy = (matDEF(valSTRUCTTIME-1,yy+2) - 4*matDEF(valSTRUCTTIME-1,yy+1) + 6*matDEF(valSTRUCTTIME-1,yy) - ...
                 4*matDEF(valSTRUCTTIME-1,yy-1) + matDEF(valSTRUCTTIME-1,yy-2))/(valDY)^4;
+            
+            valTDOT = (matTWIST(valSTRUCTTIME-1,yy) - matTWIST(valSTRUCTTIME - 2,yy))./valDELTIME;
+            valHDOT = (matDEF(valSTRUCTTIME-1,yy) - matDEF(valSTRUCTTIME - 2, yy))./valDELTIME;
 
             % Finite difference relations for partial derivative of twist w.r.t Y
             valTHETA_y = (matTWIST(valSTRUCTTIME-1,yy+1) - matTWIST(valSTRUCTTIME-1,yy-1))/2*valDY;
@@ -152,8 +152,8 @@ for valSTRUCTTIME = 1:1700
             % second row is the twist, w/ each column as a spanwise station.
 
             tempTWISTBEND = 2.*[matDEF(valSTRUCTTIME-1,yy); matTWIST(valSTRUCTTIME-1,yy)] - [matDEF(valSTRUCTTIME-2,yy); matTWIST(valSTRUCTTIME-2,yy)] ...
-                + (valDELTIME^2).*inv(matMASS)*(matLOAD - matK_1*[valU_yy; 0] - matK_2*[valU_yyy; valTHETA_y]...
-                - matK_3*[valU_yyyy; valTHETA_yy]);
+                + (valDELTIME^2).*inv(matMASS)*(matLOAD - matK_1*[valU_yy; 0] - matK_2*[valU_yyy; valTHETA_y] -...
+                matK_3*[valU_yyyy; valTHETA_yy]);
 
             % Output result of deflection and twist to separate vectors
             vecDEF(yy) = tempTWISTBEND(1,:);
@@ -174,17 +174,15 @@ for valSTRUCTTIME = 1:1700
     
     matDEF(valSTRUCTTIME,:) = vecDEF;
     matTWIST(valSTRUCTTIME,:) = vecTWIST;
-    
-    if valSTRUCTTIME ~= 1
-        
-        vecTDOT = (matTWIST(valSTRUCTTIME,:) - matTWIST(valSTRUCTTIME - 1,:))./valDELTIME;
-        vecHDOT = (matDEF(valSTRUCTTIME,:) - matDEF(valSTRUCTTIME - 1, :))./valDELTIME;
-        
-    end
 
 end
 
+% Spanwise deflection and twist wrt structural timestep
 vecDEF = matDEF(valSTRUCTTIME,:);
 vecTWIST = matTWIST(valSTRUCTTIME,:);
+
+% Spanwise deflection and twist wrt to global timestep
+matDEFGLOB(valTIMESTEP,:) = vecDEF;
+matTWISTGLOB(valTIMESTEP,:) = vecTWIST;
 
 end

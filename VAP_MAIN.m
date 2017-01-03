@@ -117,6 +117,8 @@ for ai = 1:length(seqALPHA)
         % Initializing wake parameters
         matWAKEGEOM = [];
         matNPWAKEGEOM = [];
+        matDEFGLOB = [];
+        matTWISTGLOB = [];
         vecWDVEHVSPN = [];
         vecWDVEHVCRD = [];
         vecWDVEROLL = [];
@@ -230,8 +232,8 @@ for ai = 1:length(seqALPHA)
                 fprintf('  %4d     %0.5f     %0.5f\n',valTIMESTEP,vecCL(valTIMESTEP,ai),vecCDI(valTIMESTEP,ai)); %valTIMESTEP
             end
             
-            [vecDEF, vecTWIST, vecTDOT, vecHDOT] = fcnWINGTWISTBEND(vecLIFTDIST, vecMOMDIST, matEIx, vecLM, matGJt,...
-                vecLSM, vecN, valSPAN, vecDVEHVSPN);
+            [vecDEF, vecTWIST, matDEFGLOB, matTWISTGLOB, matDEF] = fcnWINGTWISTBEND(vecLIFTDIST, vecMOMDIST, matEIx, vecLM, matGJt,...
+                vecLSM, vecN, valSPAN, vecDVEHVSPN, valTIMESTEP, matDEFGLOB, matTWISTGLOB);
             
 %             fprintf('\n\tTimestep = %0.0f', valTIMESTEP);
 %             fprintf('\tCL = %0.5f',vecCL(valTIMESTEP,ai));
