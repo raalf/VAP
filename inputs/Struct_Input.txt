@@ -30,6 +30,11 @@ Geometry
 		B Coefficient: vec_CG = 0
 		C Coefficient: vec_CG = 0
 
+	Torsion Constant (Jt):
+		A Coefficient: vec_Jt = 0.000095
+		B Coefficient: vec_Jt = -0.0043
+		C Coefficient: vec_Jt = 0.0486
+
 -----------------
 Mass Distribution
 -----------------

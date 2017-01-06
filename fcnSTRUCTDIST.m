@@ -1,9 +1,9 @@
-function [matEIx, matGJt, vecEA, vecCG, vecLM, vecLSM] = fcnSTRUCTDIST(vecN,valSPAN,valPANELS,vecDVEHVSPN,vecDVELE,vecEIxCOEFF,vecGJtCOEFF,vecEACOEFF,vecCGCOEFF,vecLMCOEFF)
+function [matEIx, matGJt, vecEA, vecCG, vecJT, vecLM, vecLSM, vecSPANDIST] = fcnSTRUCTDIST(vecDVEHVSPN,vecDVELE,vecEIxCOEFF,vecGJtCOEFF,vecEACOEFF,vecCGCOEFF, vecJTCOEFF, vecLMCOEFF)
 
 % Find DVEs on LE of wing
 [ledves, ~, ~] = find(vecDVELE > 0);
 
-% Determine spanwise location of DVEs
+% Determine spanwise location (y coordinate) of DVEs
 tempSPANDIST = 2*vecDVEHVSPN(ledves);
 matSPANDIST = repmat(tempSPANDIST,1,size(tempSPANDIST));
 
@@ -24,6 +24,7 @@ matGJt(:,2) = (2*vecGJtCOEFF(1).*vecSPANDIST + vecGJtCOEFF(2))';
 
 vecEA = vecEACOEFF(1).*vecSPANDIST.^2 + vecEACOEFF(2).*vecSPANDIST + vecEACOEFF(3);
 vecCG = vecCGCOEFF(1).*vecSPANDIST.^2 + vecCGCOEFF(2).*vecSPANDIST + vecCGCOEFF(3);
+vecJT = vecJTCOEFF(1).*vecSPANDIST.^2 + vecJTCOEFF(2).*vecSPANDIST + vecJTCOEFF(3);
 vecLM = vecLMCOEFF(1).*vecSPANDIST.^2 + vecLMCOEFF(2).*vecSPANDIST + vecLMCOEFF(3);
 
 vecLSM = vecEA - vecCG;

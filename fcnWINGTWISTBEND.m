@@ -1,4 +1,4 @@
-function [vecDEF, vecTWIST, matDEFGLOB, matTWISTGLOB, matDEF] = fcnWINGTWISTBEND(vecLIFTDIST, vecMOMDIST, matEIx, vecLM, matGJt, vecLSM, vecN, valSPAN, vecDVEHVSPN, valTIMESTEP, matDEFGLOB, matTWISTGLOB)
+function [vecDEF, vecTWIST, matDEFGLOB, matTWISTGLOB, matDEF, matTWIST, matSLOPE] = fcnWINGTWISTBEND(vecLIFTDIST, vecMOMDIST, matEIx, vecLM, vecJT, matGJt, vecLSM, vecN, valSPAN, vecDVEHVSPN, valTIMESTEP, matDEFGLOB, matTWISTGLOB, vecSPANDIST)
 % This function computes the spanwise deflection and twist using an
 % explicit finite difference method given a loading and structural
 % distribution.
@@ -46,36 +46,36 @@ valNSELE = sum(vecN,1)+1;
 
 valDELTIME = sqrt(1.5*valDY^4/710^2);
 
-vecBEAM = 0:valDY:valSPAN/2;
-
-Jy = (9e-5*vecBEAM - 0.0043*vecBEAM + 0.0486)' ;
+% vecSPANDIST = 0:valDY:valSPAN/2;
 
 vecDEF = zeros(1,valNSELE+4);
 vecTWIST = zeros(1,valNSELE+4);
+vecSLOPE = zeros(1,valNSELE-1);
 
-vecLIFTDIST = [vecLIFTDIST; 0];
+vecLIFTDIST = [vecLIFTDIST; 0]; % Adding zero lift at wing tip
 
-vecMOMDIST = [vecMOMDIST; 0];
+vecMOMDIST = [vecMOMDIST; 0]; % Adding zero aerodynamic moment at wing tip
 
-% Temporary area calculation
-C = -0.0333*vecBEAM + 0.76*ones(1,length(vecBEAM)) ;
+% Temporary cross sectional area calculation
+C = -0.0333*vecSPANDIST + 0.76*ones(1,length(vecSPANDIST)) ;
 tk = 0.02 ;
 Tk = 0.15 ;
 vecSPANAREA = pi*tk*C*(1 + Tk) ;
 
 % Temporary AC location calculation
-LSAC = 0.0062*vecBEAM.*vecBEAM.*vecBEAM - 0.0533*vecBEAM.*vecBEAM + 0.1403*vecBEAM + 0.7029;
+LSAC = 0.0062*vecSPANDIST.*vecSPANDIST.*vecSPANDIST - 0.0533*vecSPANDIST.*vecSPANDIST + 0.1403*vecSPANDIST + 0.7029;
 
 vecLSM = 0.1*LSAC;
 
+B = [0 0; 0 100];
 %% Beam boundary conditions
 
-for valSTRUCTTIME = 1:30000
+for valSTRUCTTIME = 1:6000
    
     if valSTRUCTTIME == 1
         
         % Initial conditions for wing deflection
-        vecDEF(3:valNSELE+2) = valINITCOND*vecBEAM.*vecBEAM;
+        vecDEF(3:valNSELE+2) = valINITCOND*vecSPANDIST.*vecSPANDIST;
         vecDEF(2) = vecDEF(4); % BC for deflection one element beyond root (negative span direction)
 
         vecDEF(valNSELE+3) = 2*vecDEF(valNSELE+2)...
@@ -84,7 +84,7 @@ for valSTRUCTTIME = 1:30000
             -2*vecDEF(valNSELE+1); % BC for deflection two elements beyond wing (positive span direction)   
         
         % Initial conditions for wing twist
-        vecTWIST(3:valNSELE+2) = valINITCOND*(vecBEAM./valSPAN);
+        vecTWIST(3:valNSELE+2) = valINITCOND*(vecSPANDIST./valSPAN);
         vecTWIST(valNSELE+3) = vecTWIST(valNSELE+1); % BC for twist one element beyond wing (positive span direction)
 
         matDEF(valSTRUCTTIME,:) = vecDEF;
@@ -93,7 +93,7 @@ for valSTRUCTTIME = 1:30000
     elseif valSTRUCTTIME == 2
         
         % Initial conditions for wing deflection
-        vecDEF(3:valNSELE+2) = valINITCOND*vecBEAM.*vecBEAM;
+        vecDEF(3:valNSELE+2) = valINITCOND*vecSPANDIST.*vecSPANDIST;
         vecDEF(2) = vecDEF(4); % BC for deflection one element beyond root (negative span direction)
         
         vecDEF(valNSELE+3) = 2*vecDEF(valNSELE+2)...
@@ -102,7 +102,7 @@ for valSTRUCTTIME = 1:30000
             -2*vecDEF(valNSELE+1); % BC for deflection two elements beyond wing (positive span direction)
         
         % Initial conditions for wing twist
-        vecTWIST(3:valNSELE+2) = valINITCOND*(vecBEAM./valSPAN);
+        vecTWIST(3:valNSELE+2) = valINITCOND*(vecSPANDIST./valSPAN);
         vecTWIST(valNSELE+3) = vecTWIST(valNSELE+1); % BC for twist one element beyond wing (positive span direction)
 
         matDEF(valSTRUCTTIME,:) = vecDEF;
@@ -118,7 +118,7 @@ for valSTRUCTTIME = 1:30000
             %% Geometric property assembly
 
             % Assemble mass matrix
-            matMASS = [vecLM(yy-2), -vecLM(yy-2).*vecLSM(yy-2); -vecLM(yy-2).*vecLSM(yy-2), vecLM(yy-2).*(vecLSM(yy-2)+(Jy(yy-2)./(vecSPANAREA(yy-2))))];
+            matMASS = [vecLM(yy-2), -vecLM(yy-2).*vecLSM(yy-2); -vecLM(yy-2).*vecLSM(yy-2), vecLM(yy-2).*(vecLSM(yy-2)+(vecJT(yy-2)./(vecSPANAREA(yy-2))))];
 
             % Assemble load matrix
             matLOAD = [vecLIFTDIST(yy-2); vecMOMDIST(yy-2)];
@@ -130,16 +130,18 @@ for valSTRUCTTIME = 1:30000
             matB = [0 0;0 100];
 
             %% Finite difference relations for partial derivatives
-
+            
+            % Finite difference relations for partial derivatives w.r.t
+            % time
+            valUDOT = (matDEF(valSTRUCTTIME-1,yy) - matDEF(valSTRUCTTIME - 2, yy))./valDELTIME;
+            valTDOT = (matTWIST(valSTRUCTTIME-1,yy) - matTWIST(valSTRUCTTIME - 2,yy))./valDELTIME; 
+            
             % Finite difference relations for partial derivative of deflection w.r.t Y
             valU_yy = (matDEF(valSTRUCTTIME-1,yy+1) - 2*matDEF(valSTRUCTTIME-1,yy) + matDEF(valSTRUCTTIME-1,yy-1))/(valDY)^2;
             valU_yyy = (matDEF(valSTRUCTTIME-1,yy+2) - 3*matDEF(valSTRUCTTIME-1,yy+1) + 3*matDEF(valSTRUCTTIME-1,yy)- ...
                 matDEF(valSTRUCTTIME-1,yy-1))/(valDY)^3;
             valU_yyyy = (matDEF(valSTRUCTTIME-1,yy+2) - 4*matDEF(valSTRUCTTIME-1,yy+1) + 6*matDEF(valSTRUCTTIME-1,yy) - ...
                 4*matDEF(valSTRUCTTIME-1,yy-1) + matDEF(valSTRUCTTIME-1,yy-2))/(valDY)^4;
-            
-            valTDOT = (matTWIST(valSTRUCTTIME-1,yy) - matTWIST(valSTRUCTTIME - 2,yy))./valDELTIME;
-            valHDOT = (matDEF(valSTRUCTTIME-1,yy) - matDEF(valSTRUCTTIME - 2, yy))./valDELTIME;
 
             % Finite difference relations for partial derivative of twist w.r.t Y
             valTHETA_y = (matTWIST(valSTRUCTTIME-1,yy+1) - matTWIST(valSTRUCTTIME-1,yy-1))/2*valDY;
@@ -153,11 +155,15 @@ for valSTRUCTTIME = 1:30000
 
             tempTWISTBEND = 2.*[matDEF(valSTRUCTTIME-1,yy); matTWIST(valSTRUCTTIME-1,yy)] - [matDEF(valSTRUCTTIME-2,yy); matTWIST(valSTRUCTTIME-2,yy)] ...
                 + (valDELTIME^2).*inv(matMASS)*(matLOAD - matK_1*[valU_yy; 0] - matK_2*[valU_yyy; valTHETA_y] -...
-                matK_3*[valU_yyyy; valTHETA_yy]);
+                matK_3*[valU_yyyy; valTHETA_yy] - B*[valUDOT; valTDOT]);
 
             % Output result of deflection and twist to separate vectors
             vecDEF(yy) = tempTWISTBEND(1,:);
             vecTWIST(yy) = tempTWISTBEND(2,:);
+            
+            % Calculate angle between DVE and horizontal based on
+            % deflection
+            vecSLOPE(yy-3) = asin((vecDEF(yy)-vecDEF(yy-1))/(vecSPANDIST(yy-2)-vecSPANDIST(yy-3)));
 
         end
         
@@ -181,8 +187,12 @@ end
 vecDEF = matDEF(valSTRUCTTIME,:);
 vecTWIST = matTWIST(valSTRUCTTIME,:);
 
+vecSLOPE = [0; vecSLOPE'];
+
 % Spanwise deflection and twist wrt to global timestep
 matDEFGLOB(valTIMESTEP,:) = vecDEF;
 matTWISTGLOB(valTIMESTEP,:) = vecTWIST;
+
+matSLOPE(valTIMESTEP,:) = vecSLOPE;
 
 end

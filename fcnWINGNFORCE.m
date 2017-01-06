@@ -1,4 +1,4 @@
-function [valCL, valCLF, valCLI, valCY, valCYF, valCYI, valCDI, valE, vecLIFTDIST, vecMOMDIST]= fcnWINGNFORCE(liftfree,liftind,sidefree,sideind,inddrag,vecUINF,valAREA,valSPAN,vecSYM,valBETA,vecDVEAREA,vecDVEWING,vecM,vecN,vecDVELE,vecDVEPANEL,vecSPNWSECRD,vecSPNWSEAREA,matQTRCRD,valDENSITY,valVINF)
+function [valCL, valCLF, valCLI, valCY, valCYF, valCYI, valCDI, valE, vecLIFTDIST, vecMOMDIST, vecCLDIST]= fcnWINGNFORCE(liftfree,liftind,sidefree,sideind,inddrag,vecUINF,valAREA,valSPAN,vecSYM,valBETA,vecDVEAREA,vecDVEWING,vecM,vecN,vecDVELE,vecDVEPANEL,vecSPNWSECRD,vecSPNWSEAREA,matQTRCRD,valDENSITY,valVINF,valPANELS)
 %% Wing Normal Force
 % this routine adds up the DVE's normal forces in order to compute the
 % total wing normal forces/density and coefficients based on free stream
@@ -65,14 +65,14 @@ for i = 1:max(vecDVEWING)
     tempm = repmat(vecN(idxpanel), 1, m).*repmat([0:m-1],length(idxpanel),1);
     
     rows = repmat(idxdve,1,m) + tempm;
-
+    
 	vecCLDIST = [vecCLDIST; (sum(vecDVECL(rows),2).*2)./(sum(vecDVEAREA(rows),2))]; % Total CL at each spanwise station
     
     matCLDIST(:,1:vecM(1)) = vecDVECL(rows);
 
 end
 
-[vecLIFTDIST, vecMOMDIST] = fcnFORCEDIST(vecCLDIST,matQTRCRD,vecSPNWSEAREA,valDENSITY,matCLDIST,vecSPNWSECRD,valVINF);
+[vecLIFTDIST, vecMOMDIST] = fcnFORCEDIST(vecCLDIST,matQTRCRD,vecSPNWSEAREA,valDENSITY,matCLDIST,vecSPNWSECRD,valVINF, valPANELS);
 
 valCY = (ntfree(2) + ntind(2))/q;
 valCYF = ntfree(2)/q;

@@ -1,4 +1,4 @@
-function [vecEIxCOEFF, vecGJtCOEFF, vecEACOEFF, vecCGCOEFF, vecLMCOEFF] = fcnSTRUCTREAD(strSTRUCT_INPUT)
+function [vecEIxCOEFF, vecGJtCOEFF, vecEACOEFF, vecCGCOEFF, vecJTCOEFF, vecLMCOEFF] = fcnSTRUCTREAD(strSTRUCT_INPUT)
 
 % This function reads in the structure input file and stores each parameter
 % in a vector. The vectors are all 1 x 3 with col 1 = A, col 2 = B, and col
@@ -24,6 +24,7 @@ vecEIxCOEFF = zeros(1,3);
 vecGJtCOEFF = zeros(1,3);
 vecEACOEFF = zeros(1,3);
 vecCGCOEFF = zeros(1,3);
+vecJtCOEFF = zeros(1,3);
 vecLMCOEFF = zeros(1,3);
 
 % Open structure input file
@@ -66,6 +67,16 @@ for i = 1:3
         ch = fscanf(fp,'%c',1);
     end
     vecCGCOEFF(i) = fscanf(fp,'%lf',1);
+
+end
+
+% Read A,B,C values for torsion constant distribution
+for i = 1:3
+    ch = fscanf(fp,'%c',1);
+    while(ch~='=')
+        ch = fscanf(fp,'%c',1);
+    end
+    vecJTCOEFF(i) = fscanf(fp,'%lf',1);
 
 end
 

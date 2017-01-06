@@ -42,7 +42,7 @@ strSTRUCT_INPUT = 'inputs/Struct_Input.txt';
     valFTURB, valFPWIDTH, valDELTAE, valDELTIME, valMAXTIME, valMINTIME, ...
     valINTERF] = fcnVAPREAD(strFILE);
 
-[vecEIxCOEFF, vecGJtCOEFF, vecEACOEFF, vecCGCOEFF, vecLMCOEFF] = fcnSTRUCTREAD(strSTRUCT_INPUT);
+[vecEIxCOEFF, vecGJtCOEFF, vecEACOEFF, vecCGCOEFF, vecJTCOEFF, vecLMCOEFF] = fcnSTRUCTREAD(strSTRUCT_INPUT);
 
 % seqALPHA = [2];
 
@@ -76,7 +76,7 @@ flagVERBOSE = 0;
 valWSIZE = length(nonzeros(vecDVETE)); % Amount of wake DVEs shed each timestep
 
 %% Discretize geometry into structural parameters
-[matEIx, matGJt, vecEA, vecCG, vecLM, vecLSM] = fcnSTRUCTDIST(vecN,valSPAN,valPANELS,vecDVEHVSPN,vecDVELE,vecEIxCOEFF,vecGJtCOEFF,vecEACOEFF,vecCGCOEFF,vecLMCOEFF);
+[matEIx, matGJt, vecEA, vecCG, vecJT, vecLM, vecLSM, vecSPANDIST] = fcnSTRUCTDIST(vecDVEHVSPN,vecDVELE,vecEIxCOEFF,vecGJtCOEFF,vecEACOEFF,vecCGCOEFF,vecJTCOEFF,vecLMCOEFF);
 
 %% Add boundary conditions to D-Matrix
 
@@ -166,7 +166,17 @@ for ai = 1:length(seqALPHA)
             %   Calculate viscous effects
             
             %% Moving the wing and structure
-            [matVLST, matCENTER, matNEWWAKE, matNPNEWWAKE] = fcnMOVEWING(valALPHA, valBETA, valDELTIME, matVLST, matCENTER, matDVE, vecDVETE, matNPVLST);
+            
+            if valTIMESTEP == 1
+                
+                [matVLST, matCENTER, matNEWWAKE, matNPNEWWAKE] = fcnMOVEWING(valALPHA, valBETA, valDELTIME, matVLST, matCENTER, matDVE, vecDVETE, matNPVLST);
+                
+            else
+                
+                [matVLST, matNEWWAKE, matNPVLST, matNPNEWWAKE] = fcnMOVEFLEXWING(valALPHA, valBETA, valDELTIME, matVLST, matCENTER, matDVE, vecDVETE, vecDVEHVSPN, vecDVELE, matNPVLST, matDEFGLOB,...
+                    matTWISTGLOB, valVINF, matSLOPE, valTIMESTEP, vecN, vecM, vecDVEWING, vecDVEPANEL);
+                
+            end
             
             [vecSPNWSECRD, vecSPNWSEAREA, matQTRCRD, vecQTRCRD] = fcnWINGSTRUCTGEOM(vecDVEWING, vecDVELE, vecDVEPANEL, vecM, vecN, vecDVEHVCRD, matDVE, matVLST, vecDVEAREA);
             %% Generating new wake elements
@@ -217,12 +227,12 @@ for ai = 1:length(seqALPHA)
             %% Forces
             
             [vecCL(valTIMESTEP,ai), vecCLF(valTIMESTEP,ai),vecCLI(valTIMESTEP,ai),vecCDI(valTIMESTEP,ai), vecE(valTIMESTEP,ai), vecDVENFREE, vecDVENIND, ...
-                vecDVELFREE, vecDVELIND, vecDVESFREE, vecDVESIND, vecLIFTDIST, vecMOMDIST] = ...
+                vecDVELFREE, vecDVELIND, vecDVESFREE, vecDVESIND, vecLIFTDIST, vecMOMDIST, vecCLDIST] = ...
                 fcnFORCES(matCOEFF, vecK, matDVE, valNELE, matCENTER, matVLST, vecUINF, vecDVELESWP,...
                 vecDVEMCSWP, vecDVEHVSPN, vecDVEHVCRD,vecDVEROLL, vecDVEPITCH, vecDVEYAW, vecDVELE, vecDVETE, matADJE,...
                 valWNELE, matWDVE, matWVLST, matWCOEFF, vecWK, vecWDVEHVSPN, vecWDVEHVCRD,vecWDVEROLL, vecWDVEPITCH, vecWDVEYAW, ...
                 vecWDVELESWP, vecWDVETESWP, valWSIZE, valTIMESTEP, vecSYM, vecDVETESWP, valAREA, valSPAN, valBETA, ...
-                vecDVEWING, vecWDVEWING, vecN, vecM, vecDVEPANEL, vecDVEAREA, vecSPNWSECRD, vecSPNWSEAREA, matQTRCRD, valDENSITY, valVINF);
+                vecDVEWING, vecWDVEWING, vecN, vecM, vecDVEPANEL, vecDVEAREA, vecSPNWSECRD, vecSPNWSEAREA, matQTRCRD, valDENSITY, valVINF, valPANELS);
             
             if flagPRINT == 1 && valTIMESTEP == 1
                 fprintf(' TIMESTEP    CL          CDI\n'); %header
@@ -232,8 +242,13 @@ for ai = 1:length(seqALPHA)
                 fprintf('  %4d     %0.5f     %0.5f\n',valTIMESTEP,vecCL(valTIMESTEP,ai),vecCDI(valTIMESTEP,ai)); %valTIMESTEP
             end
             
-            [vecDEF, vecTWIST, matDEFGLOB, matTWISTGLOB, matDEF] = fcnWINGTWISTBEND(vecLIFTDIST, vecMOMDIST, matEIx, vecLM, matGJt,...
-                vecLSM, vecN, valSPAN, vecDVEHVSPN, valTIMESTEP, matDEFGLOB, matTWISTGLOB);
+            [vecDEF, vecTWIST, matDEFGLOB, matTWISTGLOB, matDEF, matTWIST, matSLOPE] = fcnWINGTWISTBEND(vecLIFTDIST, vecMOMDIST, matEIx, vecLM, vecJT, matGJt,...
+                vecLSM, vecN, valSPAN, vecDVEHVSPN, valTIMESTEP, matDEFGLOB, matTWISTGLOB, vecSPANDIST);
+            
+            if valTIMESTEP >= 2
+                [matNPVLST, matNPNEWWAKE] = fcnMOVEFLEXWING(valALPHA, valBETA, valDELTIME, matVLST, matCENTER, matDVE, vecDVETE, vecDVEHVSPN, vecDVELE, matNPVLST,...
+                    matDEFGLOB, matTWISTGLOB, valVINF, matSLOPE, valTIMESTEP, vecN, vecM, vecDVEWING, vecDVEPANEL);
+            end
             
 %             fprintf('\n\tTimestep = %0.0f', valTIMESTEP);
 %             fprintf('\tCL = %0.5f',vecCL(valTIMESTEP,ai));
