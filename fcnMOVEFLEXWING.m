@@ -1,4 +1,4 @@
-function [matVLST, matNEWWAKE, matNPVLST, matNPNEWWAKE] = fcnMOVEFLEXWING(valALPHA, valBETA, valDELTIME, matVLST, matCENTER, matDVE, vecDVETE, vecDVEHVSPN, vecDVELE, matNPVLST, matDEFGLOB, matTWISTGLOB, valVINF, matSLOPE, valTIMESTEP, vecN, vecM, vecDVEWING, vecDVEPANEL)
+function [matNPVLST, matNPNEWWAKE] = fcnMOVEFLEXWING(valALPHA, valBETA, valDELTIME, matVLST, matCENTER, matDVE, vecDVETE, vecDVEHVSPN, vecDVELE, matNPVLST, matDEFGLOB, matTWISTGLOB, valVINF, matSLOPE, valTIMESTEP, vecN, vecM, vecDVEWING, vecDVEPANEL)
 % matNEWWAKE, matNPNEWWAKE, 
 % This function determines the velocities with which the DVEs are moved
 % based on the deflection and twist of the wing. The corresponding
@@ -97,23 +97,23 @@ translateNPVLST(temp_rightV,3) = -100*valDELTIME.*vecZVEL(move_row+1);
 % hold on
 
 % Old trailing edge vertices
-matNEWWAKE(:,:,4) = matVLST(matDVE(vecDVETE>0,4),:);
-matNEWWAKE(:,:,3) = matVLST(matDVE(vecDVETE>0,3),:);
+% matNEWWAKE(:,:,4) = matVLST(matDVE(vecDVETE>0,4),:);
+% matNEWWAKE(:,:,3) = matVLST(matDVE(vecDVETE>0,3),:);
 
 % Old non-planar trailing edge vertices (used to calculate matWADJE)
 matNPNEWWAKE(:,:,4) = matNPVLST(matDVE(vecDVETE>0,4),:);
 matNPNEWWAKE(:,:,3) = matNPVLST(matDVE(vecDVETE>0,3),:);
 
 % Update matVLST and matNPVLST
-matVLST = matVLST - translateNPVLST;
+% matVLST = matVLST - translateNPVLST;
 matNPVLST = matNPVLST - translateNPVLST;
 
 % plot3(matNPVLST(:,1),matNPVLST(:,2),matNPVLST(:,3),'or')
 % hold off
  
 % % New trailing edge vertices
-matNEWWAKE(:,:,1) = matVLST(matDVE(vecDVETE>0,4),:);
-matNEWWAKE(:,:,2) = matVLST(matDVE(vecDVETE>0,3),:);
+% matNEWWAKE(:,:,1) = matVLST(matDVE(vecDVETE>0,4),:);
+% matNEWWAKE(:,:,2) = matVLST(matDVE(vecDVETE>0,3),:);
 % 
 
 % New non-planar trailing edge vertices (used to calculate matWADJE)
