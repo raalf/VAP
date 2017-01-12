@@ -86,7 +86,7 @@ test = fcnSTARGLOB([test, zeros(length(test),2)],[vecDVEROLL(rows(:,1));vecDVERO
 
 testSC = test + tempLE;
 
-matSC2 = [vecEA, matAEROCNTR(:,2), matAEROCNTR(:,3)];
+matSC2 = tempLE + [vecEA, zeros(length(vecEA),2)];
 
 vecLSM = 0;
 

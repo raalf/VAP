@@ -1,0 +1,69 @@
+Input file for VAP
+Input file in m/N/sec
+NO TRIM
+Please note that the program uses equal, number and : signs as special recognizers!
+
+Relaxed wake (yes 1, no 0):		flagRELAX =		0
+Steady (1) or unsteady (2):		flagSTEADY =	2
+
+Max. number of time steps:		valMAXTIME 	=	1
+Min. number of time steps: 		valMINTIME 	= 	0
+Width of each time step (sec):	valDELTIME 	=	0.25
+Convergence delta-span effic.:	valDELTAE 	=	0.000000	(0 if only timestepping)
+
+AOA sequence: 			seqALPHA 	= 	0
+Sideslip angle [deg]:	seqBETA 	=	0.0
+Density:				valDENSITY 	= 	1.2250
+Kinematic viscosity:	valKINV		=	1.460000e-05
+Freestream velocity:	valVINF		=	30.0
+
+Reference area:				valAREA 	=	10.84
+Reference span:				valSPAN 	=	17.32
+Mean aerodynamic chord: 	valCMAC 	=	1
+Aircraft weight (N):		valWEIGHT 	=	3434
+
+No. of panels:	valPANELS =	3
+
+Defines leading edge of wing, all measured in metres:
+Keep vecM the same for all panels on a wing!
+
+Panel #:1. 
+Number of spanwise elements:	vecN 		= 5. 
+Number of chordwise elements: 	vecM 		= 3.
+Airfoil number: 				vecAIRFOIL 	= 1
+Symmetry edge (0, 1 or 2): 		vecSYM 		= 1;
+xleft		yleft		zleft		chord		epsilon
+-0.327200	0.000000	0.0000000	0.740000	5.000000
+-0.336800	4.035000	0.1734000	0.711000	5.000000
+
+Panel #:2. 
+Number of spanwise elements:	vecN 		= 4. 
+Number of chordwise elements: 	vecM 		= 3.
+Airfoil number: 				vecAIRFOIL 	= 1
+Symmetry edge (0, 1 or 2): 		vecSYM 		= 0;
+xleft		yleft		zleft		chord		epsilon
+-0.336800	4.0350000	0.173400	0.711000	5.000000
+-0.221800	7.1400000	0.286700	0.479000	5.000000
+
+Panel #:3. 
+Number of spanwise elements:	vecN 		= 5. 
+Number of chordwise elements: 	vecM 		= 3.
+Airfoil number: 				vecAIRFOIL 	= 1
+Symmetry edge (0, 1 or 2): 		vecSYM 		= 0;
+xleft		yleft		zleft		chord		epsilon
+-0.221800	7.140000	0.286700	0.479000	5.000000
+-0.056300	8.660000	0.333000	0.259000	5.000000
+
+%<- special identifier
+Vertical tail information:
+Number of panels (max 5)  	valVSPANELS = 0
+no.	chord	area	airfoil
+
+Fuselage information:
+Number of sections (max 20) 	valFPANELS 	=	0
+Width of each section  			valFPWIDTH	=	0
+Panel where transition occurs 	valFTURB 	=	0
+No.	Diamter
+
+Interference drag 	valINTERF 	= 0.0 %
+##############
