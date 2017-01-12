@@ -62,10 +62,10 @@ tk = 0.02 ;
 Tk = 0.15 ;
 vecSPANAREA = pi*tk*C*(1 + Tk) ;
 
-% Temporary AC location calculation
-LSAC = 0.0062*vecSPANDIST.*vecSPANDIST.*vecSPANDIST - 0.0533*vecSPANDIST.*vecSPANDIST + 0.1403*vecSPANDIST + 0.7029;
-
-vecLSM = 0.1*LSAC;
+% Temporary distance between shear center and aero center
+% LSAC = 0.0062*vecSPANDIST.*vecSPANDIST.*vecSPANDIST - 0.0533*vecSPANDIST.*vecSPANDIST + 0.1403*vecSPANDIST + 0.7029;
+% 
+% vecLSM = 0.1*LSAC;
 
 B = [0 0; 0 100];
 %% Beam boundary conditions

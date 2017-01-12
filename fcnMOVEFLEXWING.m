@@ -1,4 +1,5 @@
-function [matNPVLST, matNPNEWWAKE] = fcnMOVEFLEXWING(valALPHA, valBETA, valDELTIME, matVLST, matCENTER, matDVE, vecDVETE, vecDVEHVSPN, vecDVELE, matNPVLST, matDEFGLOB, matTWISTGLOB, valVINF, matSLOPE, valTIMESTEP, vecN, vecM, vecDVEWING, vecDVEPANEL)
+function [matNPVLST, matNPNEWWAKE] = fcnMOVEFLEXWING(valALPHA, valBETA, valDELTIME, matVLST, matCENTER, matDVE, vecDVETE, vecDVEHVSPN, vecDVELE, matNPVLST, matDEFGLOB,...
+    matTWISTGLOB, valVINF, matSLOPE, valTIMESTEP, vecN, vecM, vecDVEWING, vecDVEPANEL, vecLSAC)
 % matNEWWAKE, matNPNEWWAKE, 
 % This function determines the velocities with which the DVEs are moved
 % based on the deflection and twist of the wing. The corresponding
@@ -7,6 +8,7 @@ function [matNPVLST, matNPNEWWAKE] = fcnMOVEFLEXWING(valALPHA, valBETA, valDELTI
 uinf = 1;
 
 [ledves, ~, ~] = find(vecDVELE > 0);
+[tedves, ~, ~] = find(vecDVETE > 0);
 
 % Span of each spanwise set of DVEs
 vecDVESPAN = 2*vecDVEHVSPN(ledves)';
@@ -43,9 +45,14 @@ else
 
 end
 % uinf = repmat([uinf*cos(valALPHA)*cos(valBETA) uinf*sin(valBETA) uinf*sin(valALPHA)*cos(valBETA)],sum(vecN,1)+1,1);
-
-[ledves, ~, ~] = find(vecDVELE > 0);
 lepanels = vecDVEPANEL(ledves);
+
+tempDVEEDGECRD = abs(matVLST(matDVE(ledves,1),:) - matVLST(matDVE(tedves,4),:));
+tempDVEEDGECRD = [tempDVEEDGECRD; abs(matVLST(matDVE(ledves(end),2),:) - matVLST(matDVE(tedves(end),3),:))];
+
+tempDVEEDGECRD = sqrt(sum(tempDVEEDGECRD.^2,2)); % Chord length at each DVE edge
+
+vecSCLE = vecLSAC + 0.25*tempDVEEDGECRD;
 
 % Determine DVEs in each spanwise station
 for i = 1:max(vecDVEWING)
