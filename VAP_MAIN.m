@@ -33,7 +33,7 @@ disp(' ');
 %% Reading in geometry
 
 % strFILE = 'inputs/VAP christmas.txt';
-strFILE = 'inputs/VAP_SB14_New.txt';
+strFILE = 'inputs/VAP_SB14.txt';
 strSTRUCT_INPUT = 'inputs/Struct_Input.txt';
 
 [flagRELAX, flagSTEADY, valAREA, valSPAN, valCMAC, valWEIGHT, ...
@@ -75,7 +75,7 @@ flagVERBOSE = 0;
 valWSIZE = length(nonzeros(vecDVETE)); % Amount of wake DVEs shed each timestep
 
 %% Discretize geometry into structural parameters
-[matEIx, matGJt, vecEA, vecCG, vecJT, vecLM, vecLSM, vecLSAC, vecSPANDIST] = fcnSTRUCTDIST(vecDVEHVSPN, vecDVELE, vecDVETE, vecEIxCOEFF, vecGJtCOEFF,...
+[matEIx, matGJt, vecEA, vecCG, vecJT, vecLM, vecLSM, vecLSAC, matAEROCNTR, matSCLST, vecSPANDIST] = fcnSTRUCTDIST(vecDVEHVSPN, vecDVELE, vecDVETE, vecEIxCOEFF, vecGJtCOEFF,...
     vecEACOEFF, vecCGCOEFF, vecJTCOEFF, vecLMCOEFF, matVLST0, matDVE, vecDVEPANEL, vecN, vecM, vecDVEWING, vecDVEROLL, vecDVEPITCH, vecDVEYAW);
 
 %% Add boundary conditions to D-Matrix
@@ -174,8 +174,13 @@ for ai = 1:length(seqALPHA)
                 
             else
                 
+%                 [ vecDVEHVSPN, vecDVEHVCRD, ...
+%                     vecDVEROLL, vecDVEPITCH, vecDVEYAW,...
+%                     vecDVELESWP, vecDVEMCSWP, vecDVETESWP, ...
+%                     vecDVEAREA, matDVENORM, matVLST, matDVE, matCENTER ] = fcnVLST2DVEPARAM( matDVE, matNPVLST );
+                
                 [matNPVLST, matNPNEWWAKE] = fcnMOVEFLEXWING(valALPHA, valBETA, valDELTIME, matVLST, matCENTER, matDVE, vecDVETE, vecDVEHVSPN, vecDVELE, matNPVLST, matDEFGLOB,...
-                    matTWISTGLOB, valVINF, matSLOPE, valTIMESTEP, vecN, vecM, vecDVEWING, vecDVEPANEL, vecLSAC);
+                    matTWISTGLOB, valVINF, matSLOPE, valTIMESTEP, vecN, vecM, vecDVEWING, vecDVEPANEL, vecLSAC, matSCLST);
                 
                 [ vecDVEHVSPN, vecDVEHVCRD, ...
                     vecDVEROLL, vecDVEPITCH, vecDVEYAW,...
