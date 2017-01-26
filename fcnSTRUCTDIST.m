@@ -69,7 +69,7 @@ vecJT = vecJTCOEFF(1).*vecSPANDIST.^2 + vecJTCOEFF(2).*vecSPANDIST + vecJTCOEFF(
 vecLM = vecLMCOEFF(1).*vecSPANDIST.^2 + vecLMCOEFF(2).*vecSPANDIST + vecLMCOEFF(3);
 
 % Determining X,Y,Z location of elastic axis (shear center)
-tempEA = [vecEA.*tempDVEEDGECRD, zeros(length(vecEA),2)] + matDVEEDGECRD*0.25; % Distance to EA from LE in local coordinates
+tempEA = [vecEA, zeros(length(vecEA),2)]; % Distance to EA from LE in local coordinates
 
 matSC = fcnSTARGLOB(tempEA,[vecDVEROLL(rows(:,1));vecDVEROLL(rows(end,1))],[vecDVEPITCH(rows(:,1));vecDVEPITCH(rows(end,1))],[vecDVEYAW(rows(:,1));vecDVEYAW(rows(end,1))]); % Transform to global coordinates
 
@@ -96,11 +96,18 @@ temp_rightV = [matDVE(rows,2), matDVE(rows,3)];
 temp_rightV = reshape(temp_rightV,sum(vecN,1),[]);
 
 [move_row,~] = find(temp_rightV); % Vector corresponding to which shear center coordinate to use
-tempSCLST(temp_rightV,:) = matSC(move_row,:);
+tempSCLST(temp_rightV,:) = matSC(move_row+1,:);
 
 matSCLST = tempSCLST;
 
 matSCLST = matSCLST - matVLST; % Matrix of vectors between shear center and vertex
+
+figure(4)
+clf
+patch('Faces',matDVE,'Vertices',matVLST,'FaceColor','r')
+hold on
+plot3(matAEROCNTR(:,1), matAEROCNTR(:,2), matAEROCNTR(:,3),'-ok')
+plot3(matSC(:,1), matSC(:,2), matSC(:,3),'-ob')
 
 end
 
