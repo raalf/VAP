@@ -1,4 +1,4 @@
-function [nind] = fcnRDVENFORCE(valWSIZE, valTIMESTEP, valNELE, valWNELE, seqALPHAR, vecDVEPITCH, vecK, vecWK, vecWDVEYAW, vecWDVELESWP, vecWDVETESWP, vecDVEYAW, vecDVEMCSWP, vecWDVEHVSPN, vecWDVEHVCRD, vecWDVEROLL, vecDVEROLL,  vecDVEHVCRD, vecDVELE, vecDVEHVSPN, vecWDVEPITCH, vecDVELESWP, vecDVETESWP, vecSYM, matVLST, matDVE, matUINF, matCOEFF, matADJE, matWDVE, matWVLST, matCENTER, matWCOEFF)
+function [nind, nfree] = fcnRDVENFORCE(valWSIZE, valTIMESTEP, valNELE, valWNELE, seqALPHAR, vecDVEPITCH, vecK, vecWK, vecWDVEYAW, vecWDVELESWP, vecWDVETESWP, vecDVEYAW, vecDVEMCSWP, vecWDVEHVSPN, vecWDVEHVCRD, vecWDVEROLL, vecDVEROLL,  vecDVEHVCRD, vecDVELE, vecDVEHVSPN, vecWDVEPITCH, vecDVELESWP, vecDVETESWP, vecSYM, matVLST, matDVE, matUINF, matCOEFF, matADJE, matWDVE, matWVLST, matCENTER, matWCOEFF)
 
 % A modified DVENFORCE function that has been tailored to calculate thrust
 % and axial force. Mostly transfered directly from fcnDVENFORCE.
@@ -33,10 +33,10 @@ uxs = sqrt(sum(abs(tempb).^2,2));
 en = tempb.*repmat((1./uxs),1,3);
 
 % Thrust direction (may not be needed)
-et = repmat([cos(degtorad(seqALPHAR)) 0 sin(degtorad(seqALPHAR))],[valNELE,1]);
+et = repmat([0 0 1],[valNELE,1]);
 
 % Axial direction (may not be needed)
-ea = repmat([sin(degtorad(seqALPHAR)) 0 cos(degtorad(seqALPHAR))],[valNELE,1]);
+ea = repmat([1 0 0],[valNELE,1]);
 
 %% Thrust due to freestream
 
@@ -137,8 +137,8 @@ gamma(:,3) = A + B.*eta8' + C.*eta8'.*eta8';
 tempr = tempd .* repmat(permute(gamma,[1 3 2]),1,3,1);
 
 %//The resulting induced force is
-%//determined by numerically integrating forces acros element
-%//using Simpson's Rule with overhaning parts\
+%//determined by numerically integrating forces across element
+%//using Simpson's Rule with overhaning parts
 %  R = (R1 + 4*Ro+R2).*eta8/3;
 r = (tempr(:,:,1) + 4.*tempr(:,:,2) + tempr(:,:,3)) .* repmat(eta8,1,3) ./3;
 %  R = R + ((7.*R1 - 8.*Ro + 7.*R2).*(eta-eta8)./3);
@@ -149,9 +149,11 @@ nind = dot(r,en,2);
 
 liftfree = nfree.*sqrt(en(:,1).*en(:,1) + en(:,3).*en(:,3)); %does this work with beta?
 liftfree(en(:,3)<0) = -liftfree(en(:,3)<0);
+sum(nind+nfree)/length(nfree)
+%quiver3(matCENTER(:,1),matCENTER(:,2), matCENTER(:,3),matUINF(:,1),matUINF(:,2),matUINF(:,3))
+%quiver3(matCENTER(:,1),matCENTER(:,2),matCENTER(:,3),A.*en(:,1),A.*en(:,2),A.*en(:,3))
+%quiver3(matCENTER(:,1),matCENTER(:,2),matCENTER(:,3),(nfree+nind).*en(:,1),(nfree+nind).*en(:,2),(nind+nfree).*en(:,3),'k')
+%quiver3(matCENTER(:,1),matCENTER(:,2),matCENTER(:,3),A(:,1),A(:,2),A(:,3))
 
-%quiver3(matCENTER(:,1),matCENTER(:,2),matCENTER(:,3),matUINF(:,1),matUINF(:,2),matUINF(:,3))
-%quiver3(matCENTER(:,1),matCENTER(:,2),matCENTER(:,3),en(:,1),en(:,2),en(:,3))
-quiver3(matCENTER(:,1),matCENTER(:,2),matCENTER(:,3),(nfree+nind).*en(:,1),(nfree+nind).*en(:,2),(nind+nfree).*en(:,3),'k')
 end
 

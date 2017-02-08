@@ -26,8 +26,8 @@ disp(' ');
 
 %% Reading in geometry
 
-%strFILE = 'inputs/rectange.txt';
-strFILE = 'inputs/ROTORINPUT_MA11by7.txt';
+%strFILE = 'inputs/ROTORINPUT_MA11by7.txt';
+strFILE = 'inputs/rectangle.txt';
 
 [flagRELAX, flagSTEADY, valMAXTIME, valMINTIME, valAZNUM, valDELTAE, ...
     seqALPHAR, valJ, valRPM, valDENSITY, valKINV, valAREA, valDIA, ...
@@ -48,7 +48,8 @@ flagVERBOSE = 0;
     vecDVESYM, vecDVETIP, vecDVEWING, vecDVELE, vecDVETE, ...
     vecDVEPANEL] = fcnGENERATEDVES(valPANELS, matGEOM, vecSYM, vecN, vecM);
 
-%% Apply multiple rotors
+
+%% Apply multiple blades
 if valNUMB > 1
 [valNELE, matNPVLST0, vecAIRFOIL, vecDVELE, vecDVETE, vecDVEYAW, vecDVEPANEL, ...
     vecDVETIP, vecDVEWING, vecDVESYM, vecM, vecN, vecDVEROLL, vecDVEAREA,...
@@ -63,7 +64,6 @@ if valNUMB > 1
 end
 
 valWSIZE = length(nonzeros(vecDVETE)); % Amount of wake DVEs shed each timestep
-
 %% Add boundary conditions to D-Matrix
 [matD] = fcnDWING(valNELE, matADJE, vecDVEHVSPN, vecDVESYM, vecDVETIP);
 
@@ -91,10 +91,17 @@ for ai = 1:length(seqALPHAR)
     
 	fprintf('      ANGLE OF ATTACK = %0.3f DEG\n',seqALPHAR(ai));
     fprintf('\n');
+    if flagPLOT == 1
+    [hFig2] = fcnPLOTBODY(flagVERBOSE, valNELE, matDVE, matVLST, matCENTER);
+    [hLogo] = fcnPLOTLOGO(0.97,0.03,14,'k','none');
+    end
+    hold on
     
     % Calculate inflow velocity at each control point
     [matUINF] = fcnUINFROT(matCENTER, vecROTAX, 0, valRPM, valALPHAR, ...
-        valAZNUM, valDIA, valJ);
+        valAZNUM, valDIA, valJ, valNUMB);
+    hold off
+    clf
     
     % Initializing wake parameters
 	matWAKEGEOM = [];
@@ -183,10 +190,10 @@ for ai = 1:length(seqALPHAR)
              valWSIZE, vecWKGAM(end-valWSIZE+1:end), vecWDVEHVSPN(end- ...
              valWSIZE+1:end));
         
-        %% Generate rotor resultantc
+        %% Generate rotor resultant
         % Calculate inflow velocity
         [matUINF] = fcnUINFROT(matCENTER, vecROTAX, valTIMESTEP, ...
-        valRPM, valALPHAR, valAZNUM, valDIA, valJ);
+        valRPM, valALPHAR, valAZNUM, valDIA, valJ, valNUMB);
     
         % Generate rotor resultant
         [vecR] = fcnRESROTOR(valNELE, valTIMESTEP, matCENTER, ...
@@ -200,9 +207,17 @@ for ai = 1:length(seqALPHAR)
         [matWD, vecWR] = fcnWDWAKE([1:valWNELE]', matWADJE, ...
             vecWDVEHVSPN, vecWDVESYM, vecWDVETIP, vecWKGAM);
         [matWCOEFF] = fcnSOLVEWD(matWD, vecWR, valWNELE, vecWKGAM, ...
-            vecWDVEHVSPN);   
-          
+            vecWDVEHVSPN);
+if flagPLOT == 1
+    [hFig2] = fcnPLOTBODY(flagVERBOSE, valNELE, matDVE, matVLST, matCENTER);
+    [hLogo] = fcnPLOTLOGO(0.97,0.03,14,'k','none');
+    [hFig2] = fcnPLOTWAKE(flagVERBOSE, hFig2, valWNELE, matWDVE, matWVLST, matWCENTER);
+end
+        % Forces
+        [nind, nfree] = fcnRFORCES(valWSIZE, valTIMESTEP, valNELE, valWNELE, seqALPHAR, vecDVEPITCH, vecK, vecWK, vecWDVEYAW, vecWDVELESWP, vecWDVETESWP, vecDVEYAW, vecDVEMCSWP, vecWDVEHVSPN, vecWDVEHVCRD, vecWDVEROLL, vecDVEROLL,  vecDVEHVCRD, vecDVELE, vecDVEHVSPN, vecWDVEPITCH, vecDVELESWP, vecDVETESWP, vecSYM, matVLST, matDVE, matUINF, matCOEFF, matADJE, matWDVE, matWVLST, matCENTER, matWCOEFF);
+
     end
+    
 end
 
 if flagPLOT == 1
@@ -210,4 +225,3 @@ if flagPLOT == 1
     [hLogo] = fcnPLOTLOGO(0.97,0.03,14,'k','none');
     [hFig2] = fcnPLOTWAKE(flagVERBOSE, hFig2, valWNELE, matWDVE, matWVLST, matWCENTER);
 end
-
