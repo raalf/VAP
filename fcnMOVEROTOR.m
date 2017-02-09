@@ -12,7 +12,7 @@ valDELROT = (2*pi)/valAZNUM;
 matROTATE = [cos(valDELROT) -sin(valDELROT) 0; sin(valDELROT) cos(valDELROT) 0; 0 0 1];
 
 % Rotor tranlsation matrix
-vecTRANS = [((valJ*valDIA)/valAZNUM)*cos(valALPHAR) 0 ((valJ*valDIA)/valAZNUM)*sin(valALPHAR)];
+vecTRANS = [((-1*valJ*valDIA)/valAZNUM)*cos(valALPHAR) 0 ((-1*valJ*valDIA)/valAZNUM)*sin(valALPHAR)];
 
 tempVLST = matVLST - repmat(vecROTAX, length(matVLST(:,1)),1);
 tempCENTER = matCENTER - repmat(vecROTAX, length(matCENTER(:,1)),1);
