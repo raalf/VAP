@@ -26,8 +26,8 @@ disp(' ');
 
 %% Reading in geometry
 
-%strFILE = 'inputs/ROTORINPUT_MA11by7.txt';
-strFILE = 'inputs/rectangle.txt';
+strFILE = 'inputs/ROTORINPUT_MA11by7.txt';
+%strFILE = 'inputs/rectangle.txt';
 
 [flagRELAX, flagSTEADY, valMAXTIME, valMINTIME, valAZNUM, valDELTAE, ...
     seqALPHAR, valJ, valRPM, valDENSITY, valKINV, valAREA, valDIA, ...
@@ -37,7 +37,7 @@ strFILE = 'inputs/rectangle.txt';
 flagPRINT   = 1;
 flagPLOT    = 1;
 flagPLOTWAKEVEL = 0;
-flagVERBOSE = 1;
+flagVERBOSE = 0;
 
 %% Discretize geometry into DVEs
 
@@ -149,7 +149,7 @@ for ai = 1:length(seqALPHAR)
         %   Calculate surface normal forces
         %   Calculate DVE normal forces
         %   Calculate induced drag
-        %   Calculate cn, cl, cy, cdi
+        %   Calculate force and moment coefficents
         %   Calculate viscous effects
             
         
@@ -209,12 +209,8 @@ for ai = 1:length(seqALPHAR)
             vecWDVEHVSPN, vecWDVESYM, vecWDVETIP, vecWKGAM);
         [matWCOEFF] = fcnSOLVEWD(matWD, vecWR, valWNELE, vecWKGAM, ...
             vecWDVEHVSPN);
-if flagPLOT == 1
-    [hFig2] = fcnPLOTBODY(flagVERBOSE, valNELE, matDVE, matVLST, matCENTER);
-    [hLogo] = fcnPLOTLOGO(0.97,0.03,14,'k','none');
-    [hFig2] = fcnPLOTWAKE(flagVERBOSE, hFig2, valWNELE, matWDVE, matWVLST, matWCENTER);
-end
-        % Forces
+        
+        % Calculate Forces
         [nind, nfree] = fcnRFORCES(valWSIZE, valTIMESTEP, valNELE, valWNELE, seqALPHAR, vecDVEPITCH, vecK, vecWK, vecWDVEYAW, vecWDVELESWP, vecWDVETESWP, vecDVEYAW, vecDVEMCSWP, vecWDVEHVSPN, vecWDVEHVCRD, vecWDVEROLL, vecDVEROLL,  vecDVEHVCRD, vecDVELE, vecDVEHVSPN, vecWDVEPITCH, vecDVELESWP, vecDVETESWP, vecSYM, matVLST, matDVE, matUINF, matCOEFF, matADJE, matWDVE, matWVLST, matCENTER, matWCOEFF);
 
     end

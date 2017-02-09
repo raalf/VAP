@@ -19,7 +19,7 @@ Kinematic viscosity:	valKINV		=	1.460000e-05
 
 Reference area:				valAREA 	=	300
 Reference diameter:			valDIA		=	4
-Number of blades			valNUMB		=	2
+Number of blades			valNUMB		=	3
 Rotation axis x y z 	 	vecROTAX	= 	0.25 0 0
 
 No. of panels:	valPANELS =	1
