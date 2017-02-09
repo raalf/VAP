@@ -36,7 +36,7 @@ tempCENTER = matCENTER - repmat(vecROTAX, tempTOTDVE(1),1);
 tempRMAG = sqrt(tempCENTER(:,1).^2+tempCENTER(:,2).^2+tempCENTER(:,3).^2);
 
 matUROT = tempRADPS*[tempRMAG.*cos(vecTHETA) tempRMAG.*sin(vecTHETA) zeros(tempTOTDVE(1),1)];
-vecUTRANS = (valJ*valDIA*valRPM/60)*[cos(valALPHAR) 0 sin(valALPHAR)];
+vecUTRANS = (-1*valJ*valDIA*valRPM/60)*[cos(valALPHAR) 0 sin(valALPHAR)];
 
 matUINF = matUROT - vecUTRANS;
 
