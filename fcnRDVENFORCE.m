@@ -1,7 +1,15 @@
-function [nind, nfree] = fcnRDVENFORCE(valWSIZE, valTIMESTEP, valNELE, valWNELE, seqALPHAR, vecDVEPITCH, vecK, vecWK, vecWDVEYAW, vecWDVELESWP, vecWDVETESWP, vecDVEYAW, vecDVEMCSWP, vecWDVEHVSPN, vecWDVEHVCRD, vecWDVEROLL, vecDVEROLL,  vecDVEHVCRD, vecDVELE, vecDVEHVSPN, vecWDVEPITCH, vecDVELESWP, vecDVETESWP, vecSYM, matVLST, matDVE, matUINF, matCOEFF, matADJE, matWDVE, matWVLST, matCENTER, matWCOEFF)
+function [nind, nfree, thrustind, thrustfree, sideind, sidefree, axialind, axialfree] = fcnRDVENFORCE(valWSIZE, valTIMESTEP, valNELE, valWNELE, seqALPHAR, vecDVEPITCH, vecK, vecWK, vecWDVEYAW, vecWDVELESWP, vecWDVETESWP, vecDVEYAW, vecDVEMCSWP, vecWDVEHVSPN, vecWDVEHVCRD, vecWDVEROLL, vecDVEROLL,  vecDVEHVCRD, vecDVELE, vecDVEHVSPN, vecWDVEPITCH, vecDVELESWP, vecDVETESWP, vecSYM, matVLST, matDVE, matUINF, matCOEFF, matADJE, matWDVE, matWVLST, matCENTER, matWCOEFF)
 
 % A modified DVENFORCE function that has been tailored to calculate thrust
 % and axial force. Mostly transfered directly from fcnDVENFORCE.
+%
+% Modifications include:
+%  - Using the unqiue velocities at each DVE
+%  - Calculating thrust, side and axial forces from the original nromal
+%  force calculation.
+%  - Thrust is define in the global z-direction
+%  - Side is defined in the global y-direction
+%  - Axial is defined in the global x-direction
 
 
 idx1 = vecDVELE == 1; %index of LE vectors
@@ -32,10 +40,13 @@ uxs = sqrt(sum(abs(tempb).^2,2));
 % eN = tempa.*(1/UxS);
 en = tempb.*repmat((1./uxs),1,3);
 
-% Thrust direction (may not be needed)
+% Thrust direction
 et = repmat([0 0 1],[valNELE,1]);
 
-% Axial direction (may not be needed)
+% Side direction
+es = repmat([0 1 0],[valNELE,1]);
+
+% Axial direction
 ea = repmat([1 0 0],[valNELE,1]);
 
 %% Thrust due to freestream
@@ -125,7 +136,7 @@ if any(idx1 ==0)
     %//velocities at mid chord locations of the DVES upstream and
     %//downstream of the bound vortex. Otherwise, the singularity of
     %//the bound vortex and the discontinuity of the bound vortex sheet
-    %//of a wing with twist causes trouble.
+    %//of a blade with twist causes trouble.
     w(idx1 ==0,:,:) = (w_center(idx1 ==0,:,:)+w_center(idxf,:,:))./2;
 end
 
@@ -147,13 +158,20 @@ r = r + ((7.*tempr(:,:,1) - 8.*tempr(:,:,2) + 7.*tempr(:,:,3)).*repmat((vecDVEHV
 % induced thrust force
 nind = dot(r,en,2);
 
-liftfree = nfree.*sqrt(en(:,1).*en(:,1) + en(:,3).*en(:,3)); %does this work with beta?
-liftfree(en(:,3)<0) = -liftfree(en(:,3)<0);
-sum(nind+nfree)/length(nfree)
+% Induced forces
+thrustind = dot(r,et,2);
+sideind = dot(r,es,2);
+axialind = dot(r,ea,2);
+
+% Freestream forces
+thrustfree = nfree.*(en(:,3));
+sidefree = nfree.*(en(:,2));
+axialfree = nfree.*(en(:,1));
+
+% Test plotting
 %quiver3(matCENTER(:,1),matCENTER(:,2), matCENTER(:,3),matUINF(:,1),matUINF(:,2),matUINF(:,3))
 %quiver3(matCENTER(:,1),matCENTER(:,2),matCENTER(:,3),A.*en(:,1),A.*en(:,2),A.*en(:,3))
-%quiver3(matCENTER(:,1),matCENTER(:,2),matCENTER(:,3),(nfree+nind).*en(:,1),(nfree+nind).*en(:,2),(nind+nfree).*en(:,3),'k')
+%quiver3(matCENTER(:,1),matCENTER(:,2),matCENTER(:,3),(thrustfree+thrustind).*et(:,1),(thrustfree + thrustind).*et(:,2),(thrustind+thrustfree).*et(:,3),'k')
 %quiver3(matCENTER(:,1),matCENTER(:,2),matCENTER(:,3),A(:,1),A(:,2),A(:,3))
 
 end
-
