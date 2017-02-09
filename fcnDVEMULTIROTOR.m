@@ -1,4 +1,7 @@
-function [valNELE, matNEWNPVLST, vecAIRFOIL, vecDVELE, vecDVETE, vecDVEYAW, vecDVEPANEL, vecDVETIP, vecDVEWING, vecDVESYM, vecM, vecN, vecDVEROLL, vecDVEAREA, vecDVEPITCH, vecDVEMCSWP, vecDVETESWP, vecDVELESWP, vecDVEHVCRD, vecDVEHVSPN, vecSYM, matADJE, matNEWCENTER, matNEWVLST, matDVE, matNEWDVENORM] = fcnDVEMULTIROTOR(valNELE, valNUMB, vecDVETIP, vecDVETESWP, vecDVEPITCH, vecDVEWING, vecDVEMCSWP, vecM, vecN, vecDVEPANEL, vecDVEROLL, vecDVELESWP, vecDVEYAW, vecDVEHVCRD, vecDVEHVSPN, vecDVEAREA, vecDVESYM, vecDVELE, vecDVETE, vecSYM, vecROTAX, vecAIRFOIL, matNPVLST, matDVE, matADJE, matVLST, matCENTER, matDVENORM)
+function [valNELE, matNEWNPVLST, vecAIRFOIL, vecDVELE, vecDVETE, ...
+    vecDVEYAW, vecDVEPANEL, vecDVETIP, vecDVEWING, vecDVESYM, vecM, vecN, ...
+    vecDVEROLL, vecDVEAREA, vecDVEPITCH, vecDVEMCSWP, vecDVETESWP, vecDVELESWP, ...
+    vecDVEHVCRD, vecDVEHVSPN, vecSYM, matADJE, matNEWCENTER, matNEWVLST, matDVE, matNEWDVENORM, matVLST] = fcnDVEMULTIROTOR(valNELE, valNUMB, vecDVETIP, vecDVETESWP, vecDVEPITCH, vecDVEWING, vecDVEMCSWP, vecM, vecN, vecDVEPANEL, vecDVEROLL, vecDVELESWP, vecDVEYAW, vecDVEHVCRD, vecDVEHVSPN, vecDVEAREA, vecDVESYM, vecDVELE, vecDVETE, vecSYM, vecROTAX, vecAIRFOIL, matNPVLST, matDVE, matADJE, matVLST, matCENTER, matDVENORM)
 % This function modifies the created DVEs and all required input values
 %	for multiple rotor blades.
 %
@@ -58,20 +61,20 @@ tempROTATE2D = (reshape(permute(tempROTATE,[2,1,3]),[3 valNUMB*3]))';
 
 %% Parameters the must Rotate
 % Make Each point relative to rotation axis
-tempCENTER = matCENTER - vecROTAX;
+% tempCENTER = matCENTER - vecROTAX;
 tempVLST = matVLST - vecROTAX;
 tempNPVLST = matNPVLST - vecROTAX;
 
 % Rotate values
-tempNEWCENTER =(tempROTATE2D*tempCENTER')';
+% tempNEWCENTER =(tempROTATE2D*tempCENTER')';
 tempNEWVLST = (tempROTATE2D*tempVLST')';
 tempNEWNPVLST = (tempROTATE2D*tempNPVLST')';
-tempDVENORM = (tempROTATE2D*matDVENORM')';
+% tempDVENORM = (tempROTATE2D*matDVENORM')';
 
-
+% Calculated below using fcnDVECORNER2PARAM now
 % Reshape into orgininal matCENTER format
-temp = reshape(tempNEWCENTER,[numel(tempCENTER)/3,3,valNUMB]);
-matNEWCENTER = reshape(permute(temp,[2,1,3]),[3,valNUMB*(numel(tempCENTER)/3)])' + vecROTAX;
+% temp = reshape(tempNEWCENTER,[numel(tempCENTER)/3,3,valNUMB]);
+% matNEWCENTER = reshape(permute(temp,[2,1,3]),[3,valNUMB*(numel(tempCENTER)/3)])' + vecROTAX;
 
 temp = reshape(tempNEWVLST,[numel(tempVLST)/3,3,valNUMB]);
 matNEWVLST = reshape(permute(temp,[2,1,3]),[3,valNUMB*(numel(tempVLST)/3)])' + vecROTAX;
@@ -79,8 +82,9 @@ matNEWVLST = reshape(permute(temp,[2,1,3]),[3,valNUMB*(numel(tempVLST)/3)])' + v
 temp = reshape(tempNEWNPVLST,[numel(tempNPVLST)/3,3,valNUMB]);
 matNEWNPVLST = reshape(permute(temp,[2,1,3]),[3,valNUMB*(numel(tempNPVLST)/3)])' + vecROTAX;
 
-temp = reshape(tempDVENORM,[numel(matDVENORM)/3,3,valNUMB]);
-matNEWDVENORM = reshape(permute(temp,[2,1,3]),[3,valNUMB*(numel(matDVENORM)/3)])';
+% Calculated below using fcnDVECORNER2PARAM
+% temp = reshape(tempDVENORM,[numel(matDVENORM)/3,3,valNUMB]);
+% matNEWDVENORM = reshape(permute(temp,[2,1,3]),[3,valNUMB*(numel(matDVENORM)/3)])';
 
 
 %% Parameters to increase vector for number of blades
@@ -93,9 +97,12 @@ vecDVEHVCRD = repmat(vecDVEHVCRD,[valNUMB,1]);
 vecDVELESWP = repmat(vecDVELESWP,[valNUMB,1]); 
 vecDVEMCSWP = repmat(vecDVEMCSWP,[valNUMB,1]);
 vecDVETESWP = repmat(vecDVETESWP,[valNUMB,1]);
-vecDVEROLL = repmat(vecDVEROLL,[valNUMB,1]);
-vecDVEPITCH = repmat(vecDVEPITCH,[valNUMB,1]);
-vecDVEYAW = repmat(vecDVEYAW,[valNUMB,1]);
+
+% Calculated now using DVECORNER2PARAM below at the bottom
+% vecDVEROLL = repmat(vecDVEROLL,[valNUMB,1]);
+% vecDVEPITCH = repmat(vecDVEPITCH,[valNUMB,1]);
+% vecDVEYAW = repmat(vecDVEYAW,[valNUMB,1]);
+
 vecDVEAREA = repmat(vecDVEAREA,[valNUMB,1]);
 vecDVESYM = repmat(vecDVESYM,[valNUMB,1]); % TO BE DELETED IN LATER VERSIONS
 vecDVETIP = repmat(vecDVETIP,[valNUMB,1]);
@@ -125,6 +132,9 @@ vecDVEWING = repmat(vecDVEWING,[valNUMB 1])+tempADDI;
 tempADDI = (reshape(repmat(1:valNUMB,numel(vecDVEPANEL),1),[valNUMB*numel(vecDVEPANEL) 1]))*(max(max(vecDVEPANEL))) - max(max(vecDVEPANEL));
 vecDVEPANEL = repmat(vecDVEPANEL,[valNUMB 1])+tempADDI;
 
+%% Updating roll, pitch, yaw, etc
+[~, ~, vecDVEROLL, vecDVEPITCH, vecDVEYAW, ~, ~, ~, ~, matNEWDVENORM, ...
+    ~, ~, matNEWCENTER] = fcnVLST2DVEPARAM( matDVE, matNEWVLST);
 
 %% Scatter plot of centers and verticies for validation
 % figure(1)

@@ -37,8 +37,7 @@ strFILE = 'inputs/rectangle.txt';
 flagPRINT   = 1;
 flagPLOT    = 1;
 flagPLOTWAKEVEL = 0;
-flagVERBOSE = 0;
-
+flagVERBOSE = 1;
 
 %% Discretize geometry into DVEs
 
@@ -155,7 +154,9 @@ for ai = 1:length(seqALPHAR)
             
         
         %% Moving the rotor
-        [matVLST, matCENTER, vecROTAX, matNEWWAKE, matNPNEWWAKE] = ...
+        [matVLST, matCENTER, vecROTAX, matNEWWAKE, matNPNEWWAKE, vecDVEHVSPN, ...
+            vecDVEHVCRD, vecDVEROLL, vecDVEPITCH, vecDVEYAW, ...
+            vecDVELESWP, vecDVEMCSWP, vecDVETESWP, vecDVEAREA, matDVENORM] = ...
             fcnMOVEROTOR(vecROTAX, matVLST, matCENTER, matNPVLST, ...
             vecDVETE, matDVE, valAZNUM, valJ, valDIA, valALPHAR);
         
