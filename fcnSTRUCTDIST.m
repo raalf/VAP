@@ -1,33 +1,15 @@
 function [matEIx, matGJt, vecEA, vecCG, vecJT, vecLM, vecLSM, vecLSAC, matAEROCNTR, matSCLST, vecSPANDIST] = fcnSTRUCTDIST(vecDVEHVSPN, vecDVELE, vecDVETE, vecEIxCOEFF, vecGJtCOEFF,...
-    vecEACOEFF, vecCGCOEFF, vecJTCOEFF, vecLMCOEFF, matVLST, matDVE, vecDVEPANEL, vecN, vecM, vecDVEWING, vecDVEROLL, vecDVEPITCH, vecDVEYAW)
+    vecEACOEFF, vecCGCOEFF, vecJTCOEFF, vecLMCOEFF, matNPVLST, matNPDVE, vecDVEPANEL, vecN, vecM, vecDVEWING, vecDVEROLL, vecDVEPITCH, vecDVEYAW)
 %% Geometric Properties
 
 % Find DVEs on LE and TE of wing
 [ledves, ~, ~] = find(vecDVELE > 0);
 [tedves, ~, ~] = find(vecDVETE > 0);
 
-lepanels = vecDVEPANEL(ledves);
+[matROWS] = fcnDVEROW(ledves, vecDVEPANEL, vecDVEWING, vecM, vecN);
 
-for i = 1:max(vecDVEWING)
-
-    idxdve = ledves(vecDVEWING(ledves) == i);
-    idxpanel = lepanels(vecDVEWING(ledves) == i);
-
-    m = vecM(idxpanel);
-    if any(m - m(1))
-        disp('Problem with wing chordwise elements.');
-        break
-    end
-    m = m(1);
-
-    tempm = repmat(vecN(idxpanel), 1, m).*repmat([0:m-1],length(idxpanel),1);
-
-    rows = repmat(idxdve,1,m) + tempm; % DVEs along each chord station
-
-end
-
-tempDVEEDGECRD = abs(matVLST(matDVE(ledves,1),:) - matVLST(matDVE(tedves,4),:));
-tempDVEEDGECRD = [tempDVEEDGECRD; abs(matVLST(matDVE(ledves(end),2),:) - matVLST(matDVE(tedves(end),3),:))];
+tempDVEEDGECRD = abs(matNPVLST(matNPDVE(ledves,1),:) - matNPVLST(matNPDVE(tedves,4),:));
+tempDVEEDGECRD = [tempDVEEDGECRD; abs(matNPVLST(matNPDVE(ledves(end),2),:) - matNPVLST(matNPDVE(tedves(end),3),:))];
 
 tempDVEEDGECRD = sqrt(sum(tempDVEEDGECRD.^2,2)); % Chord length at each DVE edge
 
@@ -35,9 +17,9 @@ tempDVEEDGECRD = sqrt(sum(tempDVEEDGECRD.^2,2)); % Chord length at each DVE edge
 % center based on DVE edge chord
 matDVEEDGECRD = [tempDVEEDGECRD, zeros(length(tempDVEEDGECRD),2)]; % Chord vector at each DVE edge in local DVE frame (vector pointing from LE to TE)
 
-matQTRCRD = fcnSTARGLOB(0.25*matDVEEDGECRD,[vecDVEROLL(rows(:,1));vecDVEROLL(rows(end,1))],[vecDVEPITCH(rows(:,1));vecDVEPITCH(rows(end,1))],[vecDVEYAW(rows(:,1));vecDVEYAW(rows(end,1))]);
+matQTRCRD = fcnSTARGLOB(0.25*matDVEEDGECRD,[vecDVEROLL(matROWS(:,1));vecDVEROLL(matROWS(end,1))],[vecDVEPITCH(matROWS(:,1));vecDVEPITCH(matROWS(end,1))],[vecDVEYAW(matROWS(:,1));vecDVEYAW(matROWS(end,1))]);
 
-tempLE = [matVLST(matDVE(ledves,1),:); matVLST(matDVE(ledves(end),2),:)]; % DVE LE coordinates
+tempLE = [matNPVLST(matNPDVE(ledves,1),:); matNPVLST(matNPDVE(ledves(end),2),:)]; % DVE LE coordinates
 
 matAEROCNTR = tempLE + matQTRCRD; % X, Y, Z location of aerodynamic center
 
@@ -68,31 +50,42 @@ vecCG = vecCGCOEFF(1).*vecSPANDIST.^2 + vecCGCOEFF(2).*vecSPANDIST + vecCGCOEFF(
 vecJT = vecJTCOEFF(1).*vecSPANDIST.^2 + vecJTCOEFF(2).*vecSPANDIST + vecJTCOEFF(3);
 vecLM = vecLMCOEFF(1).*vecSPANDIST.^2 + vecLMCOEFF(2).*vecSPANDIST + vecLMCOEFF(3);
 
-% Determining X,Y,Z location of elastic axis (shear center)
+% vecLM(end) = 0; % Add zero mass to wing tip
+
+% Determining X,Y,Z location of elastic axis (shear center) and center of
+% mass (CG)
 tempEA = [vecEA, zeros(length(vecEA),2)]; % Distance to EA from LE in local coordinates
 
-matSC = fcnSTARGLOB(tempEA,[vecDVEROLL(rows(:,1));vecDVEROLL(rows(end,1))],[vecDVEPITCH(rows(:,1));vecDVEPITCH(rows(end,1))],[vecDVEYAW(rows(:,1));vecDVEYAW(rows(end,1))]); % Transform to global coordinates
+tempCG = [vecCG, zeros(length(vecCG),2)]; % Distance to CG from LE in local coordinates
+
+matCG = fcnSTARGLOB(tempCG,[vecDVEROLL(matROWS(:,1));vecDVEROLL(matROWS(end,1))],[vecDVEPITCH(matROWS(:,1));vecDVEPITCH(matROWS(end,1))],[vecDVEYAW(matROWS(:,1));vecDVEYAW(matROWS(end,1))]); % Transform to global coordinates
+
+matSC = fcnSTARGLOB(tempEA,[vecDVEROLL(matROWS(:,1));vecDVEROLL(matROWS(end,1))],[vecDVEPITCH(matROWS(:,1));vecDVEPITCH(matROWS(end,1))],[vecDVEYAW(matROWS(:,1));vecDVEYAW(matROWS(end,1))]); % Transform to global coordinates
 
 matSC = tempLE + matSC; % Add LE coordinates to have absolute location
+
+matCG = tempLE + matCG;
+
+matLSM = matSC - matCG;
 
 matLSAC = matAEROCNTR - matSC;
 
 vecLSAC = sqrt(sum(matLSAC.^2,2));
 
-vecLSM = 0.1.*vecLSAC;
+vecLSM = -1.*sign(matLSM(:,1)).*sqrt(sum(matLSM.^2,2)); % If +ve --> CG is ahead of SC; If -ve --> CG is behind SC
 
 % Determine distance of each vertex to SC (to be used for twist velocity
 % later)
-temp_leftV = [matDVE(rows,1),matDVE(rows,4)];
+temp_leftV = [matNPDVE(matROWS,1),matNPDVE(matROWS,4)];
 temp_leftV = reshape(temp_leftV,sum(vecN,1),[]);
 
 [move_row,~] = find(temp_leftV); % Vector corresponding to which shear center coordinate to use
 
-tempSCLST = zeros(size(matVLST,1),3);
+tempSCLST = zeros(size(matNPVLST,1),3);
 
 tempSCLST(temp_leftV,:) = matSC(move_row,:);
 
-temp_rightV = [matDVE(rows,2), matDVE(rows,3)];
+temp_rightV = [matNPDVE(matROWS,2), matNPDVE(matROWS,3)];
 temp_rightV = reshape(temp_rightV,sum(vecN,1),[]);
 
 [move_row,~] = find(temp_rightV); % Vector corresponding to which shear center coordinate to use
@@ -100,14 +93,14 @@ tempSCLST(temp_rightV,:) = matSC(move_row+1,:);
 
 matSCLST = tempSCLST;
 
-matSCLST = matSCLST - matVLST; % Matrix of vectors between shear center and vertex
+matSCLST = matSCLST - matNPVLST; % Matrix of vectors between shear center and vertex
 
-figure(4)
-clf
-patch('Faces',matDVE,'Vertices',matVLST,'FaceColor','r')
-hold on
-plot3(matAEROCNTR(:,1), matAEROCNTR(:,2), matAEROCNTR(:,3),'-ok')
-plot3(matSC(:,1), matSC(:,2), matSC(:,3),'-ob')
+% figure(4)
+% clf
+% patch('Faces',matNPDVE,'Vertices',matNPVLST,'FaceColor','r')
+% hold on
+% plot3(matAEROCNTR(:,1), matAEROCNTR(:,2), matAEROCNTR(:,3),'-ok')
+% plot3(matSC(:,1), matSC(:,2), matSC(:,3),'-ob')
 
 end
 
