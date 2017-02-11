@@ -40,24 +40,27 @@ disp(' ');
 % 
 % seqALPHA = [10];
 
-% strFILE = 'inputs/input.txt';
+strFILE = 'inputs/input-SC.txt';
+% strFILE = 'inputs/inputCirrus.txt';
 % % strFILE = 'inputs/Config 1.txt';
 % % strFILE = 'inputs/Config 2.txt';
-% [flagRELAX, flagSTEADY, valAREA, valSPAN, valCMAC, valWEIGHT, ...
-%     seqALPHA, seqBETA, valKINV, valDENSITY, valPANELS, matGEOM, vecSYM, ...
-%     vecAIRFOIL, vecN, vecM, valVSPANELS, matVSGEOM, valFPANELS, matFGEOM, ...
-%     valFTURB, valFPWIDTH, valDELTAE, valDELTIME, valMAXTIME, valMINTIME, ...
-%     valINTERF] = fcnFWREAD(strFILE);
-% 
-% % flagRELAX = 0;
+[flagRELAX, flagSTEADY, valAREA, valSPAN, valCMAC, valWEIGHT, ...
+    seqALPHA, seqBETA, valKINV, valDENSITY, valPANELS, matGEOM, vecSYM, ...
+    vecAIRFOIL, vecN, vecM, valVSPANELS, matVSGEOM, valFPANELS, matFGEOM, ...
+    valFTURB, valFPWIDTH, valDELTAE, valDELTIME, valMAXTIME, valMINTIME, ...
+    valINTERF] = fcnFWREAD(strFILE);
+
 % valMAXTIME = 68;
 % 
 flagPRINT   = 1;
 flagPLOT    = 1;
 flagPLOTWAKEVEL = 0;
 flagVERBOSE = 0;
+seqALPHA = 14;
 
-load('matlab.mat');
+flagRELAX = 1;
+valWEIGHT = 300*9.81;
+valDELTIME = 0.3;
 
 
 %% Discretize geometry into DVEs
@@ -228,7 +231,7 @@ for ai = 1:length(seqALPHA)
         
         %% Viscous wrapper
         
-        [vecCLv(1,ai), vecCD(1,ai)] = fcnVISCOUS(vecCL(end,ai), vecCDI(end,ai), valWEIGHT, valAREA, valDENSITY, valKINV, vecDVENFREE, vecDVENIND, ...
+        [vecCLv(ai,1), vecCD(ai,1), vecVINF(ai,1), vecCLDIST(ai,:), matXYZDIST(:,:,ai), vecAREADIST(ai,:)] = fcnVISCOUS(vecCL(end,ai), vecCDI(end,ai), valWEIGHT, valAREA, valDENSITY, valKINV, vecDVENFREE, vecDVENIND, ...
             vecDVELFREE, vecDVELIND, vecDVESFREE, vecDVESIND, vecDVEPANEL, vecDVELE, vecDVEWING, vecN, vecM, vecDVEAREA, ...
             matCENTER, vecDVEHVCRD, vecAIRFOIL, flagVERBOSE, vecSYM, valVSPANELS, matVSGEOM, valFPANELS, matFGEOM, valFTURB, ...
             valFPWIDTH, valINTERF, vecDVEROLL);
@@ -269,5 +272,7 @@ if flagPLOT == 1
 end
 
 %% Viscous wrapper
+
+save('Standard Cirrus Data/VAP2.mat','vecCLv','vecCD','vecVINF');
 
 % whos

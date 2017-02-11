@@ -1,0 +1,81 @@
+Input File Std. Cirrus
+Units: metric (m, s, N)
+
+Please note that the program uses equal, number, and : signs as special recognizers!
+The results are written to the sub-directory 'output'
+
+Relaxed wake (yes 1, no 0):		relax = 1
+steady (1) or unsteady (0): 		aerodynamics: = 1
+Symmetrical geometry (yes 1,no 0):	sym = 1
+Longitudinal trim (yes 1, no 0):	trim =		0	(yes means m has to be 1)
+
+Max. number of time steps:	Maxtime	= 30 
+Width of each time step (sec):	deltime	=  0.25 
+Convergence delta-span efffic.:	deltae 	=  0.000 	(0 if only time stepping)
+
+Free Stream Velocity (leave value 1):	Uinf	= 1	
+AOA beginning, end, step size [deg]:	alpha	= 2 14 1  
+Sideslip Angle [deg]:			beta	= 0
+Denity:					density	= 1.225
+Kinematic viscosity			nu 	= 1.46e-5
+
+Reference Area:			S	= 12.6 
+Refernce Span:			b	= 15
+Mean aerodynanic chord		cmac	= 0.707 
+Aircraft Weight	(N or lbs)	W	= 3649.32 
+CG-location (x y z)		xcg	= 0.19 0 0
+CMo of wing			CMo	= -.1 
+
+No. of Wings (max. 5)		wings 	= 2 
+No. of panels:			panels	= 3 
+No. of chordwise lifting lines:	m	= 1 
+No. of airfoils (max. 50)	airfoils= 8  
+
+Panel boundary conditions:
+	Symmetry line - 	10
+	Between panels - 	220
+	Free end - 		100
+ 
+panel #:1.000000 number of spanwise elements: n=6.000000  airfoil no. = 1 
+neighboring panels (0 for none) left:0.000000	right:2.000000 
+xleft		yleft	zleft	chord	epsilon	Bound.Cond. 
+ 0.000		 0.000	0	 0.92    0.00	10.000000 
+xright		yright	zright	chord	epsilon	Bound.Cond. 
+ 0.000		4.5	0.315	0.644	 0.3	220 
+
+panel #:2.000000 number of spanwise elements: n=8.000000  airfoil no. = 1 
+neighboring panels (0 for none) left:1.000000	right:0.000000 
+xleft		yleft	zleft	chord	epsilon	Bound.Cond. 
+0.000		4.5	0.315	0.644	 0.3	220 
+xright		yright	zright	chord	epsilon	Bound.Cond. 
+ 0.000		7.5	0.525	0.35	 1.8	100.000000 
+
+panel #:3.000000 number of spanwise elements: n=3.000000  airfoil no. = 7 
+neighboring panels (0 for none) left:0	right:0 
+xleft		yleft	zleft	chord	epsilon	Bound.Cond. 
+3.9		0	 1.100	0.5375	-0.000	10 
+xright		yright	zright	chord	epsilon	Bound.Cond. 
+4.177		1.2	 1.100	0.3225	-0.000	100 
+
+%<-special identifier 
+Vertical-tail information: number of panels (max 5) = 1 
+no.  panel-chord  panel-area   panel-airfoil 
+1    .79           0.948        5
+
+
+Fuselage information: 
+no. of sections (max 20) = 6  width of each section =  1.05 
+index of panel where transition to turbulent flow occurs = 2 
+no.	Diameter 
+1	 0.5
+2	 0.7
+3	 0.7
+4	 0.58
+5	 0.25
+6	 0.15
+
+
+Interference Drag =  0.0 % 
+
+
+############## 

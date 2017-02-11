@@ -68,7 +68,7 @@ no.	chord	area	airfoil
 Fuselage information:
 Number of sections (max 20) =	6
 Width of each section =		1.050
-Panel where transition occurs =	2
+Panel where transition occurs =	3
 No.	Diamter
 1	0.500
 2	0.700
@@ -77,5 +77,5 @@ No.	Diamter
 5	0.250
 6	0.150
 
-Interference drag = 15.0%
+Interference drag = 0%
 ##############
