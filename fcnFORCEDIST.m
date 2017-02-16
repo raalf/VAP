@@ -11,9 +11,11 @@ function [vecLIFTDIST, vecMOMDIST, valVINF] = fcnFORCEDIST(vecCLDIST,matQTRCRD,v
 % vecMOMDIST - 1 x sum(vecN) matrix of the total pitching moment at each
 % spanwise station (+ve nose up)
 
-
-% valVINF = sqrt(2*valWEIGHT/(2*valDENSITY*sum(vecSPNWSEAREA,1)*valCL));
-valVINF = 30;
+% Calculate Vinf required for steady level flight. This will be used for
+% load calculations
+q_inf = valWEIGHT/(2*valCL*sum(vecSPNWSEAREA));
+valVINF = sqrt(2*q_inf/valDENSITY);
+% valVINF = 60;
 
 vecLIFTDIST = (2*0.5*valDENSITY*valVINF*valVINF.*vecSPNWSEAREA.*vecCLDIST)./(2*vecDVEHVSPN(vecLEDVES));
 

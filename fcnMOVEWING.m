@@ -1,4 +1,4 @@
-function [matVLST, matCENTER, matNEWWAKE, matNPNEWWAKE, matNTVLST] = fcnMOVEWING(valALPHA, valBETA, valDELTIME, matVLST, matCENTER, matDVE, vecDVETE, matNTVLST)
+function [matVLST, matCENTER, matNEWWAKE, matNPNEWWAKE, matNTVLST, matNPVLST] = fcnMOVEWING(valALPHA, valBETA, valDELTIME, matVLST, matCENTER, matDVE, vecDVETE, matNTVLST, matNPVLST)
 % This function moves a wing (NOT rotor) by translating all of the vertices
 % in the VLST and the in-centers of each triangle in CENTER.
 
@@ -35,6 +35,8 @@ matVLST = matVLST - repmat(translation, length(matVLST(:,1)), 1);
 matCENTER = matCENTER - repmat(translation, length(matCENTER(:,1)), 1);
 
 matNTVLST = matNTVLST - repmat(translation, length(matNTVLST(:,1)), 1);
+
+matNPVLST = matNPVLST - repmat(translation, length(matNPVLST(:,1)), 1);
 
 % New trailing edge vertices
 matNEWWAKE(:,:,1) = matVLST(matDVE(vecDVETE>0,4),:);

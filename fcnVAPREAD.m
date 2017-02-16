@@ -1,4 +1,4 @@
-function [flagRELAX, flagSTEADY, valAREA, valSPAN, valCMAC, valWEIGHT, ...
+function [flagRELAX, flagSTEADY, flagSTIFFWING, valAREA, valSPAN, valCMAC, valWEIGHT, ...
     seqALPHA, seqBETA, valKINV, valVINF, valDENSITY, valPANELS, matGEOM, vecSYM, ...
     vecAIRFOIL, vecN, vecM, valVSPANELS, matVSGEOM, valFPANELS, matFGEOM, ...
     valFTURB, valFPWIDTH, valDELTAE, valDELTIME, valMAXTIME, valMINTIME, ...
@@ -60,6 +60,13 @@ while(ch~='=');
     ch = fscanf(fp,'%c',1);
 end
 flagSTEADY = fscanf(fp,'%d');
+
+% Reading steady or unsteady flag
+ch = fscanf(fp,'%c',1);
+while(ch~='=');
+    ch = fscanf(fp,'%c',1);
+end
+flagSTIFFWING = fscanf(fp,'%d');
 
 %% Reading time step information
 % Reading maximum number of time steps

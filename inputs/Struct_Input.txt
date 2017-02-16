@@ -7,9 +7,9 @@ Stiffness Distribution
 ----------------------
 
 	Bending (E*Ix)
-		A Coefficient: vec_EIx = 5000
-		B Coefficient: vec_EIx = -100000
-		C Coefficient: vec_EIx = 500000
+		A Coefficient: vec_EIx = 11406
+		B Coefficient: vec_EIx = -188282
+		C Coefficient: vec_EIx = 793632
 
 	Torsion (G*Jt):
 		A Coefficient: vec_GJt = 361.92

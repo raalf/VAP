@@ -14,22 +14,22 @@ vecDVESPAN = 2*vecDVEHVSPN(ledves)';
 
 % Deflection velocity after first timestep (referenced to zero initial
 % deflection and twist)
-if valTIMESTEP > 2
+if valTIMESTEP >= 3
 
     % Calculate cartesian velocity of DVE edges
-    del_twist = ((matTWISTGLOB(valTIMESTEP-1,3:sum(vecN,1)+3)));
+    del_twist = ((matTWISTGLOB(valTIMESTEP,3:sum(vecN,1)+3) - matTWISTGLOB(valTIMESTEP-1,3:sum(vecN,1)+3)));
     vecXVEL = repmat(uinf*cos(valALPHA)*cos(valBETA),1,sum(vecN,1)+1);
-    vecYVEL = repmat(uinf*sin(valBETA),1,size(matSLOPE,2)) + [0,((matSLOPE(valTIMESTEP-1,2:end))./valDELTIME).*vecDVESPAN.*cos(repmat(pi/2,1,size(matSLOPE,2)-1) - matSLOPE(valTIMESTEP-1,2:end))];
-    vecZVEL = repmat(uinf*sin(valALPHA)*cos(valBETA),1,sum(vecN,1)+1) + ((matDEFGLOB(valTIMESTEP-1,3:sum(vecN,1)+3))./valDELTIME);
+    vecYVEL = repmat(uinf*sin(valBETA),1,size(matSLOPE,2)) + [0,((matSLOPE(valTIMESTEP,2:end) - matSLOPE(valTIMESTEP-1,2:end))./valDELTIME).*vecDVESPAN.*cos(repmat(pi/2,1,size(matSLOPE,2)-1) - matSLOPE(valTIMESTEP,2:end))];
+    vecZVEL = repmat(uinf*sin(valALPHA)*cos(valBETA),1,sum(vecN,1)+1) + ((matDEFGLOB(valTIMESTEP,3:sum(vecN,1)+3) - matDEFGLOB(valTIMESTEP-1,3:sum(vecN,1)+3))./valDELTIME);
 %      - matDEFGLOB(valTIMESTEP-2,3:sum(vecN,1)+3) -
 %      matTWISTGLOB(valTIMESTEP-2,3:sum(vecN,1)+3)  - matSLOPE(valTIMESTEP-2,2:end)
 else
     
     % Calculate cartesian velocity of DVE edges
-    del_twist = ((matTWISTGLOB(valTIMESTEP-1,3:sum(vecN,1)+3)));
+    del_twist = ((matTWISTGLOB(valTIMESTEP,3:sum(vecN,1)+3)));
     vecXVEL = repmat(uinf*cos(valALPHA)*cos(valBETA),1,sum(vecN,1)+1);
-    vecYVEL = repmat(uinf*sin(valBETA),1,size(matSLOPE,2)) + [0,((matSLOPE(valTIMESTEP-1,2:end))./valDELTIME).*vecDVESPAN.*cos(repmat(pi/2,1,size(matSLOPE,2)-1) - matSLOPE(valTIMESTEP-1,2:end))];
-    vecZVEL = repmat(uinf*sin(valALPHA)*cos(valBETA),1,sum(vecN,1)+1) + ((matDEFGLOB(valTIMESTEP-1,3:sum(vecN,1)+3))./valDELTIME);
+    vecYVEL = repmat(uinf*sin(valBETA),1,size(matSLOPE,2)) + [0,((matSLOPE(valTIMESTEP,2:end))./valDELTIME).*vecDVESPAN.*cos(repmat(pi/2,1,size(matSLOPE,2)-1) - matSLOPE(valTIMESTEP-1,2:end))];
+    vecZVEL = repmat(uinf*sin(valALPHA)*cos(valBETA),1,sum(vecN,1)+1) + ((matDEFGLOB(valTIMESTEP,3:sum(vecN,1)+3))./valDELTIME);
 
 end
 
