@@ -1,7 +1,8 @@
 clear
 clc
 
-AirfoilName = 'fx6617a2';
+% AirfoilName = 'fx6617a2';
+AirfoilName = 'NACA63012A';
 
 Polars = XFOIL_Polars(AirfoilName, [20000,50000,100000,150000,200000,250000,500000,750000,1000000,2000000,3000000], -5:0.1:15);
 

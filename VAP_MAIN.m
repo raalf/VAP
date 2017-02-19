@@ -56,12 +56,11 @@ flagPRINT   = 1;
 flagPLOT    = 1;
 flagPLOTWAKEVEL = 0;
 flagVERBOSE = 0;
-seqALPHA = 14;
 
-flagRELAX = 1;
+flagRELAX = 0;
 valWEIGHT = 300*9.81;
-valDELTIME = 0.3;
 
+vecN = [10 20 10]';
 
 %% Discretize geometry into DVEs
 

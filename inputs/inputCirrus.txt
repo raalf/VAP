@@ -43,14 +43,14 @@ xleft		yleft	zleft	chord	epsilon	Bound.Cond.
 xright		yright	zright	chord	epsilon	Bound.Cond. 
  0.000		4.5	0.315	0.644	 0.3	220 
 
-panel #:2.000000 number of spanwise elements: n=8.000000  airfoil no. = 1 
+panel #:2.000000 number of spanwise elements: n=8.000000  airfoil no. = 2 
 neighboring panels (0 for none) left:1.000000	right:0.000000 
 xleft		yleft	zleft	chord	epsilon	Bound.Cond. 
 0.000		4.5	0.315	0.644	 0.3	220 
 xright		yright	zright	chord	epsilon	Bound.Cond. 
  0.000		7.5	0.525	0.35	 1.8	100.000000 
 
-panel #:3.000000 number of spanwise elements: n=3.000000  airfoil no. = 7 
+panel #:3.000000 number of spanwise elements: n=3.000000  airfoil no. = 4 
 neighboring panels (0 for none) left:0	right:0 
 xleft		yleft	zleft	chord	epsilon	Bound.Cond. 
 3.9		0	 1.100	0.5375	-0.000	10 

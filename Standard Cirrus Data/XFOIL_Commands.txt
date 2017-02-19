@@ -2,7 +2,7 @@ plop
 g
 
 load
-airfoil/fx6617a2.dat
+airfoil/NACA63012A.dat
 oper
 iter
 100
