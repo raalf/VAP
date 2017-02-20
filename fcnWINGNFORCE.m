@@ -42,10 +42,10 @@ if any(vecSYM) == 1 && valBETA ==0 %not sure why beta has to be zero
 end
 
 %non-dimensionalize
-valCL = (ntfree(1) + ntind(1))/q;
+valCL = (ntfree(1) + ntind(1))/(q*30);
 valCLF = ntfree(1)/q;
 
-vecDVECL = liftfree + liftind; % Total CL at each DVE
+vecDVECL = (liftfree + liftind)./(q*30); % Total CL at each DVE
 
 [ledves, ~, ~] = find(vecDVELE > 0);
 lepanels = vecDVEPANEL(ledves);
@@ -66,7 +66,8 @@ for i = 1:max(vecDVEWING)
     
     rows = repmat(idxdve,1,m) + tempm;
     
-	vecCLDIST = [vecCLDIST; (sum(vecDVECL(rows),2))./(sum(vecDVEAREA(rows),2))]; % Total CL at each spanwise station
+% 	vecCLDIST = [vecCLDIST; (sum(vecDVECL(rows),2))./(sum(vecDVEAREA(rows),2))]; % Total CL at each spanwise station
+    vecCLDIST = [vecCLDIST; (sum(vecDVECL(rows),2))];
     
     matCLDIST(:,1:vecM(1)) = vecDVECL(rows);
 

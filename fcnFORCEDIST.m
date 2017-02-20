@@ -13,9 +13,9 @@ function [vecLIFTDIST, vecMOMDIST, valVINF] = fcnFORCEDIST(vecCLDIST,matQTRCRD,v
 
 % Calculate Vinf required for steady level flight. This will be used for
 % load calculations
-q_inf = valWEIGHT/(2*valCL*sum(vecSPNWSEAREA));
-valVINF = sqrt(2*q_inf/valDENSITY);
-% valVINF = 60;
+% q_inf = valWEIGHT/(valCL*sum(vecSPNWSEAREA));
+% valVINF = sqrt(2*q_inf/valDENSITY);
+valVINF = 30;
 
 vecLIFTDIST = (2*0.5*valDENSITY*valVINF*valVINF.*vecSPNWSEAREA.*vecCLDIST)./(2*vecDVEHVSPN(vecLEDVES));
 

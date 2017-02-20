@@ -5,7 +5,7 @@ function [matNPVLST, matNPNEWWAKE, matNEWWAKE] = fcnMOVEFLEXWING(valALPHA, valBE
 % based on the deflection and twist of the wing. The corresponding
 % translations are then computed of the DVE vertices and control points.
 
-uinf = 1;
+uinf = 30;
 
 [ledves, ~, ~] = find(vecDVELE > 0);
 
