@@ -1,4 +1,4 @@
-function [matUINF, matUINFTE, matTEPTS] = fcnUINFROT(matCENTER, vecROTAX, valTIMESTEP, valRPM, valALPHAR, valAZNUM, valDIA, valJ, valNUMB, vecDVEHVSPN, vecDVETE, matVLST, matDVE)
+function [matUINF, matUINFTE, matTEPTS, vecTHETA] = fcnUINFROT(matCENTER, vecROTAX, valTIMESTEP, valRPM, valALPHAR, valAZNUM, valDIA, valJ, valNUMB, vecDVEHVSPN, vecDVETE, matVLST, matDVE)
 
 % This function defines the direction and magnitude of the inflow velocity.
 % This is calculated at both the control points and TE points.
@@ -12,7 +12,7 @@ function [matUINF, matUINFTE, matTEPTS] = fcnUINFROT(matCENTER, vecROTAX, valTIM
 %   matUINFTE - Velocity at each TE point of interest (for force
 %   calculation)
 %   matTEPTS - Trailing edge points of interest
-
+%   vecTHETA - Current angle of each DVE
 
 % Finding the rotation angle for the timestep
 valDELROT = (2*pi)/valAZNUM;
