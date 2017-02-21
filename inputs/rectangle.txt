@@ -6,7 +6,7 @@ Please note that the program uses equal, number and : signs as special recognize
 Relaxed wake (yes 1, no 0):		flagRELAX 	=	0
 Steady (1) or unsteady (2):		flagSTEADY 	=	1
 
-Max. number of time steps:		valMAXTIME 	=	0
+Max. number of time steps:		valMAXTIME 	=	40
 Min. number of time steps: 		valMINTIME 	= 	0
 Number of azmith locations		valAZNUM 	=	80
 Convergence delta-span effic.:	valDELTAE 	=	0.000000	(0 if only timestepping)
@@ -19,7 +19,7 @@ Kinematic viscosity:	valKINV		=	1.460000e-05
 
 Reference area:				valAREA 	=	300
 Reference diameter:			valDIA		=	4
-Number of blades			valNUMB		=	3
+Number of blades			valNUMB		=	2
 Rotation axis x y z 	 	vecROTAX	= 	0.25 0 0
 
 No. of panels:	valPANELS =	1
@@ -28,7 +28,7 @@ Defines leading edge of wing, all measured in metres:
 Keep vecM the same for all panels on a wing!
 
 Panel #:1.
-Number of spanwise elements:	vecN 		= 2. 
+Number of spanwise elements:	vecN 		= 2 
 Number of chordwise elements: 	vecM 		= 1.
 Airfoil number: 				vecAIRFOIL 	= 6
 Symmetry edge (0, 1 or 2): 		vecSYM 		= 0;

@@ -26,8 +26,8 @@ disp(' ');
 
 %% Reading in geometry
 
-strFILE = 'inputs/ROTORINPUT_MA11by7.txt';
-%strFILE = 'inputs/rectangle.txt';
+%strFILE = 'inputs/ROTORINPUT_MA11by7.txt';
+strFILE = 'inputs/rectangle.txt';
 
 [flagRELAX, flagSTEADY, valMAXTIME, valMINTIME, valAZNUM, valDELTAE, ...
     seqALPHAR, valJ, valRPM, valDENSITY, valKINV, valAREA, valDIA, ...
@@ -97,8 +97,8 @@ for ai = 1:length(seqALPHAR)
     hold on
     
     % Calculate inflow velocity at each control point
-    [matUINF] = fcnUINFROT(matCENTER, vecROTAX, 0, valRPM, valALPHAR, ...
-        valAZNUM, valDIA, valJ, valNUMB);
+    [matUINF, matUINFTE, matTEPTS, vecTHETA] = fcnUINFROT(matCENTER, vecROTAX, 0, valRPM, valALPHAR, ...
+        valAZNUM, valDIA, valJ, valNUMB,vecDVEHVSPN, vecDVETE, matVLST, matDVE);
     hold off
     clf
     
@@ -190,11 +190,19 @@ for ai = 1:length(seqALPHAR)
          [matWCOEFF(end-valWSIZE+1:end,:)] = fcnSOLVEWD(matWD, vecWR, ...
              valWSIZE, vecWKGAM(end-valWSIZE+1:end), vecWDVEHVSPN(end- ...
              valWSIZE+1:end));
-        
+
+%          if flagPLOT == 1
+%     [hFig2] = fcnPLOTBODY(flagVERBOSE, valNELE, matDVE, matVLST, matCENTER);
+%     [hLogo] = fcnPLOTLOGO(0.97,0.03,14,'k','none');
+%     [hFig2] = fcnPLOTWAKE(flagVERBOSE, hFig2, valWNELE, matWDVE, matWVLST, matWCENTER);
+% view([-37.5 50])
+end       
+         
         %% Generate rotor resultant
         % Calculate inflow velocity
-        [matUINF] = fcnUINFROT(matCENTER, vecROTAX, valTIMESTEP, ...
-        valRPM, valALPHAR, valAZNUM, valDIA, valJ, valNUMB);
+        [matUINF, matUINFTE, matTEPTS, vecTHETA] = fcnUINFROT(matCENTER, vecROTAX, valTIMESTEP, ...
+        valRPM, valALPHAR, valAZNUM, valDIA, valJ, valNUMB,vecDVEHVSPN, ...
+        vecDVETE, matVLST, matDVE);
     
         % Generate rotor resultant
         [vecR] = fcnRESROTOR(valNELE, valTIMESTEP, matCENTER, ...
@@ -209,9 +217,9 @@ for ai = 1:length(seqALPHAR)
             vecWDVEHVSPN, vecWDVESYM, vecWDVETIP, vecWKGAM);
         [matWCOEFF] = fcnSOLVEWD(matWD, vecWR, valWNELE, vecWKGAM, ...
             vecWDVEHVSPN);
-        
+ 
         % Calculate Forces
-        [nind, nfree] = fcnRFORCES(valWSIZE, valTIMESTEP, valNELE, valWNELE, seqALPHAR, vecDVEPITCH, vecK, vecWK, vecWDVEYAW, vecWDVELESWP, vecWDVETESWP, vecDVEYAW, vecDVEMCSWP, vecWDVEHVSPN, vecWDVEHVCRD, vecWDVEROLL, vecDVEROLL,  vecDVEHVCRD, vecDVELE, vecDVEHVSPN, vecWDVEPITCH, vecDVELESWP, vecDVETESWP, vecSYM, matVLST, matDVE, matUINF, matCOEFF, matADJE, matWDVE, matWVLST, matCENTER, matWCOEFF);
+      [nind, nfree] = fcnRFORCES(valWSIZE, valTIMESTEP, valNELE, valWNELE, seqALPHAR, vecDVEPITCH, vecDVETE, vecDVEWING, vecWDVEWING, vecK, vecWK, vecWDVEYAW, vecWDVELESWP, vecWDVETESWP, vecDVEYAW, vecDVEMCSWP, vecWDVEHVSPN, vecWDVEHVCRD, vecWDVEROLL, vecDVEROLL,  vecDVEHVCRD, vecDVELE, vecDVEHVSPN, vecWDVEPITCH, vecDVELESWP, vecDVETESWP, vecSYM, vecTHETA, matVLST, matDVE, matUINF, matCOEFF, matADJE, matWDVE, matWVLST, matCENTER, matWCOEFF, matTEPTS, matUINFTE);
 
     end
     
