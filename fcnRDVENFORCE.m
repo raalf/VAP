@@ -1,4 +1,4 @@
-function [nind, nfree, thrustind, thrustfree, sideind, sidefree, axialind, axialfree] = fcnRDVENFORCE(valWSIZE, valTIMESTEP, valNELE, valWNELE, seqALPHAR, vecDVEPITCH, vecK, vecWK, vecWDVEYAW, vecWDVELESWP, vecWDVETESWP, vecDVEYAW, vecDVEMCSWP, vecWDVEHVSPN, vecWDVEHVCRD, vecWDVEROLL, vecDVEROLL,  vecDVEHVCRD, vecDVELE, vecDVEHVSPN, vecWDVEPITCH, vecDVELESWP, vecDVETESWP, vecSYM, matVLST, matDVE, matUINF, matCOEFF, matADJE, matWDVE, matWVLST, matCENTER, matWCOEFF)
+function [nind, nfree, thrustind, thrustfree, sideind, sidefree, axialind, axialfree] = fcnRDVENFORCE(valWSIZE, valTIMESTEP, valNELE, valWNELE, seqALPHAR, vecDVEPITCH, vecK, vecWK, vecWDVEYAW, vecWDVELESWP, vecWDVETESWP, vecDVEYAW, vecDVEMCSWP, vecWDVEHVSPN, vecWDVEHVCRD, vecWDVEROLL, vecDVEROLL,  vecDVEHVCRD, vecDVELE, vecDVEHVSPN, vecWDVEPITCH, vecDVELESWP, vecDVETESWP, vecSYM, vecTHETA, matVLST, matDVE, matUINF, matCOEFF, matADJE, matWDVE, matWVLST, matCENTER, matWCOEFF)
 
 % A modified DVENFORCE function that has been tailored to calculate thrust
 % and axial force. Mostly transfered directly from fcnDVENFORCE.
@@ -44,10 +44,10 @@ en = tempb.*repmat((1./uxs),1,3);
 et = repmat([0 0 1],[valNELE,1]);
 
 % Side direction
-es = repmat([0 1 0],[valNELE,1]);
+es = [-sin(vecTHETA) cos(vecTHETA) zeros(valNELE,1)];
 
 % Axial direction
-ea = repmat([1 0 0],[valNELE,1]);
+ea = [cos(vecTHETA) sin(vecTHETA) zeros(valNELE,1)];
 
 %% Thrust due to freestream
 
@@ -173,5 +173,5 @@ axialfree = nfree.*(en(:,1));
 %quiver3(matCENTER(:,1),matCENTER(:,2),matCENTER(:,3),A.*en(:,1),A.*en(:,2),A.*en(:,3))
 %quiver3(matCENTER(:,1),matCENTER(:,2),matCENTER(:,3),(thrustfree+thrustind).*et(:,1),(thrustfree + thrustind).*et(:,2),(thrustind+thrustfree).*et(:,3),'k')
 %quiver3(matCENTER(:,1),matCENTER(:,2),matCENTER(:,3),A(:,1),A(:,2),A(:,3))
-
+%quiver3(matCENTER(:,1),matCENTER(:,2), matCENTER(:,3),ea(:,1),ea(:,2),ea(:,3))
 end
