@@ -7,7 +7,7 @@ warning off
 disp('===========================================================================');
 disp('+---------------+');
 disp('| RYERSON       |       VAPTOR (Based on FreeWake 2015)');
-disp('| APPLIED       |       Running Version 2016.11');
+disp('| APPLIED       |       Running Version 2017.2');
 disp('| AERODYNAMICS  | ');
 disp('| LABORATORY OF | ');
 disp('| FLIGHT        |        ---------------+--------------- ');
@@ -20,14 +20,10 @@ disp(' ');
 disp('===========================================================================');
 disp(' ');
 
-%% Best Practices
-% 1. Define wing from one wingtip to another in one direction
-% 2. When using symmetry, define from symmetry plane outward
-
 %% Reading in geometry
 
-%strFILE = 'inputs/ROTORINPUT_MA11by7.txt';
-strFILE = 'inputs/rectangle.txt';
+strFILE = 'inputs/ROTORINPUT_MA11by7.txt';
+%strFILE = 'inputs/rectangle.txt';
 
 [flagRELAX, flagSTEADY, valMAXTIME, valMINTIME, valAZNUM, valDELTAE, ...
     seqALPHAR, valJ, valRPM, valDENSITY, valKINV, valAREA, valDIA, ...
@@ -89,18 +85,13 @@ for ai = 1:length(seqALPHAR)
     matNPVLST = matNPVLST0;
     
 	fprintf('      ANGLE OF ATTACK = %0.3f DEG\n',seqALPHAR(ai));
+    fprintf('      ADVANCE RATIO = %0.3f\n',valJ);
+    fprintf('      RPM = %0.3f\n\',valRPM);
     fprintf('\n');
-    if flagPLOT == 1
-    [hFig2] = fcnPLOTBODY(flagVERBOSE, valNELE, matDVE, matVLST, matCENTER);
-    [hLogo] = fcnPLOTLOGO(0.97,0.03,14,'k','none');
-    end
-    hold on
     
     % Calculate inflow velocity at each control point
     [matUINF, matUINFTE, matTEPTS, vecTHETA] = fcnUINFROT(matCENTER, vecROTAX, 0, valRPM, valALPHAR, ...
         valAZNUM, valDIA, valJ, valNUMB,vecDVEHVSPN, vecDVETE, matVLST, matDVE);
-    hold off
-    clf
     
     % Initializing wake parameters
 	matWAKEGEOM = [];
@@ -128,6 +119,7 @@ for ai = 1:length(seqALPHAR)
 	vecWDVESYM = [];
     vecWDVETIP = [];
     vecWDVEWING = [];
+    vecCTCONV = [];
     
     % Building rotor resultant
     [vecR] = fcnRESROTOR(valNELE, 0, matCENTER, matDVENORM, matUINF, ...
@@ -189,14 +181,7 @@ for ai = 1:length(seqALPHAR)
               valWSIZE+1:end)); 
          [matWCOEFF(end-valWSIZE+1:end,:)] = fcnSOLVEWD(matWD, vecWR, ...
              valWSIZE, vecWKGAM(end-valWSIZE+1:end), vecWDVEHVSPN(end- ...
-             valWSIZE+1:end));
-
-%          if flagPLOT == 1
-%     [hFig2] = fcnPLOTBODY(flagVERBOSE, valNELE, matDVE, matVLST, matCENTER);
-%     [hLogo] = fcnPLOTLOGO(0.97,0.03,14,'k','none');
-%     [hFig2] = fcnPLOTWAKE(flagVERBOSE, hFig2, valWNELE, matWDVE, matWVLST, matWCENTER);
-% view([-37.5 50])
-end       
+             valWSIZE+1:end));   
          
         %% Generate rotor resultant
         % Calculate inflow velocity
@@ -219,8 +204,8 @@ end
             vecWDVEHVSPN);
  
         % Calculate Forces
-      [nind, nfree] = fcnRFORCES(valWSIZE, valTIMESTEP, valNELE, valWNELE, seqALPHAR, vecDVEPITCH, vecDVETE, vecDVEWING, vecWDVEWING, vecK, vecWK, vecWDVEYAW, vecWDVELESWP, vecWDVETESWP, vecDVEYAW, vecDVEMCSWP, vecWDVEHVSPN, vecWDVEHVCRD, vecWDVEROLL, vecDVEROLL,  vecDVEHVCRD, vecDVELE, vecDVEHVSPN, vecWDVEPITCH, vecDVELESWP, vecDVETESWP, vecSYM, vecTHETA, matVLST, matDVE, matUINF, matCOEFF, matADJE, matWDVE, matWVLST, matCENTER, matWCOEFF, matTEPTS, matUINFTE);
-
+        [valCT, valCQ, vecCTCONV] = fcnRFORCES(valAZNUM, valDIA, valRPM, valWSIZE, valTIMESTEP, valNELE, valWNELE, seqALPHAR, vecDVEPITCH, vecDVETE, vecDVEWING, vecWDVEWING, vecK, vecWK, vecWDVEYAW, vecWDVELESWP, vecWDVETESWP, vecDVEYAW, vecDVEMCSWP, vecWDVEHVSPN, vecWDVEHVCRD, vecWDVEROLL, vecDVEROLL,  vecDVEHVCRD, vecDVELE, vecDVEHVSPN, vecWDVEPITCH, vecDVELESWP, vecDVETESWP, vecSYM, vecTHETA, vecCTCONV, matVLST, matDVE, matUINF, matCOEFF, matADJE, matWDVE, matWVLST, matCENTER, matWCOEFF, matTEPTS, matUINFTE);
+        fprintf('      CT = %0.3f\n',mean(vecCTCONV));
     end
     
 end
