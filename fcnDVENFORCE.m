@@ -1,4 +1,4 @@
-function [nfree,nind,liftfree,liftind,sidefree,sideind, liftfree_test] = fcnDVENFORCE(matCOEFF...
+function [nfree,nind,liftfree,liftind,sidefree,sideind,el] = fcnDVENFORCE(matCOEFF...
     ,vecK,matDVE,valNELE,matCENTER,matVLST,matUINF,vecDVELESWP,vecDVEMCSWP,vecDVEHVSPN,vecDVEHVCRD,vecDVEROLL,...
     vecDVEPITCH,vecDVEYAW,vecDVELE,matADJE,valWNELE, matWDVE, matWVLST, matWCOEFF, vecWK, vecWDVEHVSPN,vecWDVEHVCRD,...
     vecWDVEROLL, vecWDVEPITCH, vecWDVEYAW, vecWDVELESWP, vecWDVETESWP, valWSIZE, valTIMESTEP, vecSYM, vecDVETESWP)
@@ -190,8 +190,6 @@ nind = dot(r,en,2);  %induced normal force
 liftfree = nfree.*sqrt(en(:,1).*en(:,1) + en(:,3).*en(:,3)); %does this work with beta?
 liftfree(en(:,3)<0) = -liftfree(en(:,3)<0);
 liftind = dot(r,el,2);
-
-liftfree_test = liftfree.*1.225;
 
 sidefree = nfree.*en(:,2);
 sideind = dot(r,es,2);

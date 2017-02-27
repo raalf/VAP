@@ -59,10 +59,6 @@ vecSLOPE = zeros(1,valNSELE-1);
 % vecTWIST = [];
 % vecSLOPE = [];
 
-vecLIFTDIST = [0; vecLIFTDIST]; % Adding zero lift at wing tip
-
-vecMOMDIST = [0; vecMOMDIST]; % Adding zero aerodynamic moment at wing tip
-
 % Temporary cross sectional area calculation
 C = -0.0333*vecSPANDIST + 0.76*ones(1,length(vecSPANDIST)) ;
 tk = 0.02 ;
@@ -122,7 +118,7 @@ valSTRUCTTIME = valTIMESTEP;
         vecTWIST(3) = 0; % Zero twist at root BC
         
         % Assemble load matrix
-        matLOAD = [vecLIFTDIST - vecLM.*9.81, vecMOMDIST - vecLM.*vecLSM.*9.81];
+        matLOAD = [vecLIFTDIST' - vecLM.*9.81, vecMOMDIST - vecLM.*vecLSM.*9.81];
         
         for yy = 4:(valNSELE+2)
             

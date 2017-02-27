@@ -1,4 +1,4 @@
-function [matVLST, matCENTER, matNEWWAKE, matNPNEWWAKE, matNTVLST, matNPVLST] = fcnMOVEWING(valALPHA, valBETA, valDELTIME, matVLST, matCENTER, matDVE, vecDVETE, matNTVLST, matNPVLST)
+function [matVLST, matCENTER, matNEWWAKE, matNPNEWWAKE, matNTVLST, matNPVLST] = fcnMOVEWING(valALPHA, valBETA, valDELTIME, matVLST, matCENTER, matDVE, vecDVETE, matNTVLST, matNPVLST, vecCL, valWEIGHT, valAREA, valDENSITY, valTIMESTEP)
 % This function moves a wing (NOT rotor) by translating all of the vertices
 % in the VLST and the in-centers of each triangle in CENTER.
 
@@ -17,7 +17,16 @@ function [matVLST, matCENTER, matNEWWAKE, matNPNEWWAKE, matNTVLST, matNPVLST] = 
 %   matCUINF - Freestream values at each of the in-centers
 %   matNEWWAKE - Outputs a 4 x 3 x n matrix of points for the wake DVE generation
 
-uinf = 30;
+if valTIMESTEP == 1
+    
+    uinf = 30;
+    
+else
+    
+    q_inf = valWEIGHT/(vecCL(valTIMESTEP-1)*valAREA);
+    uinf = sqrt(2*q_inf/valDENSITY);
+    
+end
 
 uinf = [uinf*cos(valALPHA)*cos(valBETA) uinf*sin(valBETA) uinf*sin(valALPHA)*cos(valBETA)];
 

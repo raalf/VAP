@@ -1,10 +1,13 @@
 function [matNPVLST, matNPNEWWAKE, matNEWWAKE] = fcnMOVEFLEXWING(valALPHA, valBETA, valDELTIME, matVLST, matCENTER, matDVE, vecDVETE, vecDVEHVSPN, vecDVELE, matNPVLST, matDEFGLOB,...
-    matTWISTGLOB, matSLOPE, valTIMESTEP, vecN, vecM, vecDVEWING, vecDVEPANEL, matSCLST, vecDVEPITCH, matNPDVE, vecSPANDIST)
+    matTWISTGLOB, matSLOPE, valTIMESTEP, vecN, vecM, vecDVEWING, vecDVEPANEL, matSCLST, vecDVEPITCH, matNPDVE, vecSPANDIST, vecCL, valWEIGHT, valAREA, valDENSITY)
 % matNEWWAKE, matNPNEWWAKE,
 % This function determines the velocities with which the DVEs are moved
 % based on the deflection and twist of the wing. The corresponding
 % translations are then computed of the DVE vertices and control points.
 
+
+q_inf = valWEIGHT/(vecCL*valAREA);
+valVINF = sqrt(2*q_inf/valDENSITY);
 uinf = 30;
 
 [ledves, ~, ~] = find(vecDVELE > 0);
@@ -62,6 +65,8 @@ tempSPANDIST = matCENTER(ledves,2); % Y coordinate of DVE mid-point (point where
 
 vecEDGEPITCH = vecDVEPITCH(ledves); % DVE pitch along span --> used as "y" term for linear interpolation
 
+% Some setup of work to be able to perform linear interpolation without a
+% for loop
 tempSPANDIST = repmat(tempSPANDIST', size(tempSPANDIST,1),1);
 
 tempSPANDIST = triu(tempSPANDIST);
@@ -73,6 +78,7 @@ vecEDGEPITCH = triu(vecEDGEPITCH);
 vecEDGEPITCH = ((vecSPANDIST(2:(end-1))' - tempSPANDIST(1,1:(end-1)))./(tempSPANDIST(2,2:end)-...
     tempSPANDIST(1,1:(end-1)))).*(vecEDGEPITCH(2,2:end)-vecEDGEPITCH(1,1:(end-1))) + vecEDGEPITCH(1,1:(end-1)); % Linear interpolation
 
+% Adding in root and tip values using a linear extrapolation
 pitch_root = vecEDGEPITCH(1,1) - (tempSPANDIST(1,1) - vecSPANDIST(1)).*(vecEDGEPITCH(1,2)-vecEDGEPITCH(1,1))./(tempSPANDIST(1,2)-tempSPANDIST(1,1));
 
 pitch_tip = vecEDGEPITCH(1,end) + (vecSPANDIST(end) - tempSPANDIST(1,end)).*(vecEDGEPITCH(1,end)-vecEDGEPITCH(1,end-1))./(tempSPANDIST(1,end)-tempSPANDIST(1,end-1));

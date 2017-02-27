@@ -1,4 +1,5 @@
-function [valCL, valCLF, valCLI, valCY, valCYF, valCYI, valCDI, valE, vecLIFTDIST, vecMOMDIST, vecCLDIST, valVINF]= fcnWINGNFORCE(liftfree,liftind,sidefree,sideind,inddrag,vecUINF,valAREA,valSPAN,vecSYM,valBETA,vecDVEAREA,vecDVEWING,vecM,vecN,vecDVELE,vecDVEPANEL,vecSPNWSECRD,vecSPNWSEAREA,matQTRCRD,valDENSITY,valWEIGHT,vecDVEHVSPN,vecLEDVES,matUINF)
+function [valCL, valCLF, valCLI, valCY, valCYF, valCYI, valCDI, valE, vecLIFTDIST, vecMOMDIST, vecCLDIST, valVINF]= fcnWINGNFORCE(liftfree,liftind,sidefree,sideind,inddrag,vecUINF,valAREA,valSPAN,vecSYM,valBETA,vecDVEAREA,vecDVEWING,...
+    vecM,vecN,vecDVELE,vecDVEPANEL,vecSPNWSECRD,vecSPNWSEAREA,matQTRCRD,valDENSITY,valWEIGHT,vecDVEHVSPN,vecLEDVES,matUINF,matSCLST,matCENTER,vecSPANDIST, matNPVLST, matNPDVE, matSC, matLIFTDIR)
 %% Wing Normal Force
 % this routine adds up the DVE's normal forces in order to compute the
 % total wing normal forces/density and coefficients based on free stream
@@ -17,7 +18,7 @@ function [valCL, valCLF, valCLI, valCY, valCYF, valCYI, valCDI, valE, vecLIFTDIS
 vecCLDIST = [];
 
 %  q=0.5*info.Uinf*info.Uinf*info.S
-q = 0.5* sqrt(sum(abs(vecUINF).^2,2)) * valAREA;
+q = 0.5* sqrt(sum(abs(vecUINF).^2,2)) * sqrt(sum(abs(vecUINF).^2,2)) * valAREA;
 
 ntfree(1) = 0;
 ntfree(2) = 0;
@@ -42,38 +43,38 @@ if any(vecSYM) == 1 && valBETA ==0 %not sure why beta has to be zero
 end
 
 %non-dimensionalize
-valCL = (ntfree(1) + ntind(1))/(q*30);
+valCL = (ntfree(1) + ntind(1))/q;
 valCLF = ntfree(1)/q;
 
-vecDVECL = (liftfree + liftind)./(q*30); % Total CL at each DVE
+% vecDVECL = (liftfree + liftind)./q; % Total CL at each DVE
 
-[ledves, ~, ~] = find(vecDVELE > 0);
-lepanels = vecDVEPANEL(ledves);
+% [ledves, ~, ~] = find(vecDVELE > 0);
+% lepanels = vecDVEPANEL(ledves);
+% 
+% for i = 1:max(vecDVEWING)
+% 
+% 	idxdve = ledves(vecDVEWING(ledves) == i);
+% 	idxpanel = lepanels(vecDVEWING(ledves) == i);
+% 
+%     m = vecM(idxpanel);
+%     if any(m - m(1))
+%         disp('Problem with wing chordwise elements.');
+%         break
+%     end
+%     m = m(1);
+% 
+%     tempm = repmat(vecN(idxpanel), 1, m).*repmat([0:m-1],length(idxpanel),1);
+%     
+%     rows = repmat(idxdve,1,m) + tempm;
+%     
+% % 	vecCLDIST = [vecCLDIST; (sum(vecDVECL(rows),2))./(sum(vecDVEAREA(rows),2))]; % Total CL at each spanwise station
+%     vecCLDIST = [vecCLDIST; (sum(vecDVECL(rows),2))];
+%     
+%     matCLDIST(:,1:vecM(1)) = vecDVECL(rows);
+% 
+% end
 
-for i = 1:max(vecDVEWING)
-
-	idxdve = ledves(vecDVEWING(ledves) == i);
-	idxpanel = lepanels(vecDVEWING(ledves) == i);
-
-    m = vecM(idxpanel);
-    if any(m - m(1))
-        disp('Problem with wing chordwise elements.');
-        break
-    end
-    m = m(1);
-
-    tempm = repmat(vecN(idxpanel), 1, m).*repmat([0:m-1],length(idxpanel),1);
-    
-    rows = repmat(idxdve,1,m) + tempm;
-    
-% 	vecCLDIST = [vecCLDIST; (sum(vecDVECL(rows),2))./(sum(vecDVEAREA(rows),2))]; % Total CL at each spanwise station
-    vecCLDIST = [vecCLDIST; (sum(vecDVECL(rows),2))];
-    
-    matCLDIST(:,1:vecM(1)) = vecDVECL(rows);
-
-end
-
-[vecLIFTDIST, vecMOMDIST, valVINF] = fcnFORCEDIST(vecCLDIST,matQTRCRD,vecSPNWSEAREA,valDENSITY,matCLDIST,valWEIGHT,valCL,vecDVEHVSPN,vecLEDVES);
+[vecLIFTDIST, vecMOMDIST, valVINF] = fcnFORCEDIST(liftfree, liftind, matSCLST, valDENSITY, valWEIGHT, valCL, vecDVEHVSPN, vecLEDVES, vecN, vecM, vecDVEWING, vecDVEPANEL, matCENTER, vecSPANDIST, matNPVLST, matNPDVE, matSC, matLIFTDIR);
 
 valCY = (ntfree(2) + ntind(2))/q;
 valCYF = ntfree(2)/q;
