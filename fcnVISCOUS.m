@@ -1,4 +1,4 @@
-function [valCL, valCD] = fcnVISCOUS(valCL, valCDI, valWEIGHT, valAREA, valDENSITY, valKINV, vecDVENFREE, vecDVENIND, ...
+function [valCL, valCD, valPREQ, valVINF, valLD] = fcnVISCOUS(valCL, valCDI, valWEIGHT, valAREA, valDENSITY, valKINV, vecDVENFREE, vecDVENIND, ...
     vecDVELFREE, vecDVELIND, vecDVESFREE, vecDVESIND, vecDVEPANEL, vecDVELE, vecDVEWING, vecN, vecM, vecDVEAREA, ...
     matCENTER, vecDVEHVCRD, vecAIRFOIL, flagVERBOSE, vecSYM, valVSPANELS, matVSGEOM, valFPANELS, matFGEOM, valFTURB, ...
     valFPWIDTH, valINTERF, vecDVEROLL)
@@ -65,7 +65,7 @@ for i = 1:max(vecDVEWING)
     
     for j = 1:length(idxpanel)
         pan = idxpanel(j);
-        airfoil = dlmread(strcat('airfoils/airfoil',num2str(vecAIRFOIL(pan)),'.dat'),'\t', 1, 0);
+        airfoil = dlmread(strcat('airfoils/airfoil',num2str(vecAIRFOIL(pan)),'.dat'),'', 1, 0);
         
         HiRe = airfoil(end,4);
         LoRe = airfoil(1,4);
@@ -132,7 +132,7 @@ for ii = 1:valVSPANELS
     Re = valVINF*matVSGEOM(ii,2)/valKINV;
     
     % Load airfoil data
-    airfoil = dlmread(strcat('airfoils/airfoil',num2str(matVSGEOM(ii,4)),'.dat'),'\t', 1, 0);
+    airfoil = dlmread(strcat('airfoils/airfoil',num2str(matVSGEOM(ii,4)),'.dat'),'', 1, 0);
     
     % determining the drag coefficient corresponding to lift
     % coefficient of 0
@@ -181,6 +181,12 @@ valCD = dtot/(q_inf*valAREA);
 %% Adjusting CL for stall
 
 valCL = sum(vecCNDIST.*vecAREADIST.*cos(vecDVEROLL(vecLEDVEDIST)))/valAREA*2;
+
+%% Final calculations
+
+valVINF = sqrt((2.*valWEIGHT)./(valDENSITY.*valAREA.*valCL));
+valLD = valCL./valCD;
+valPREQ = dtot.*valVINF;
 
 
 end
