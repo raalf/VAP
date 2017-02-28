@@ -50,8 +50,8 @@ strFILE = 'inputs/input-SC.txt';
     valFTURB, valFPWIDTH, valDELTAE, valDELTIME, valMAXTIME, valMINTIME, ...
     valINTERF] = fcnFWREAD(strFILE);
 
-% valMAXTIME = 68;
-% 
+valMAXTIME = 68;
+
 flagPRINT   = 1;
 flagPLOT    = 1;
 flagPLOTWAKEVEL = 0;

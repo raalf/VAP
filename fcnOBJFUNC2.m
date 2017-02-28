@@ -10,7 +10,7 @@ z = [...
     ];
 
 load('Standard Cirrus Input.mat');
-flagRELAX = 1;
+flagRELAX = 0;
 valMAXTIME = 22;
 
 %% Lopping off the end of the wing, to make room for the winglet
@@ -29,7 +29,7 @@ matGEOM(2,1:3,2) = matGEOM(2,1:3,2) - lop_loc; % Making the cut
 %% Adding on split tips
 
 valPANELS = 9;
-vecAIRFOIL = [1 1 7 6 6 6 6 6 6]';
+vecAIRFOIL = [1 2 4 3 3 3 3 3 3]';
 vecN = [6 8 3 2 4 4 2 4 4]';
 vecM = [1 1 1 1 1 1 1 1 1]';
 
