@@ -3,6 +3,7 @@ clear
 
 warning off
 
+tic
 disp('===========================================================================');
 disp('+---------------+');
 disp('| RYERSON       |       VAPCITY (Based on FreeWake 2015)');
@@ -323,6 +324,7 @@ plot(vecSPANDIST, (180/pi)*matTWISTGLOB(valTIMESTEP,(3:size(matDEFGLOB,2)-2)));
 ylabel('Twist (deg)')
 hold off
 
+toc
 %% Viscous wrapper
 
 % whos
