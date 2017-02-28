@@ -13,6 +13,8 @@ load('Standard Cirrus Input.mat');
 flagRELAX = 0;
 valMAXTIME = 22;
 
+seqALPHA = 2:12;
+
 %% Lopping off the end of the wing, to make room for the winglet
 
 out_len = (sqrt(sum(abs(matGEOM(2,1:3,2)-matGEOM(1,1:3,2)).^2)));
@@ -69,7 +71,7 @@ highspeed_cd = interp1(vecVINF,vecCD,51,'linear','extrap');
 [Vinffit, ~] = fcnCREATEFIT(seqALPHA, vecVINF);
 [Cdifit, ~] = fcnCREATEFIT(seqALPHA, vecCDi);
 
-range_vxc = 1.5:0.25:13.5;
+range_vxc = 2:0.25:12;
 CL = CLfit(range_vxc);
 CD = CDfit(range_vxc);
 LD = LDfit(range_vxc);

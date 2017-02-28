@@ -48,23 +48,20 @@ strFILE = 'inputs/input-SC.txt';
     valFTURB, valFPWIDTH, valDELTAE, valDELTIME, valMAXTIME, valMINTIME, ...
     valINTERF] = fcnFWREAD(strFILE);
 
-% valMAXTIME = 68;
-% 
+
 flagPRINT   = 1;
 flagPLOT    = 1;
 flagPLOTWAKEVEL = 0;
 flagVERBOSE = 0;
 
 flagRELAX = 0;
-valWEIGHT = 300*9.81;
-
-vecN = [10 20 10]';
+valMAXTIME = 10;
 
 %% Discretize geometry into DVEs
 
 [matCENTER0, vecDVEHVSPN, vecDVEHVCRD, vecDVELESWP, vecDVEMCSWP, vecDVETESWP, ...
     vecDVEROLL, vecDVEPITCH, vecDVEYAW, vecDVEAREA, matDVENORM, ...
-    matVLST0, matNPVLST0, matNPVLST, matDVE, valNELE, matADJE, ...
+    matVLST0, matNPVLST0, matNTVLST, matDVE, valNELE, matADJE, ...
     vecDVESYM, vecDVETIP, vecDVEWING, vecDVELE, vecDVETE, vecDVEPANEL] = fcnGENERATEDVES(valPANELS, matGEOM, vecSYM, vecN, vecM);
 
 valWSIZE = length(nonzeros(vecDVETE)); % Amount of wake DVEs shed each timestep

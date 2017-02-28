@@ -1,4 +1,4 @@
-function [vecCLv, vecCD, vecCDI, vecVINF, vecCLDIST, matXYZDIST, vecAREADIST] = fcnVAP_MAIN(flagRELAX, flagSTEADY, valAREA, valSPAN, valCMAC, valWEIGHT, ...
+function [vecCLv, vecCD, vecCDI_out, vecVINF, vecCLDIST, matXYZDIST, vecAREADIST] = fcnVAP_MAIN(flagRELAX, flagSTEADY, valAREA, valSPAN, valCMAC, valWEIGHT, ...
     seqALPHA, seqBETA, valKINV, valDENSITY, valPANELS, matGEOM, vecSYM, ...
     vecAIRFOIL, vecN, vecM, valVSPANELS, matVSGEOM, valFPANELS, matFGEOM, ...
     valFTURB, valFPWIDTH, valDELTAE, valDELTIME, valMAXTIME, valMINTIME, ...
@@ -33,45 +33,17 @@ if flagPRINT == 1;
     disp(' ');
 end
 
+
 %% Best Practices
 % 1. Define wing from one wingtip to another in one direction
 % 2. When using symmetry, define from symmetry plane outward
-
-%% Reading in geometry
-
-% % strFILE = 'inputs/VAP christmas.txt';
-% % strFILE = 'inputs/VAP input.txt';
-% %
-% % [flagRELAX, flagSTEADY, valAREA, valSPAN, valCMAC, valWEIGHT, ...
-% %     seqALPHA, seqBETA, valKINV, valDENSITY, valPANELS, matGEOM, vecSYM, ...
-% %     vecAIRFOIL, vecN, vecM, valVSPANELS, matVSGEOM, valFPANELS, matFGEOM, ...
-% %     valFTURB, valFPWIDTH, valDELTAE, valDELTIME, valMAXTIME, valMINTIME, ...
-% %     valINTERF] = fcnVAPREAD(strFILE);
-% %
-% % seqALPHA = [10];
-%
-% % strFILE = 'inputs/input.txt';
-% % strFILE = 'inputs/Config 1.txt';
-% strFILE = 'inputs/Config 2.txt';
-%
-% [flagRELAX, flagSTEADY, valAREA, valSPAN, valCMAC, valWEIGHT, ...
-%     seqALPHA, seqBETA, valKINV, valDENSITY, valPANELS, matGEOM, vecSYM, ...
-%     vecAIRFOIL, vecN, vecM, valVSPANELS, matVSGEOM, valFPANELS, matFGEOM, ...
-%     valFTURB, valFPWIDTH, valDELTAE, valDELTIME, valMAXTIME, valMINTIME, ...
-%     valINTERF] = fcnFWREAD(strFILE);
-%
-%
-% valMAXTIME  = 500;
-% flagRELAX   = 0;
-
 
 %% Discretize geometry into DVEs
 
 [matCENTER0, vecDVEHVSPN, vecDVEHVCRD, vecDVELESWP, vecDVEMCSWP, vecDVETESWP, ...
     vecDVEROLL, vecDVEPITCH, vecDVEYAW, vecDVEAREA, matDVENORM, ...
-    matVLST0, matNPVLST0, matDVE, valNELE, matADJE, ...
-    vecDVESYM, vecDVETIP, vecDVEWING, vecDVELE, vecDVETE, ...
-    vecDVEPANEL] = fcnGENERATEDVES(valPANELS, matGEOM, vecSYM, vecN, vecM);
+    matVLST0, matNPVLST0, matNTVLST, matDVE, valNELE, matADJE, ...
+    vecDVESYM, vecDVETIP, vecDVEWING, vecDVELE, vecDVETE, vecDVEPANEL] = fcnGENERATEDVES(valPANELS, matGEOM, vecSYM, vecN, vecM);
 
 valWSIZE = length(nonzeros(vecDVETE)); % Amount of wake DVEs shed each timestep
 
@@ -213,71 +185,31 @@ for ai = 1:length(seqALPHA)
             %% Forces
             
             [vecCL(valTIMESTEP,ai), vecCLF(valTIMESTEP,ai),vecCLI(valTIMESTEP,ai),vecCDI(valTIMESTEP,ai), vecE(valTIMESTEP,ai), vecDVENFREE, vecDVENIND, ...
-                vecDVELFREE, vecDVELIND, vecDVESFREE, vecDVESIND] = ...
-                fcnFORCES(matCOEFF, vecK, matDVE, valNELE, matCENTER, matVLST, vecUINF, vecDVELESWP,...
-                vecDVEMCSWP, vecDVEHVSPN, vecDVEHVCRD,vecDVEROLL, vecDVEPITCH, vecDVEYAW, vecDVELE, vecDVETE, matADJE,...
-                valWNELE, matWDVE, matWVLST, matWCOEFF, vecWK, vecWDVEHVSPN, vecWDVEHVCRD,vecWDVEROLL, vecWDVEPITCH, vecWDVEYAW, ...
-                vecWDVELESWP, vecWDVETESWP, valWSIZE, valTIMESTEP, vecSYM, vecDVETESWP, valAREA, valSPAN, valBETA, ...
-                vecDVEWING, vecWDVEWING,vecN, vecM, vecDVEPANEL);
+                vecDVELFREE, vecDVELIND, vecDVESFREE, vecDVESIND] = fcnFORCES(matCOEFF, vecK, matDVE, valNELE, matCENTER, matVLST, vecUINF, vecDVELESWP, ...
+                vecDVEMCSWP, vecDVEHVSPN, vecDVEHVCRD, vecDVEROLL, vecDVEPITCH, vecDVEYAW, vecDVELE, vecDVETE, matADJE, valWNELE, matWDVE, matWVLST, ...
+                matWCOEFF, vecWK, vecWDVEHVSPN, vecWDVEHVCRD, vecWDVEROLL, vecWDVEPITCH, vecWDVEYAW, vecWDVELESWP, vecWDVETESWP, valWSIZE, valTIMESTEP, ...
+                vecSYM, vecDVETESWP, valAREA, valSPAN, valBETA, vecDVEWING, vecWDVEWING, vecN, vecM, vecDVEPANEL);
             
             if flagPRINT == 1 && valTIMESTEP == 1
                 fprintf(' TIMESTEP    CL          CDI\n'); %header
-                fprintf('----------------------------------------------\n'); 
+                fprintf('----------------------------------------------\n');
             end
             if flagPRINT == 1
                 fprintf('  %4d     %0.5f     %0.5f\n',valTIMESTEP,vecCL(valTIMESTEP,ai),vecCDI(valTIMESTEP,ai)); %valTIMESTEP
             end
             
-%             fprintf('\n\tTimestep = %0.0f', valTIMESTEP);
-%             fprintf('\tCL = %0.5f',vecCL(valTIMESTEP,ai));
-%             fprintf('\tCDi = %0.5f',vecCDI(valTIMESTEP,ai));
+            %             fprintf('\n\tTimestep = %0.0f', valTIMESTEP);
+            %             fprintf('\tCL = %0.5f',vecCL(valTIMESTEP,ai));
+            %             fprintf('\tCDi = %0.5f',vecCDI(valTIMESTEP,ai));
         end
         
         %% Viscous wrapper
+        % This will not work with uneven timestep numbers between alphas!!
         [vecCLv(ai,1), vecCD(ai,1), vecVINF(ai,1), vecCLDIST(ai,:), matXYZDIST(:,:,ai), vecAREADIST(ai,:)] = fcnVISCOUS(vecCL(end,ai), vecCDI(end,ai), valWEIGHT, valAREA, valDENSITY, valKINV, vecDVENFREE, vecDVENIND, ...
             vecDVELFREE, vecDVELIND, vecDVESFREE, vecDVESIND, vecDVEPANEL, vecDVELE, vecDVEWING, vecN, vecM, vecDVEAREA, ...
-            matCENTER, vecDVEHVCRD, vecAIRFOIL, 0, vecSYM, valVSPANELS, matVSGEOM, valFPANELS, matFGEOM, valFTURB, ...
+            matCENTER, vecDVEHVCRD, vecAIRFOIL, flagVERBOSE, vecSYM, valVSPANELS, matVSGEOM, valFPANELS, matFGEOM, valFTURB, ...
             valFPWIDTH, valINTERF, vecDVEROLL);
-                
+        vecCDI_out(ai,1) = vecCDI(end, ai);
+        
     end
 end
-
-vecCDI = vecCDI(end,:);
-
-if flagPRINT == 1;
-    fprintf('\n');
-end
-
-%% Plotting
-
-if flagPLOT == 1
-    [hFig2] = fcnPLOTBODY(flagVERBOSE, valNELE, matDVE, matVLST, matCENTER);
-    [hFig2] = fcnPLOTWAKE(flagVERBOSE, hFig2, valWNELE, matWDVE, matWVLST, matWCENTER);
-    [hLogo] = fcnPLOTLOGO(0.97,0.03,14,'k','none');
-    
-    if flagPLOTWAKEVEL == 1
-        try
-        quiver3(matWDVEMP(:,1),matWDVEMP(:,2),matWDVEMP(:,3),matWDVEMPIND(:,1),matWDVEMPIND(:,2),matWDVEMPIND(:,3));
-        end
-    end
-%     figure(1);
-%     plot(1:valTIMESTEP, eltime)
-%     xlabel('Timestep','FontSize',15)
-%     ylabel('Time per timestep (s)', 'FontSize',15)
-%     box on
-%     grid on
-%     axis tight
-%
-%     figure(3);
-%     plot(1:valTIMESTEP, ttime)
-%     xlabel('Timestep','FontSize',15)
-%     ylabel('Total time (s)', 'FontSize',15)
-%     box on
-%     grid on
-%     axis tight
-
-end
-
-%% Viscous wrapper
-
-% whos

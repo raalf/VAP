@@ -13,6 +13,8 @@ load('Standard Cirrus Input.mat');
 flagRELAX = 0;
 valMAXTIME = 22;
 
+seqALPHA = 2:12;
+
 %% Lopping off the end of the wing, to make room for the winglet
 
 out_len = (sqrt(sum(abs(matGEOM(2,1:3,2)-matGEOM(1,1:3,2)).^2)));
@@ -51,7 +53,8 @@ try
     valFTURB, valFPWIDTH, valDELTAE, valDELTIME, valMAXTIME, valMINTIME, ...
     valINTERF);
 catch
-   zp 
+   save 'zp_bad.mat'
+   disp('Problem running VAP');
 end
 %% Root bending
 % At alpha = 5 degrees
@@ -74,7 +77,7 @@ highspeed_cd = interp1(vecVINF,vecCD,51,'linear','extrap');
 [Vinffit, ~] = fcnCREATEFIT(seqALPHA, vecVINF);
 [Cdifit, ~] = fcnCREATEFIT(seqALPHA, vecCDi);
 
-range_vxc = 1.5:0.25:13.5;
+range_vxc = 2:0.25:12;
 CL = CLfit(range_vxc);
 CD = CDfit(range_vxc);
 LD = LDfit(range_vxc);
@@ -118,7 +121,7 @@ out = [invVxcMAX_low invVxcMAX_med invVxcMAX_high root_bending highspeed_cd];
 
 %% Writing iteration
 
-fp2 = fopen('optihistory2r.txt','at');
+fp2 = fopen('optihistory2.txt','at');
 fprintf(fp2,'%f %f ', out, zp);
 fprintf(fp2,'\r\n');
 fclose(fp2);

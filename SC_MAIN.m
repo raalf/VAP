@@ -40,6 +40,7 @@ disp(' ');
 % 
 % seqALPHA = [10];
 
+% strFILE = 'inputs/input.txt';
 strFILE = 'inputs/input-SC.txt';
 % strFILE = 'inputs/inputCirrus.txt';
 % % strFILE = 'inputs/Config 1.txt';
@@ -49,16 +50,20 @@ strFILE = 'inputs/input-SC.txt';
     vecAIRFOIL, vecN, vecM, valVSPANELS, matVSGEOM, valFPANELS, matFGEOM, ...
     valFTURB, valFPWIDTH, valDELTAE, valDELTIME, valMAXTIME, valMINTIME, ...
     valINTERF] = fcnFWREAD(strFILE);
-
-valMAXTIME = 68;
-
+% 
+% valMAXTIME = 68;
+% 
 flagPRINT   = 1;
 flagPLOT    = 1;
 flagPLOTWAKEVEL = 0;
 flagVERBOSE = 0;
+% 
 
+% valWEIGHT = 350*9.81;
 flagRELAX = 0;
-valWEIGHT = 300*9.81;
+valMAXTIME = 10;
+
+% load('zp_bad.mat')
 
 %% Discretize geometry into DVEs
 
