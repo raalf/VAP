@@ -13,7 +13,7 @@ load('Standard Cirrus Input.mat');
 flagRELAX = 0;
 valMAXTIME = 22;
 
-seqALPHA = 2:12;
+seqALPHA = 2:14;
 
 %% Lopping off the end of the wing, to make room for the winglet
 
@@ -77,7 +77,7 @@ highspeed_cd = interp1(vecVINF,vecCD,51,'linear','extrap');
 [Vinffit, ~] = fcnCREATEFIT(seqALPHA, vecVINF);
 [Cdifit, ~] = fcnCREATEFIT(seqALPHA, vecCDi);
 
-range_vxc = 2:0.25:12;
+range_vxc = 2:0.25:max(seqALPHA);
 CL = CLfit(range_vxc);
 CD = CDfit(range_vxc);
 LD = LDfit(range_vxc);
@@ -91,7 +91,7 @@ WSroh = 2*valWEIGHT/(valAREA*valDENSITY);
 
 k = 1;
 
-for wmaxth = 2:3:8
+for wmaxth = [3 5 8]
     
     j = 1;
     
