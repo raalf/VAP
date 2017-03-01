@@ -8,7 +8,7 @@ function [vecUINF] = fcnUINFWING(valALPHA, valBETA)
 % OUTPUT:
 %   vecUINF - vector of freestream velocity
 
-uinf = 30;
+uinf = 60;
 
 vecUINF = [uinf*cos(valALPHA)*cos(valBETA) uinf*sin(valBETA) uinf*sin(valALPHA)*cos(valBETA)];
 

@@ -8,7 +8,7 @@ function [matNPVLST, matNPNEWWAKE, matNEWWAKE] = fcnMOVEFLEXWING(valALPHA, valBE
 
 q_inf = valWEIGHT/(vecCL*valAREA);
 valVINF = sqrt(2*q_inf/valDENSITY);
-uinf = 30;
+uinf = 60;
 
 [ledves, ~, ~] = find(vecDVELE > 0);
 

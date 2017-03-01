@@ -19,7 +19,7 @@ function [matVLST, matCENTER, matNEWWAKE, matNPNEWWAKE, matNTVLST, matNPVLST] = 
 
 if valTIMESTEP == 1
     
-    uinf = 30;
+    uinf = 60;
     
 else
     
