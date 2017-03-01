@@ -1,4 +1,4 @@
-function [vecUINF] = fcnUINFWING(valALPHA, valBETA)
+function [vecUINF] = fcnUINFWING(valALPHA, valBETA, valUINF)
 
 % INPUT:
 %   valALPHA - Angle of attack for this move (radians)
@@ -8,7 +8,7 @@ function [vecUINF] = fcnUINFWING(valALPHA, valBETA)
 % OUTPUT:
 %   vecUINF - vector of freestream velocity
 
-uinf = 60;
+uinf = valUINF;
 
 vecUINF = [uinf*cos(valALPHA)*cos(valBETA) uinf*sin(valBETA) uinf*sin(valALPHA)*cos(valBETA)];
 

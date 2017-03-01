@@ -7,7 +7,7 @@ Relaxed wake (yes 1, no 0):		flagRELAX =		0
 Steady (1) or unsteady (2):		flagSTEADY =	2
 Stiff (1) or Flexible (2) Wing:	flagSTIFFWING = 2
 
-Max. number of time steps:		valMAXTIME 	=	1500
+Max. number of time steps:		valMAXTIME 	=	100
 Min. number of time steps: 		valMINTIME 	= 	0
 Width of each time step (sec):	valDELTIME 	=	0.000448308725580066
 Convergence delta-span effic.:	valDELTAE 	=	0.000000	(0 if only timestepping)
@@ -16,7 +16,7 @@ AOA sequence: 			seqALPHA 	= 	0
 Sideslip angle [deg]:	seqBETA 	=	0.0
 Density:				valDENSITY 	= 	1.2250
 Kinematic viscosity:	valKINV		=	1.460000e-05
-Freestream velocity:	valVINF		=	60.0
+Freestream velocity:	valUINF		=	30.0
 
 Reference area:				valAREA 	=	10.84
 Reference span:				valSPAN 	=	17.32
@@ -34,8 +34,8 @@ Number of chordwise elements: 	vecM 		= 1.
 Airfoil number: 				vecAIRFOIL 	= 1
 Symmetry edge (0, 1 or 2): 		vecSYM 		= 1;
 xleft		yleft		zleft		chord		epsilon
--0.327200	0.000000	0.0000000	0.740000	1.450000
--0.336800	4.035000	0.1734000	0.711000	1.450000
+-0.327200	0.000000	0.0000000	0.740000	5.750000
+-0.336800	4.035000	0.1734000	0.711000	5.750000
 
 Panel #:2. 
 Number of spanwise elements:	vecN 		= 6. 
@@ -43,8 +43,8 @@ Number of chordwise elements: 	vecM 		= 1.
 Airfoil number: 				vecAIRFOIL 	= 1
 Symmetry edge (0, 1 or 2): 		vecSYM 		= 0;
 xleft		yleft		zleft		chord		epsilon
--0.336800	4.0350000	0.173400	0.711000	1.450000
--0.221800	7.1400000	0.286700	0.479000	1.450000
+-0.336800	4.0350000	0.173400	0.711000	5.750000
+-0.221800	7.1400000	0.286700	0.479000	5.750000
 
 Panel #:3. 
 Number of spanwise elements:	vecN 		= 3. 
@@ -52,8 +52,8 @@ Number of chordwise elements: 	vecM 		= 1.
 Airfoil number: 				vecAIRFOIL 	= 1
 Symmetry edge (0, 1 or 2): 		vecSYM 		= 0;
 xleft		yleft		zleft		chord		epsilon
--0.221800	7.140000	0.286700	0.479000	1.450000
--0.056300	8.660000	0.333000	0.259000	1.450000
+-0.221800	7.140000	0.286700	0.479000	5.750000
+-0.056300	8.660000	0.333000	0.259000	5.750000
 
 %<- special identifier
 Vertical tail information:

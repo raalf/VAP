@@ -6,8 +6,8 @@ warning off
 tic
 disp('===========================================================================');
 disp('+---------------+');
-disp('| RYERSON       |       VAPCITY (Based on FreeWake 2015)');
-disp('| APPLIED       |       Running Version 2016.09');
+disp('| RYERSON       |       WinDySIM (Based on FreeWake 2015)');
+disp('| APPLIED       |       Running Version 2017.03');
 disp('| AERODYNAMICS  |       Includes stall model');
 disp('| LABORATORY OF |       No trim solution');
 disp('| FLIGHT        |       o                         o');
@@ -38,7 +38,7 @@ strFILE = 'inputs/VAP_SB14.txt';
 strSTRUCT_INPUT = 'inputs/Struct_Input.txt';
 
 [flagRELAX, flagSTEADY, flagSTIFFWING, valAREA, valSPAN, valCMAC, valWEIGHT, ...
-    seqALPHA, seqBETA, valKINV, valVINF, valDENSITY, valPANELS, matGEOM, vecSYM, ...
+    seqALPHA, seqBETA, valKINV, valUINF, valDENSITY, valPANELS, matGEOM, vecSYM, ...
     vecAIRFOIL, vecN, vecM, valVSPANELS, matVSGEOM, valFPANELS, matFGEOM, ...
     valFTURB, valFPWIDTH, valDELTAE, valDELTIME, valMAXTIME, valMINTIME, ...
     valINTERF] = fcnVAPREAD(strFILE);
@@ -115,7 +115,7 @@ for ai = 1:length(seqALPHA)
         valBETA = deg2rad(seqBETA(bi));
         
         % Determining freestream vector
-        vecUINF = fcnUINFWING(valALPHA, valBETA);
+        vecUINF = fcnUINFWING(valALPHA, valBETA, valUINF);
         
         matUINF = repmat(vecUINF,length(matCENTER),1);
         
@@ -179,8 +179,8 @@ for ai = 1:length(seqALPHA)
             % First two timesteps do not deflect the wing
             if valTIMESTEP <= 2 || flagSTIFFWING == 1
 
-                [matVLST, matCENTER, matNEWWAKE, matNPNEWWAKE, matNTVLST, matNPVLST, matUINF, matDEFGLOB, matTWISTGLOB] = fcnSTIFFWING(valALPHA, valBETA, valDELTIME, matVLST, matCENTER, matDVE, vecDVETE,...
-                    matNTVLST, matNPVLST, vecN, valTIMESTEP, vecCL, valWEIGHT, valAREA, valDENSITY);
+                [matVLST, matCENTER, matNEWWAKE, matNPNEWWAKE, matNTVLST, matNPVLST, matUINF, matDEFGLOB, matTWISTGLOB, valUINF] = fcnSTIFFWING(valALPHA, valBETA, valDELTIME, matVLST, matCENTER, matDVE, vecDVETE,...
+                    matNTVLST, matNPVLST, vecN, valTIMESTEP, vecCL, valWEIGHT, valAREA, valDENSITY, valUINF);
                               
             % Remaining timesteps compute wing deflection and translate the
             % wing accordingly
@@ -194,7 +194,7 @@ for ai = 1:length(seqALPHA)
                 [vecDEF, vecTWIST, matDEFGLOB, matTWISTGLOB, matDEF, matTWIST, matSLOPE] = fcnWINGTWISTBEND(vecLIFTDIST, vecMOMDIST, matEIx, vecLM, vecJT, matGJt,...
                     vecLSM, vecN, valSPAN, vecDVEHVSPN, valTIMESTEP, matDEFGLOB, matTWISTGLOB, vecSPANDIST, valDELTIME, matSLOPE);
                 
-                [matNPVLST, matNPNEWWAKE, matNEWWAKE] = fcnMOVEFLEXWING(valALPHA, valBETA, valDELTIME, matVLST, matCENTER, matDVE, vecDVETE, vecDVEHVSPN, vecDVELE, matNPVLST, matDEFGLOB,...
+                [matNPVLST, matNPNEWWAKE, matNEWWAKE, valUINF] = fcnMOVEFLEXWING(valALPHA, valBETA, valDELTIME, matVLST, matCENTER, matDVE, vecDVETE, vecDVEHVSPN, vecDVELE, matNPVLST, matDEFGLOB,...
                     matTWISTGLOB, matSLOPE, valTIMESTEP, vecN, vecM, vecDVEWING, vecDVEPANEL, matSCLST, vecDVEPITCH, matNPDVE, vecSPANDIST, vecCL, valWEIGHT, valAREA, valDENSITY);
                 
                 [ vecDVEHVSPN, vecDVEHVCRD, ...
@@ -257,7 +257,7 @@ for ai = 1:length(seqALPHA)
             %% Forces
             
             [vecCL(valTIMESTEP,ai), vecCLF(valTIMESTEP,ai),vecCLI(valTIMESTEP,ai),vecCDI(valTIMESTEP,ai), vecE(valTIMESTEP,ai), vecDVENFREE, vecDVENIND, ...
-                vecDVELFREE, vecDVELIND, vecDVESFREE, vecDVESIND, vecLIFTDIST, vecMOMDIST, vecCLDIST, valVINF] = ...
+                vecDVELFREE, vecDVELIND, vecDVESFREE, vecDVESIND, vecLIFTDIST, vecMOMDIST, vecCLDIST] = ...
                 fcnFORCES(matCOEFF, vecK, matDVE, valNELE, matCENTER, matVLST, matUINF, vecDVELESWP,...
                 vecDVEMCSWP, vecDVEHVSPN, vecDVEHVCRD,vecDVEROLL, vecDVEPITCH, vecDVEYAW, vecDVELE, vecDVETE, matADJE,...
                 valWNELE, matWDVE, matWVLST, matWCOEFF, vecWK, vecWDVEHVSPN, vecWDVEHVCRD,vecWDVEROLL, vecWDVEPITCH, vecWDVEYAW, ...

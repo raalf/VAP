@@ -1,14 +1,12 @@
-function [matNPVLST, matNPNEWWAKE, matNEWWAKE] = fcnMOVEFLEXWING(valALPHA, valBETA, valDELTIME, matVLST, matCENTER, matDVE, vecDVETE, vecDVEHVSPN, vecDVELE, matNPVLST, matDEFGLOB,...
+function [matNPVLST, matNPNEWWAKE, matNEWWAKE, valUINF] = fcnMOVEFLEXWING(valALPHA, valBETA, valDELTIME, matVLST, matCENTER, matDVE, vecDVETE, vecDVEHVSPN, vecDVELE, matNPVLST, matDEFGLOB,...
     matTWISTGLOB, matSLOPE, valTIMESTEP, vecN, vecM, vecDVEWING, vecDVEPANEL, matSCLST, vecDVEPITCH, matNPDVE, vecSPANDIST, vecCL, valWEIGHT, valAREA, valDENSITY)
 % matNEWWAKE, matNPNEWWAKE,
 % This function determines the velocities with which the DVEs are moved
 % based on the deflection and twist of the wing. The corresponding
 % translations are then computed of the DVE vertices and control points.
 
-
-q_inf = valWEIGHT/(vecCL*valAREA);
-valVINF = sqrt(2*q_inf/valDENSITY);
-uinf = 60;
+q_inf = valWEIGHT/(vecCL(valTIMESTEP-1)*valAREA);
+valUINF = sqrt(2*q_inf/valDENSITY);
 
 [ledves, ~, ~] = find(vecDVELE > 0);
 
@@ -21,18 +19,18 @@ if valTIMESTEP >= 3
 
     % Calculate cartesian velocity of DVE edges
     del_twist = ((matTWISTGLOB(valTIMESTEP,3:sum(vecN,1)+3) - matTWISTGLOB(valTIMESTEP-1,3:sum(vecN,1)+3)));
-    vecXVEL = repmat(uinf*cos(valALPHA)*cos(valBETA),1,sum(vecN,1)+1);
-    vecYVEL = repmat(uinf*sin(valBETA),1,size(matSLOPE,2)) + [0,((matSLOPE(valTIMESTEP,2:end) - matSLOPE(valTIMESTEP-1,2:end))./valDELTIME).*vecDVESPAN.*cos(repmat(pi/2,1,size(matSLOPE,2)-1) - matSLOPE(valTIMESTEP,2:end))];
-    vecZVEL = repmat(uinf*sin(valALPHA)*cos(valBETA),1,sum(vecN,1)+1) + ((matDEFGLOB(valTIMESTEP,3:sum(vecN,1)+3) - matDEFGLOB(valTIMESTEP-1,3:sum(vecN,1)+3))./valDELTIME);
+    vecXVEL = repmat(valUINF*cos(valALPHA)*cos(valBETA),1,sum(vecN,1)+1);
+    vecYVEL = repmat(valUINF*sin(valBETA),1,size(matSLOPE,2)) + [0,((matSLOPE(valTIMESTEP,2:end) - matSLOPE(valTIMESTEP-1,2:end))./valDELTIME).*vecDVESPAN.*cos(repmat(pi/2,1,size(matSLOPE,2)-1) - matSLOPE(valTIMESTEP,2:end))];
+    vecZVEL = repmat(valUINF*sin(valALPHA)*cos(valBETA),1,sum(vecN,1)+1) + ((matDEFGLOB(valTIMESTEP,3:sum(vecN,1)+3) - matDEFGLOB(valTIMESTEP-1,3:sum(vecN,1)+3))./valDELTIME);
 %      - matDEFGLOB(valTIMESTEP-2,3:sum(vecN,1)+3) -
 %      matTWISTGLOB(valTIMESTEP-2,3:sum(vecN,1)+3)  - matSLOPE(valTIMESTEP-2,2:end)
 else
     
     % Calculate cartesian velocity of DVE edges
     del_twist = ((matTWISTGLOB(valTIMESTEP,3:sum(vecN,1)+3)));
-    vecXVEL = repmat(uinf*cos(valALPHA)*cos(valBETA),1,sum(vecN,1)+1);
-    vecYVEL = repmat(uinf*sin(valBETA),1,size(matSLOPE,2)) + [0,((matSLOPE(valTIMESTEP,2:end))./valDELTIME).*vecDVESPAN.*cos(repmat(pi/2,1,size(matSLOPE,2)-1) - matSLOPE(valTIMESTEP-1,2:end))];
-    vecZVEL = repmat(uinf*sin(valALPHA)*cos(valBETA),1,sum(vecN,1)+1) + ((matDEFGLOB(valTIMESTEP,3:sum(vecN,1)+3))./valDELTIME);
+    vecXVEL = repmat(valUINF*cos(valALPHA)*cos(valBETA),1,sum(vecN,1)+1);
+    vecYVEL = repmat(valUINF*sin(valBETA),1,size(matSLOPE,2)) + [0,((matSLOPE(valTIMESTEP,2:end))./valDELTIME).*vecDVESPAN.*cos(repmat(pi/2,1,size(matSLOPE,2)-1) - matSLOPE(valTIMESTEP-1,2:end))];
+    vecZVEL = repmat(valUINF*sin(valALPHA)*cos(valBETA),1,sum(vecN,1)+1) + ((matDEFGLOB(valTIMESTEP,3:sum(vecN,1)+3))./valDELTIME);
 
 end
 

@@ -1,4 +1,4 @@
-function [vecLIFTDIST, vecMOMDIST, valVINF] = fcnFORCEDIST(liftfree, liftind, matSCLST, valDENSITY, valWEIGHT, valCL, vecDVEHVSPN, vecLEDVES, vecN, vecM, vecDVEWING, vecDVEPANEL, matCENTER, vecSPANDIST, matNPVLST, matNPDVE, matSC, matLIFTDIR)
+function [vecLIFTDIST, vecMOMDIST] = fcnFORCEDIST(liftfree, liftind, matSCLST, valDENSITY, valWEIGHT, valCL, vecDVEHVSPN, vecLEDVES, vecN, vecM, vecDVEWING, vecDVEPANEL, matCENTER, vecSPANDIST, matNPVLST, matNPDVE, matSC, matLIFTDIR)
 
 % This function computes the dimensional force and moment distribution
 % across the wing, resolved to the aerodynamic center line. Moment is taken
@@ -18,8 +18,6 @@ function [vecLIFTDIST, vecMOMDIST, valVINF] = fcnFORCEDIST(liftfree, liftind, ma
 % valVINF = sqrt(2*q_inf/valDENSITY);
 
 [matROWS] = fcnDVEROW(vecLEDVES, vecDVEPANEL, vecDVEWING, vecM, vecN);
-
-valVINF = 30;
 
 % Convert DVE force from force/density to force/unit length
 vecLIFTDIST = ((sum(liftfree(matROWS),2) + sum(liftind(matROWS),2))*valDENSITY)./(2*vecDVEHVSPN(vecLEDVES));

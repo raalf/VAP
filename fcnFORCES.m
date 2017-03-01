@@ -26,5 +26,5 @@ function [valCL,valCLF, valCLI, valCDI, valE, vecDVENFREE, vecDVENIND, vecDVELFR
 
 %% Sum up element forces to generate total wing forces
 
-[valCL, valCLF, valCLI, valCY, valCYF, valCYI, valCDI, valE, vecLIFTDIST, vecMOMDIST, vecCLDIST, valVINF]= fcnWINGNFORCE(vecDVELFREE, vecDVELIND, vecDVESFREE, vecDVESIND, inddrag, vecUINF, valAREA, valSPAN, vecSYM, valBETA, vecDVEAREA,...
+[valCL, valCLF, valCLI, valCY, valCYF, valCYI, valCDI, valE, vecLIFTDIST, vecMOMDIST, vecCLDIST]= fcnWINGNFORCE(vecDVELFREE, vecDVELIND, vecDVESFREE, vecDVESIND, inddrag, vecUINF, valAREA, valSPAN, vecSYM, valBETA, vecDVEAREA,...
     vecDVEWING, vecM, vecN, vecDVELE, vecDVEPANEL, vecSPNWSECRD, vecSPNWSEAREA, matQTRCRD, valDENSITY, valWEIGHT, vecDVEHVSPN, vecLEDVES, matUINF, matSCLST, matCENTER, vecSPANDIST, matNPVLST, matNPDVE, matSC, matLIFTDIR);
