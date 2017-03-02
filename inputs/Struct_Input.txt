@@ -12,9 +12,9 @@ Stiffness Distribution
 		C Coefficient: vec_EIx = 793632
 
 	Torsion (G*Jt):
-		A Coefficient: vec_GJt = 6000
-		B Coefficient: vec_GJt = -205200
-		C Coefficient: vec_GJt = 1754460
+		A Coefficient: vec_GJt = 361.92
+		B Coefficient: vec_GJt = -23848
+		C Coefficient: vec_GJt = 192242
 
 --------
 Geometry
@@ -31,9 +31,9 @@ Geometry
 		C Coefficient: vec_CG = 0.31620
 
 	Torsion Constant (Jt):
-		A Coefficient: vec_Jt = 0
-		B Coefficient: vec_Jt = -0.0034
-		C Coefficient: vec_Jt = 0.0471
+		A Coefficient: vec_Jt = 0.013
+		B Coefficient: vec_Jt = -0.0234
+		C Coefficient: vec_Jt = 0.1337
 
 -----------------
 Mass Distribution

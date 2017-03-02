@@ -314,7 +314,7 @@ ylabel('Deflection (m)')
 xlabel('Span Location (m)')
 hold on
 yyaxis right
-plot(vecSPANDIST, (2*180/pi)*matTWISTGLOB(valTIMESTEP,(3:size(matDEFGLOB,2)-2)));
+plot(vecSPANDIST, (180/pi)*matTWISTGLOB(valTIMESTEP,(3:size(matDEFGLOB,2)-2)));
 ylabel('Twist (deg)')
 hold off
 
