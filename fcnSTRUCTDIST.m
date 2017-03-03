@@ -1,4 +1,4 @@
-function [matEIx, matGJt, vecEA, vecCG, vecJT, vecLM, vecLSM, vecLSAC, matAEROCNTR, matSCLST, vecSPANDIST, matSC] = fcnSTRUCTDIST(vecDVEHVSPN, vecDVELE, vecDVETE, vecEIxCOEFF, vecGJtCOEFF,...
+function [matEIx, matGJt, vecEA, vecCG, vecJT, vecLM, vecLSM, vecLSAC, matAEROCNTR, matSCLST, vecSPANDIST, matSC, vecMAC] = fcnSTRUCTDIST(vecDVEHVSPN, vecDVELE, vecDVETE, vecEIxCOEFF, vecGJtCOEFF,...
     vecEACOEFF, vecCGCOEFF, vecJTCOEFF, vecLMCOEFF, matNPVLST, matNPDVE, vecDVEPANEL, vecN, vecM, vecDVEWING, vecDVEROLL, vecDVEPITCH, vecDVEYAW)
 %% Geometric Properties
 
@@ -31,6 +31,18 @@ tempSPAN = triu(matSPANDIST);  % Upper triangular matrix of DVE spans
 
 vecSPANDIST = sum(tempSPAN(:,1:size(matSPANDIST,2)))';
 vecSPANDIST = [0; vecSPANDIST]; % Adding location of wing root
+
+% Calculating mean aerodynamic chord at each spanwise station to use for
+% pitching moment calculations later on
+
+idx1 = 1:(length(tempDVEEDGECRD)-1); % Index of root chord elements
+idx2 = 2:length(tempDVEEDGECRD); % Index of tip chord elements
+
+% Calculate taper ratio of each DVE
+tempDVEEDGECRD = repmat(tempDVEEDGECRD,1,2);
+taper_ratio = (tempDVEEDGECRD(idx2)./tempDVEEDGECRD(idx1))';
+
+vecMAC = (2/3)*tempDVEEDGECRD(idx1,1).*(1 + taper_ratio + taper_ratio.^2)./(1 + taper_ratio); % Vector of mean aerodynamic chord at each spanwise station
 
 
 %% Structural Properties
@@ -95,12 +107,12 @@ matSCLST = tempSCLST;
 
 matSCLST = matSCLST - matNPVLST; % Matrix of vectors between shear center and vertex
 
-% figure(4)
-% clf
-% patch('Faces',matNPDVE,'Vertices',matNPVLST,'FaceColor','r')
-% hold on
-% plot3(matAEROCNTR(:,1), matAEROCNTR(:,2), matAEROCNTR(:,3),'-ok')
-% plot3(matSC(:,1), matSC(:,2), matSC(:,3),'-ob')
+figure(4)
+clf
+patch('Faces',matNPDVE,'Vertices',matNPVLST,'FaceColor','r')
+hold on
+plot3(matAEROCNTR(:,1), matAEROCNTR(:,2), matAEROCNTR(:,3),'-ok')
+plot3(matSC(:,1), matSC(:,2), matSC(:,3),'-ob')
 
 end
 

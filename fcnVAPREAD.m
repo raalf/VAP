@@ -1,5 +1,5 @@
 function [flagRELAX, flagSTEADY, flagSTIFFWING, valAREA, valSPAN, valCMAC, valWEIGHT, ...
-    seqALPHA, seqBETA, valKINV, valUINF, valDENSITY, valPANELS, matGEOM, vecSYM, ...
+    valCM, seqALPHA, seqBETA, valKINV, valUINF, valDENSITY, valPANELS, matGEOM, vecSYM, ...
     vecAIRFOIL, vecN, vecM, valVSPANELS, matVSGEOM, valFPANELS, matFGEOM, ...
     valFTURB, valFPWIDTH, valDELTAE, valDELTIME, valMAXTIME, valMINTIME, ...
     valINTERF] = fcnVAPREAD(strFILE)
@@ -161,6 +161,13 @@ while(ch~='=');
     ch = fscanf(fp,'%c',1);
 end
 valWEIGHT = fscanf(fp,'%lf');
+
+% Reading pitching moment coefficient
+ch = fscanf(fp,'%c',1);
+while(ch~='=');
+    ch = fscanf(fp,'%c',1);
+end
+valCM = fscanf(fp,'%lf');
 
 %% Reading panel/wing/lifting line information
 % Reading No. of panels
