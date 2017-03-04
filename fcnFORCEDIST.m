@@ -1,5 +1,5 @@
 function [vecLIFTDIST, vecMOMDIST] = fcnFORCEDIST(liftfree, liftind, matSCLST, valDENSITY, valWEIGHT, valCL, vecDVEHVSPN, vecLEDVES, vecN, vecM,...
-    vecDVEWING, vecDVEPANEL, matCENTER, vecSPANDIST, matNPVLST, matNPDVE, matSC, matLIFTDIR, vecMAC, valCM, valAREA, vecSPNWSEAREA,vecLSAC)
+    vecDVEWING, vecDVEPANEL, matCENTER, vecSPANDIST, matNPVLST, matNPDVE, matSC, matLIFTDIR, vecMAC, valCM, valAREA, vecSPNWSEAREA,vecLSAC,A,B,C,s)
 
 % This function computes the dimensional force and moment distribution
 % across the wing, resolved to the shear center line. Moment is taken
@@ -79,22 +79,32 @@ end
 matSC = repmat(matSC,1,1,vecM(1));
 
 % Compute moment arm for cross product
-% delX = (row_ledves - matSC);
-delX = [vecLSAC, zeros(size(vecLSAC,1),2)];
-force = [zeros(size(vecLIFTDIST,2),2),vecLIFTDIST'];
-% tempMOMDIST = cross(-delX,force); % M' = delx X lift
-tempMOMDIST = vecLIFTDIST'.*vecLSAC;
+delX = (row_ledves - matSC);
+% delX = [vecLSAC, zeros(size(vecLSAC,1),2)];
+% force = [zeros(size(vecLIFTDIST,2),2),vecLIFTDIST'];
+tempMOMDIST = cross(delX,lift_moment); % M' = delx X lift
+% tempMOMDIST = vecLIFTDIST'.*vecLSAC;
 
 % Compute magnitude of moment at each chordwise location
-% for i = 1:vecM(1)
-%    
-%     matMOMDIST(:,i) = sign(tempMOMDIST(:,2,i)).*sqrt(sum(abs(tempMOMDIST(:,:,i)).^2,2));
-%     
-% end
-% 
-% vecMOMDIST = sum(matMOMDIST,2);
-% vecMOMDIST = [vecMOMDIST(1:(end-1)).*valDENSITY./(2*vecDVEHVSPN(vecLEDVES)); 0] + [q_inf*vecMAC.*vecMAC.*valCM;0];
+for i = 1:vecM(1)
+   
+    matMOMDIST(:,i) = sign(tempMOMDIST(:,2,i)).*sqrt(sum(abs(tempMOMDIST(:,:,i)).^2,2));
+    
+end
 
-vecMOMDIST = tempMOMDIST + [q_inf*vecMAC.*vecMAC.*valCM;0];
+vecGAMMA = A(vecLEDVES) + vecDVEHVSPN(vecLEDVES)'.*B(vecLEDVES) + vecDVEHVSPN(vecLEDVES)'.*vecDVEHVSPN(vecLEDVES)'.*C(vecLEDVES);
+gamma_root = A(vecLEDVES(1)) - vecDVEHVSPN(vecLEDVES(1))'.*B(vecLEDVES(1)) + vecDVEHVSPN(vecLEDVES(1))'.*vecDVEHVSPN(vecLEDVES(1))'.*C(vecLEDVES(1));
+
+vecGAMMA = [gamma_root,vecGAMMA];
+
+vecMOMDIST = sum(matMOMDIST,2);
+vecMOMDIST = [vecMOMDIST(1:(end-1)).*valDENSITY./(2*vecDVEHVSPN(vecLEDVES)); 0];
+M0 = q_inf*valAREA.*vecMAC'.*vecMAC'.*valCM./vecGAMMA(1:(end-1));
+
+M = [s(vecLEDVES,:).*M0'; zeros(1,3)];
+
+vecMOMDIST = vecMOMDIST + M(:,2);
+
+% vecMOMDIST = tempMOMDIST + [q_inf*vecMAC.*vecMAC.*valCM;0];
 
 end
