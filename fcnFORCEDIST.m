@@ -99,12 +99,12 @@ vecGAMMA = [gamma_root,vecGAMMA];
 
 vecMOMDIST = sum(matMOMDIST,2);
 vecMOMDIST = [vecMOMDIST(1:(end-1)).*valDENSITY./(2*vecDVEHVSPN(vecLEDVES)); 0];
-M0 = q_inf*valAREA.*vecMAC'.*vecMAC'.*valCM./vecGAMMA(1:(end-1));
+% M0 = q_inf*valAREA.*vecMAC'.*vecMAC'.*valCM./vecGAMMA(1:(end-1));
 
-M = [s(vecLEDVES,:).*M0'; zeros(1,3)];
+% M = [s(vecLEDVES,:).*M0'; zeros(1,3)];
 
-vecMOMDIST = vecMOMDIST + M(:,2);
+% vecMOMDIST = vecMOMDIST + M(:,2);
 
-% vecMOMDIST = tempMOMDIST + [q_inf*vecMAC.*vecMAC.*valCM;0];
+vecMOMDIST = vecMOMDIST + [q_inf*vecMAC.*vecMAC.*valCM;0];
 
 end
