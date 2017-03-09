@@ -1,4 +1,4 @@
-function [matUINF, matUINFTE, matTEPTS, vecTHETA] = fcnUINFROT(matCENTER, vecROTAX, valTIMESTEP, valRPM, valALPHAR, valAZNUM, valDIA, valJ, valNUMB, vecDVEHVSPN, vecDVETE, matVLST, matDVE)
+function [matUINF, matUINFTE, matTEPTS, vecTHETA,vecCPRADI] = fcnUINFROT(matCENTER, vecROTAX, valTIMESTEP, valRPM, valALPHAR, valAZNUM, valDIA, valJ, valNUMB, vecDVEHVSPN, vecDVETE, matVLST, matDVE)
 
 % This function defines the direction and magnitude of the inflow velocity.
 % This is calculated at both the control points and TE points.
@@ -13,6 +13,7 @@ function [matUINF, matUINFTE, matTEPTS, vecTHETA] = fcnUINFROT(matCENTER, vecROT
 %   calculation)
 %   matTEPTS - Trailing edge points of interest
 %   vecTHETA - Current angle of each DVE
+%   vecCPRADI - Radius from rotation axis to control point
 
 % Finding the rotation angle for the timestep
 valDELROT = (2*pi)/valAZNUM;
@@ -33,11 +34,11 @@ tempRADPS = valRPM*2*pi/60;
 tempCENTER = matCENTER - repmat(vecROTAX, tempTOTDVE(1),1);
 
 % Radius Magnitude
-tempRMAG = sqrt(tempCENTER(:,1).^2+tempCENTER(:,2).^2+tempCENTER(:,3).^2);
+vecCPRADI = sqrt(tempCENTER(:,1).^2+tempCENTER(:,2).^2+tempCENTER(:,3).^2);
 
 % Rotation matrix and traslation vector
-matUROT = tempRADPS*[tempRMAG.*cos(vecTHETA) tempRMAG.*sin(vecTHETA) zeros(tempTOTDVE(1),1)];
-vecUTRANS = (-1*valJ*valDIA*valRPM/60)*[cos(valALPHAR) 0 sin(valALPHAR)];
+matUROT = tempRADPS*[vecCPRADI.*cos(vecTHETA) vecCPRADI.*sin(vecTHETA) zeros(tempTOTDVE(1),1)];
+vecUTRANS = (valJ*valDIA*valRPM/60)*[-cos(valALPHAR) 0 sin(valALPHAR)];
 
 % Velocity matrix for each control point
 matUINF = matUROT - vecUTRANS;
@@ -79,11 +80,12 @@ tempTE = matTEPTS - vecROTAX;
 tempRMAGTE = sqrt(tempTE(:,1,:).^2+tempTE(:,2,:).^2+tempTE(:,3,:).^2);
 
 % TE rotation matrix
-matUROTTE = tempRADPS*[tempRMAGTE.*cos(vecTHETA) tempRMAGTE.*sin(vecTHETA) zeros(numte,1,3)];
+matUROTTE = tempRADPS*[tempRMAGTE.*cos(vecTHETA(idte)) tempRMAGTE.*sin(vecTHETA(idte)) zeros(numte,1,3)];
 
 % TE velocity matrix
 matUINFTE = matUROTTE - vecUTRANS;
 
 %quiver3(matTEPTS(:,1,2),matTEPTS(:,2,2),matTEPTS(:,3,2),matUINFTE(:,1,2),matUINFTE(:,2,2),matUINFTE(:,3,2))
+%quiver3(matCENTER(:,1,1),matCENTER(:,2,1),matCENTER(:,3,1),matUINF(:,1,1),matUINF(:,2,1),matUINF(:,3,1))
 end
 
