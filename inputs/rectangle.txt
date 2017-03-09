@@ -28,13 +28,13 @@ Defines leading edge of wing, all measured in metres:
 Keep vecM the same for all panels on a wing!
 
 Panel #:1.
-Number of spanwise elements:	vecN 		= 2 
-Number of chordwise elements: 	vecM 		= 1.
+Number of spanwise elements:	vecN 		= 5 
+Number of chordwise elements: 	vecM 		= 3.
 Airfoil number: 				vecAIRFOIL 	= 6
 Symmetry edge (0, 1 or 2): 		vecSYM 		= 0;
 xleft		yleft		zleft		chord		epsilon
 0	1	0.000000	0.5	0
-0	2	0.000000	0.5	0
+1	2	0.000000	0.5	0
 
 
 Interference drag 	valINTERF 	= 0.0 %

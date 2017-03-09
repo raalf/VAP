@@ -142,6 +142,7 @@ vecDVEPANEL = repmat(vecDVEPANEL,[valNUMB 1])+tempADDI;
 % hold on
 % scatter3(matNEWCENTER(:,1),matNEWCENTER(:,2),matNEWCENTER(:,3),'+')
 % scatter3(matNEWVLST(:,1),matNEWVLST(:,2),matNEWVLST(:,3),'*')
+% quiver3(matNEWCENTER(:,1),matNEWCENTER(:,2),matNEWCENTER(:,3), matNEWDVENORM(:,1),matNEWDVENORM(:,2),matNEWDVENORM(:,3))
 % axis equal
 % xlabel('X-Dir','FontSize',15);
 % ylabel('Y-Dir','FontSize',15);

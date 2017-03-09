@@ -1,6 +1,5 @@
 clc
 clear
-clf
 
 warning off
 
@@ -22,24 +21,27 @@ disp(' ');
 
 %% Reading in geometry
 
-strFILE = 'inputs/ROTORINPUT_MA11by7.txt';
+%strFILE = 'inputs/ROTORINPUT_MA11by7.txt';
 %strFILE = 'inputs/rectangle.txt';
+strFILE = 'inputs/TMotor.txt';
 
 [flagRELAX, flagSTEADY, valMAXTIME, valMINTIME, valAZNUM, valDELTAE, ...
-    seqALPHAR, valJ, valRPM, valDENSITY, valKINV, valAREA, valDIA, ...
-    valNUMB ,vecROTAX, valPANELS, matGEOM, vecAIRFOIL, vecN, vecM, ....
+    seqALPHAR, seqJ, valRPM, valDENSITY, valKINV, valAREA, valDIA, ...
+    valNUMB ,vecROTAX0, valPANELS, matGEOM, vecAIRFOIL, vecN, vecM, ....
     vecSYM, valINTERF] = fcnVAPTORREAD(strFILE);
 
 flagPRINT   = 1;
 flagPLOT    = 1;
 flagPLOTWAKEVEL = 0;
 flagVERBOSE = 0;
+flagSAVE = 1;
+filename = 'TMotor Data'; % Save workspace name
+
 
 %% Discretize geometry into DVEs
-
 [matCENTER0, vecDVEHVSPN, vecDVEHVCRD, vecDVELESWP, vecDVEMCSWP, ...
     vecDVETESWP, vecDVEROLL, vecDVEPITCH, vecDVEYAW, vecDVEAREA, ...
-    matDVENORM, matVLST0, matNPVLST0, matDVE, valNELE, matADJE, ...
+    matDVENORM0, matVLST0, matNPVLST0, matDVE, valNELE, matADJE, ...
     vecDVESYM, vecDVETIP, vecDVEWING, vecDVELE, vecDVETE, ...
     vecDVEPANEL] = fcnGENERATEDVES(valPANELS, matGEOM, vecSYM, vecN, vecM);
 
@@ -49,48 +51,52 @@ if valNUMB > 1
 [valNELE, matNPVLST0, vecAIRFOIL, vecDVELE, vecDVETE, vecDVEYAW, vecDVEPANEL, ...
     vecDVETIP, vecDVEWING, vecDVESYM, vecM, vecN, vecDVEROLL, vecDVEAREA,...
     vecDVEPITCH, vecDVEMCSWP, vecDVETESWP, vecDVELESWP, vecDVEHVCRD, ...
-    vecDVEHVSPN, vecSYM, matADJE, matCENTER0, matVLST0, matDVE, ...
-    matDVENORM] = fcnDVEMULTIROTOR(valNELE, valNUMB, vecDVETIP, ...
+    vecDVEHVSPN0, vecSYM, matADJE, matCENTER0, matVLST0, matDVE, ...
+    matDVENORM0] = fcnDVEMULTIROTOR(valNELE, valNUMB, vecDVETIP, ...
     vecDVETESWP, vecDVEPITCH, vecDVEWING, vecDVEMCSWP, vecM, vecN, ...
     vecDVEPANEL, vecDVEROLL, vecDVELESWP, vecDVEYAW, vecDVEHVCRD, ...
     vecDVEHVSPN, vecDVEAREA, vecDVESYM, vecDVELE, vecDVETE, vecSYM, ...
-    vecROTAX, vecAIRFOIL, matNPVLST0, matDVE, matADJE, matVLST0, ...
-    matCENTER0, matDVENORM);
+    vecROTAX0, vecAIRFOIL, matNPVLST0, matDVE, matADJE, matVLST0, ...
+    matCENTER0, matDVENORM0);
 end
 
 valWSIZE = length(nonzeros(vecDVETE)); % Amount of wake DVEs shed each timestep
 %% Add boundary conditions to D-Matrix
-[matD] = fcnDWING(valNELE, matADJE, vecDVEHVSPN, vecDVESYM, vecDVETIP);
+[matD] = fcnDWING(valNELE, matADJE, vecDVEHVSPN0, vecDVESYM, vecDVETIP);
 
 %% Add kinematic conditions to D-Matrix
 
-[vecK] = fcnSINGFCT(valNELE, vecDVEWING, vecDVETIP, vecDVEHVSPN);
+[vecK] = fcnSINGFCT(valNELE, vecDVEWING, vecDVETIP, vecDVEHVSPN0);
 [matD] = fcnKINCON(matD, valNELE, matDVE, matCENTER0, matVLST0, ...
-    matDVENORM, vecK, vecDVEROLL, vecDVEPITCH, vecDVEYAW, vecDVELESWP, ...
-    vecDVETESWP, vecDVEHVSPN, vecDVEHVCRD,vecSYM);
+    matDVENORM0, vecK, vecDVEROLL, vecDVEPITCH, vecDVEYAW, vecDVELESWP, ...
+    vecDVETESWP, vecDVEHVSPN0, vecDVEHVCRD,vecSYM);
 
-%% Alpha Loop
+%% Performance sweeps
 % Preallocating for a turbo-boost in performance
-vecCL = zeros(valMAXTIME, length(seqALPHAR));
-vecCDI = zeros(valMAXTIME, length(seqALPHAR));
-vecE = zeros(valMAXTIME, length(seqALPHAR));
+matCTCONV = zeros(valMAXTIME, length(seqJ),length(seqALPHAR));
+matCQ = zeros(valMAXTIME, length(seqJ),length(seqALPHAR));
+progress = zeros(length(seqJ),length(seqALPHAR));
 
 for ai = 1:length(seqALPHAR)
+    for ji= 1:length(seqJ)
     
     valALPHAR = deg2rad(seqALPHAR(ai));
-    
+    valJ = seqJ(ji);
     % This is done for when we are using a parfor loop
     matCENTER = matCENTER0;
     matVLST = matVLST0;
     matNPVLST = matNPVLST0;
+    vecROTAX = vecROTAX0;
+    vecDVEHVSPN = vecDVEHVSPN0;
+    matDVENORM = matDVENORM0;
     
-	fprintf('      ANGLE OF ATTACK = %0.3f DEG\n',seqALPHAR(ai));
-    fprintf('      ADVANCE RATIO = %0.3f\n',valJ);
-    fprintf('      RPM = %0.3f\n\',valRPM);
-    fprintf('\n');
+% 	fprintf('      ANGLE OF ATTACK = %0.3f DEG\n',seqALPHAR(ai));
+%     fprintf('      ADVANCE RATIO = %0.3f\n',valJ);
+%     fprintf('      RPM = %0.3f\n\',valRPM);
+%     fprintf('\n');
     
     % Calculate inflow velocity at each control point
-    [matUINF, matUINFTE, matTEPTS, vecTHETA] = fcnUINFROT(matCENTER, vecROTAX, 0, valRPM, valALPHAR, ...
+    [matUINF, matUINFTE, matTEPTS, vecTHETA, vecCPRADI] = fcnUINFROT(matCENTER, vecROTAX, 0, valRPM, valALPHAR, ...
         valAZNUM, valDIA, valJ, valNUMB,vecDVEHVSPN, vecDVETE, matVLST, matDVE);
     
     % Initializing wake parameters
@@ -185,7 +191,7 @@ for ai = 1:length(seqALPHAR)
          
         %% Generate rotor resultant
         % Calculate inflow velocity
-        [matUINF, matUINFTE, matTEPTS, vecTHETA] = fcnUINFROT(matCENTER, vecROTAX, valTIMESTEP, ...
+        [matUINF, matUINFTE, matTEPTS, vecTHETA,vecCPRADI] = fcnUINFROT(matCENTER, vecROTAX, valTIMESTEP, ...
         valRPM, valALPHAR, valAZNUM, valDIA, valJ, valNUMB,vecDVEHVSPN, ...
         vecDVETE, matVLST, matDVE);
     
@@ -202,14 +208,23 @@ for ai = 1:length(seqALPHAR)
             vecWDVEHVSPN, vecWDVESYM, vecWDVETIP, vecWKGAM);
         [matWCOEFF] = fcnSOLVEWD(matWD, vecWR, valWNELE, vecWKGAM, ...
             vecWDVEHVSPN);
- 
+
         % Calculate Forces
-        [valCT, valCQ, vecCTCONV] = fcnRFORCES(valAZNUM, valDIA, valRPM, valWSIZE, valTIMESTEP, valNELE, valWNELE, seqALPHAR, vecDVEPITCH, vecDVETE, vecDVEWING, vecWDVEWING, vecK, vecWK, vecWDVEYAW, vecWDVELESWP, vecWDVETESWP, vecDVEYAW, vecDVEMCSWP, vecWDVEHVSPN, vecWDVEHVCRD, vecWDVEROLL, vecDVEROLL,  vecDVEHVCRD, vecDVELE, vecDVEHVSPN, vecWDVEPITCH, vecDVELESWP, vecDVETESWP, vecSYM, vecTHETA, vecCTCONV, matVLST, matDVE, matUINF, matCOEFF, matADJE, matWDVE, matWVLST, matCENTER, matWCOEFF, matTEPTS, matUINFTE);
+        [valCT, valCQ, vecCTCONV] = fcnRFORCES(valAZNUM, valDIA, valRPM, valWSIZE, valTIMESTEP, valNELE, valWNELE, seqALPHAR, vecCPRADI,vecDVEPITCH, vecDVETE, vecDVEWING, vecWDVEWING, vecK, vecWK, vecWDVEYAW, vecWDVELESWP, vecWDVETESWP, vecDVEYAW, vecDVEMCSWP, vecWDVEHVSPN, vecWDVEHVCRD, vecWDVEROLL, vecDVEROLL,  vecDVEHVCRD, vecDVELE, vecDVEHVSPN, vecWDVEPITCH, vecDVELESWP, vecDVETESWP, vecSYM, vecTHETA, vecCTCONV, matVLST, matDVE, matUINF, matCOEFF, matADJE, matWDVE, matWVLST, matCENTER, matWCOEFF, matTEPTS, matUINFTE);
         fprintf('      CT = %0.3f\n',mean(vecCTCONV));
+        matCTCONV(valTIMESTEP,ji,ai) = mean(vecCTCONV);
+        matCQ(valTIMESTEP,ji,ai) = valCQ;
+        
     end
-    
+fprintf('Completed Advance Ratio: %.1f\n\n',seqJ(ji))
+    end
 end
 
+if flagSAVE ==1
+    save(filename)
+end
+
+fprintf('DONE\n');
 if flagPLOT == 1
     [hFig2] = fcnPLOTBODY(flagVERBOSE, valNELE, matDVE, matVLST, matCENTER);
     [hLogo] = fcnPLOTLOGO(0.97,0.03,14,'k','none');

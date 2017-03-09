@@ -1,4 +1,4 @@
-function [nind, nfree, thrustind, thrustfree, sideind, sidefree, axialind, axialfree] = fcnRDVENFORCE(valWSIZE, valTIMESTEP, valNELE, valWNELE, seqALPHAR, vecDVEPITCH, vecK, vecWK, vecWDVEYAW, vecWDVELESWP, vecWDVETESWP, vecDVEYAW, vecDVEMCSWP, vecWDVEHVSPN, vecWDVEHVCRD, vecWDVEROLL, vecDVEROLL,  vecDVEHVCRD, vecDVELE, vecDVEHVSPN, vecWDVEPITCH, vecDVELESWP, vecDVETESWP, vecSYM, vecTHETA, matVLST, matDVE, matUINF, matCOEFF, matADJE, matWDVE, matWVLST, matCENTER, matWCOEFF)
+function [nind, nfree, thrustind, thrustfree, sideind, sidefree, axialind, axialfree, A, B, C] = fcnRDVENFORCE(valWSIZE, valTIMESTEP, valNELE, valWNELE, seqALPHAR, vecDVEPITCH, vecK, vecWK, vecWDVEYAW, vecWDVELESWP, vecWDVETESWP, vecDVEYAW, vecDVEMCSWP, vecWDVEHVSPN, vecWDVEHVCRD, vecWDVEROLL, vecDVEROLL,  vecDVEHVCRD, vecDVELE, vecDVEHVSPN, vecWDVEPITCH, vecDVELESWP, vecDVETESWP, vecSYM, vecTHETA, matVLST, matDVE, matUINF, matCOEFF, matADJE, matWDVE, matWVLST, matCENTER, matWCOEFF)
 
 % A modified DVENFORCE function that has been tailored to calculate thrust
 % and axial force. Mostly transfered directly from fcnDVENFORCE.
@@ -30,7 +30,8 @@ end
 
 % 80% of halfspan
 eta8 = vecDVEHVSPN*0.8;
-
+% matUINF(:,1) = abs(matUINF(:,1));
+% matUINF(:,2) = abs(matUINF(:,2));
 % UxS
 tempb = cross(matUINF,s);
 
@@ -170,8 +171,11 @@ axialfree = nfree.*(en(:,1));
 
 % Test plotting
 %quiver3(matCENTER(:,1),matCENTER(:,2), matCENTER(:,3),matUINF(:,1),matUINF(:,2),matUINF(:,3))
+%quiver3(matCENTER(:,1),matCENTER(:,2), matCENTER(:,3),s(:,1),s(:,2),s(:,3))
 %quiver3(matCENTER(:,1),matCENTER(:,2),matCENTER(:,3),A.*en(:,1),A.*en(:,2),A.*en(:,3))
 %quiver3(matCENTER(:,1),matCENTER(:,2),matCENTER(:,3),(thrustfree+thrustind).*et(:,1),(thrustfree + thrustind).*et(:,2),(thrustind+thrustfree).*et(:,3),'k')
 %quiver3(matCENTER(:,1),matCENTER(:,2),matCENTER(:,3),A(:,1),A(:,2),A(:,3))
 %quiver3(matCENTER(:,1),matCENTER(:,2), matCENTER(:,3),ea(:,1),ea(:,2),ea(:,3))
+%clf
+%plot((matCENTER(:,1)/abs(matCENTER(:,1)))*sqrt(matCENTER(:,1).^2+matCENTER(:,1).^2),thrustfree+thrustind,'*')
 end
