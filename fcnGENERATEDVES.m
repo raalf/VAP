@@ -1,6 +1,6 @@
 function [matCENTER, vecDVEHVSPN, vecDVEHVCRD, vecDVELESWP, vecDVEMCSWP, vecDVETESWP, ...
     vecDVEROLL, vecDVEPITCH, vecDVEYAW, vecDVEAREA, matDVENORM, ...
-    matVLST, matNPVLST, matDVE, valNELE, matADJE, ...
+    matVLST, matNTVLST, matDVE, valNELE, matADJE, ...
     vecDVESYM, vecDVETIP, vecDVEWING, vecDVELE, vecDVETE, vecDVEPANEL] = fcnGENERATEDVES(valPANELS, matGEOM, vecSYM, vecN, vecM)
 
 %   V0 - before fixing spanwise interp
@@ -34,7 +34,7 @@ function [matCENTER, vecDVEHVSPN, vecDVEHVCRD, vecDVELESWP, vecDVEMCSWP, vecDVET
 %   vecDVEPITCH - valNELE x 1 vector of DVE pitch angles (about y-axis) (radians)
 %   vecDVEYAW - valNELE x 1 vector of DVE yaw angles (about z-axis) (radians)
 %   vecDVEAREA - valNELE x 1 vector of DVE area
-%   matDVENORM -  valNELE x 3 matrix of DVE normal vectors
+%   vecDVENORM -  valNELE x 3 matrix of DVE normal vectors
 %   matVLST - ? x 3 list of unique vertices, columns are (x,y,z) values
 %   valNELE - total number of DVEs
 %   matDVE - matrix of which DVE uses which vertices from the above list
@@ -92,7 +92,7 @@ clear tempB tempC temp1
 
 %% Convert Panels to Corner Points to DVEs
 
-for i = 1:valPANELS;
+for i = 1:valPANELS
     
     rchord = matGEOM(1,4,i); repsilon = deg2rad(matGEOM(1,5,i));
     tchord = matGEOM(2,4,i); tepsilon = deg2rad(matGEOM(2,5,i));
@@ -158,8 +158,8 @@ end
 
 %% Solve ADJT DVE
 % Grab the imaginary (no-twist) non-planer vertex list to avoid the gaps between DVEs
-nonplanerVLST = [imP1;imP2;imP3;imP4];
-matNPVLST = nonplanerVLST(idxVLST,:);
+notwistnonplanerVLST = [imP1;imP2;imP3;imP4];
+matNTVLST = notwistnonplanerVLST(idxVLST,:);
 
 
 [ matADJE, vecDVESYM, vecDVETIP, vecDVELE, vecDVETE ] = fcnDVEADJT( imP1, imP2, imP3, imP4, valNELE, vecDVEPANEL, vecSYM );
@@ -168,4 +168,10 @@ matNPVLST = nonplanerVLST(idxVLST,:);
 %% Account for Multiple Blades
 
 
-end
+
+
+
+
+
+
+
