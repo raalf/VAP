@@ -17,16 +17,16 @@ function [matVLST, matCENTER, matNEWWAKE, matNPNEWWAKE, matNTVLST, matNPVLST, ui
 %   matCUINF - Freestream values at each of the in-centers
 %   matNEWWAKE - Outputs a 4 x 3 x n matrix of points for the wake DVE generation
 
-if valTIMESTEP == 1
+% if valTIMESTEP == 1
     
     uinf = valUINF;
     
-else
-    
-    q_inf = valWEIGHT/(vecCL(valTIMESTEP-1)*valAREA);
-    uinf = sqrt(2*q_inf/valDENSITY);
-    
-end
+% else
+%     
+%     q_inf = valWEIGHT/(vecCL(valTIMESTEP-1)*valAREA);
+%     uinf = sqrt(2*q_inf/valDENSITY);
+%     
+% end
 
 uinf = [uinf*cos(valALPHA)*cos(valBETA) uinf*sin(valBETA) uinf*sin(valALPHA)*cos(valBETA)];
 

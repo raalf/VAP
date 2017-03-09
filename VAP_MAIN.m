@@ -177,7 +177,7 @@ for ai = 1:length(seqALPHA)
             %% Moving the wing and structure
             
             % First two timesteps do not deflect the wing
-            if valTIMESTEP <= 2 || flagSTIFFWING == 1
+            if valTIMESTEP <= 30 || flagSTIFFWING == 1
 
                 [matVLST, matCENTER, matNEWWAKE, matNPNEWWAKE, matNTVLST, matNPVLST, matUINF, matDEFGLOB, matTWISTGLOB, valUINF] = fcnSTIFFWING(valALPHA, valBETA, valDELTIME, matVLST, matCENTER, matDVE, vecDVETE,...
                     matNTVLST, matNPVLST, vecN, valTIMESTEP, vecCL, valWEIGHT, valAREA, valDENSITY, valUINF);
@@ -188,6 +188,8 @@ for ai = 1:length(seqALPHA)
             % Remaining timesteps compute wing deflection and translate the
             % wing accordingly
             else
+                
+                valDELTIME = 0.000448308725580066;
 
                  matCENTER_old = matCENTER;
 
@@ -198,7 +200,7 @@ for ai = 1:length(seqALPHA)
                     vecLSM, vecN, valSPAN, vecDVEHVSPN, valTIMESTEP, matDEFGLOB, matTWISTGLOB, vecSPANDIST, valDELTIME, matSLOPE);
                 
                 [matNPVLST, matNPNEWWAKE, matNEWWAKE, valUINF] = fcnMOVEFLEXWING(valALPHA, valBETA, valDELTIME, matVLST, matCENTER, matDVE, vecDVETE, vecDVEHVSPN, vecDVELE, matNPVLST, matDEFGLOB,...
-                    matTWISTGLOB, matSLOPE, valTIMESTEP, vecN, vecM, vecDVEWING, vecDVEPANEL, matSCLST, vecDVEPITCH, matNPDVE, vecSPANDIST, vecCL, valWEIGHT, valAREA, valDENSITY);
+                    matTWISTGLOB, matSLOPE, valTIMESTEP, vecN, vecM, vecDVEWING, vecDVEPANEL, matSCLST, vecDVEPITCH, matNPDVE, vecSPANDIST, vecCL, valWEIGHT, valAREA, valDENSITY,valUINF);
                 
                 [ vecDVEHVSPN, vecDVEHVCRD, ...
                     vecDVEROLL, vecDVEPITCH, vecDVEYAW, ...

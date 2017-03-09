@@ -1,12 +1,12 @@
 function [matNPVLST, matNPNEWWAKE, matNEWWAKE, valUINF] = fcnMOVEFLEXWING(valALPHA, valBETA, valDELTIME, matVLST, matCENTER, matDVE, vecDVETE, vecDVEHVSPN, vecDVELE, matNPVLST, matDEFGLOB,...
-    matTWISTGLOB, matSLOPE, valTIMESTEP, vecN, vecM, vecDVEWING, vecDVEPANEL, matSCLST, vecDVEPITCH, matNPDVE, vecSPANDIST, vecCL, valWEIGHT, valAREA, valDENSITY)
+    matTWISTGLOB, matSLOPE, valTIMESTEP, vecN, vecM, vecDVEWING, vecDVEPANEL, matSCLST, vecDVEPITCH, matNPDVE, vecSPANDIST, vecCL, valWEIGHT, valAREA, valDENSITY,valUINF)
 % matNEWWAKE, matNPNEWWAKE,
 % This function determines the velocities with which the DVEs are moved
 % based on the deflection and twist of the wing. The corresponding
 % translations are then computed of the DVE vertices and control points.
 
-q_inf = valWEIGHT/(vecCL(valTIMESTEP-1)*valAREA);
-valUINF = sqrt(2*q_inf/valDENSITY);
+% q_inf = valWEIGHT/(vecCL(valTIMESTEP-1)*valAREA);
+% valUINF = sqrt(2*q_inf/valDENSITY);
 
 [ledves, ~, ~] = find(vecDVELE > 0);
 
