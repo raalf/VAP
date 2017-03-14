@@ -77,9 +77,12 @@ matCTCONV = zeros(valMAXTIME, length(seqJ),length(seqALPHAR));
 matCQ = zeros(valMAXTIME, length(seqJ),length(seqALPHAR));
 progress = zeros(length(seqJ),length(seqALPHAR));
 
+progressbar('Angle of Attack','Advance Ratio')
 for ai = 1:length(seqALPHAR)
-    parfor ji= 1:length(seqJ)
+    progressbar([],0)
     
+    for ji= 1:length(seqJ)
+    progressbar([],ji/length(seqJ))
     valALPHAR = deg2rad(seqALPHAR(ai));
     valJ = seqJ(ji);
     % This is done for when we are using a parfor loop
@@ -222,19 +225,24 @@ for ai = 1:length(seqALPHAR)
             [matWD, vecWR] = fcnWDWAKE([1:valWNELE]', matWADJE, vecWDVEHVSPN, vecWDVESYM, vecWDVETIP, vecWKGAM);
             [matWCOEFF] = fcnSOLVEWD(matWD, vecWR, valWNELE, vecWKGAM, vecWDVEHVSPN);
         end
-        
-        
+
         % Calculate Forces
         [valCT, valCQ, vecCTCONV] = fcnRFORCES(valAZNUM, valDIA, valRPM, valWSIZE, valTIMESTEP, valNELE, valWNELE, seqALPHAR, vecCPRADI,vecDVEPITCH, vecDVETE, vecDVEWING, vecWDVEWING, vecK, vecWK, vecWDVEYAW, vecWDVELESWP, vecWDVETESWP, vecDVEYAW, vecDVEMCSWP, vecWDVEHVSPN, vecWDVEHVCRD, vecWDVEROLL, vecDVEROLL,  vecDVEHVCRD, vecDVELE, vecDVEHVSPN, vecWDVEPITCH, vecDVELESWP, vecDVETESWP, vecSYM, vecTHETA, vecCTCONV, matVLST, matDVE, matUINF, matCOEFF, matADJE, matWDVE, matWVLST, matCENTER, matWCOEFF, matTEPTS, matUINFTE);
         %fprintf('      CT = %0.3f\n',mean(vecCTCONV));
         matCTCONV(valTIMESTEP,ji,ai) = mean(vecCTCONV);
         matCQ(valTIMESTEP,ji,ai) = valCQ;
         
+        if valTIMESTEP > 1
+            if abs(matCTCONV(valTIMESTEP-1,ji,ai)-matCTCONV(valTIMESTEP, ji,ai)) < valDELTAE
+                break;
+            end
+        end
     end
-    
     fprintf('Completed Advance Ratio: %.1f\n\n',seqJ(ji))
     
     end
+    
+    progressbar(ai/length(seqALPHAR))
 end
 
 if flagSAVE ==1
