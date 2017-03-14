@@ -78,7 +78,7 @@ matCQ = zeros(valMAXTIME, length(seqJ),length(seqALPHAR));
 progress = zeros(length(seqJ),length(seqALPHAR));
 
 for ai = 1:length(seqALPHAR)
-    for ji= 1:length(seqJ)
+    parfor ji= 1:length(seqJ)
     
     valALPHAR = deg2rad(seqALPHAR(ai));
     valJ = seqJ(ji);
@@ -209,14 +209,31 @@ for ai = 1:length(seqALPHAR)
         [matWCOEFF] = fcnSOLVEWD(matWD, vecWR, valWNELE, vecWKGAM, ...
             vecWDVEHVSPN);
 
+        %% Relaxing wake
+        if valTIMESTEP > 2 && flagRELAX == 1
+                
+            [vecWDVEHVSPN, vecWDVEHVCRD, vecWDVEROLL, vecWDVEPITCH, vecWDVEYAW,...
+                vecWDVELESWP, vecDVEWMCSWP, vecDVEWTESWP, vecWDVEAREA, matWCENTER, matWDVENORM, ...
+                matWVLST, matWDVE, matWDVEMP, matWDVEMPIND, idxWVLST, vecWK] = fcnRELAXROTORWAKE(matUINF, matCOEFF, matDVE, matVLST, matWADJE, matWCOEFF, ...
+                matWDVE, matWVLST, valAZNUM, valRPM, valNELE, valTIMESTEP, valWNELE, valWSIZE, vecDVEHVSPN, vecDVEHVCRD, vecDVELESWP, ...
+                vecDVEPITCH, vecDVEROLL, vecDVETESWP, vecDVEYAW, vecK, vecSYM, vecWDVEHVSPN, vecWDVEHVCRD, vecWDVELESWP, vecWDVEPITCH, ...
+                vecWDVEROLL, vecWDVESYM, vecWDVETESWP, vecWDVETIP, vecWDVEYAW, vecWK, vecWDVEWING);
+            % Creating and solving WD-Matrix
+            [matWD, vecWR] = fcnWDWAKE([1:valWNELE]', matWADJE, vecWDVEHVSPN, vecWDVESYM, vecWDVETIP, vecWKGAM);
+            [matWCOEFF] = fcnSOLVEWD(matWD, vecWR, valWNELE, vecWKGAM, vecWDVEHVSPN);
+        end
+        
+        
         % Calculate Forces
         [valCT, valCQ, vecCTCONV] = fcnRFORCES(valAZNUM, valDIA, valRPM, valWSIZE, valTIMESTEP, valNELE, valWNELE, seqALPHAR, vecCPRADI,vecDVEPITCH, vecDVETE, vecDVEWING, vecWDVEWING, vecK, vecWK, vecWDVEYAW, vecWDVELESWP, vecWDVETESWP, vecDVEYAW, vecDVEMCSWP, vecWDVEHVSPN, vecWDVEHVCRD, vecWDVEROLL, vecDVEROLL,  vecDVEHVCRD, vecDVELE, vecDVEHVSPN, vecWDVEPITCH, vecDVELESWP, vecDVETESWP, vecSYM, vecTHETA, vecCTCONV, matVLST, matDVE, matUINF, matCOEFF, matADJE, matWDVE, matWVLST, matCENTER, matWCOEFF, matTEPTS, matUINFTE);
-        fprintf('      CT = %0.3f\n',mean(vecCTCONV));
+        %fprintf('      CT = %0.3f\n',mean(vecCTCONV));
         matCTCONV(valTIMESTEP,ji,ai) = mean(vecCTCONV);
         matCQ(valTIMESTEP,ji,ai) = valCQ;
         
     end
-fprintf('Completed Advance Ratio: %.1f\n\n',seqJ(ji))
+    
+    fprintf('Completed Advance Ratio: %.1f\n\n',seqJ(ji))
+    
     end
 end
 
