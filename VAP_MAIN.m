@@ -209,9 +209,9 @@ for ai = 1:length(seqALPHA)
                 fprintf('  %4d     %0.5f     %0.5f\n',valTIMESTEP,vecCL(valTIMESTEP,ai),vecCDI(valTIMESTEP,ai)); %valTIMESTEP
             end
             
-%             fprintf('\n\tTimestep = %0.0f', valTIMESTEP);
-%             fprintf('\tCL = %0.5f',vecCL(valTIMESTEP,ai));
-%             fprintf('\tCDi = %0.5f',vecCDI(valTIMESTEP,ai));
+            fprintf('\n\tTimestep = %0.0f', valTIMESTEP);
+            fprintf('\tCL = %0.5f',vecCL(valTIMESTEP,ai));
+            fprintf('\tCDi = %0.5f',vecCDI(valTIMESTEP,ai));
         end
         
         %% Viscous wrapper

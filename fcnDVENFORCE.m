@@ -191,6 +191,5 @@ liftfree = nfree.*sqrt(en(:,1).*en(:,1) + en(:,3).*en(:,3)); %does this work wit
 liftfree(en(:,3)<0) = -liftfree(en(:,3)<0);
 liftind = dot(r,el,2);
 
-
 sidefree = nfree.*en(:,2);
 sideind = dot(r,es,2);
