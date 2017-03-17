@@ -43,7 +43,7 @@ strSTRUCT_INPUT = 'inputs/Struct_Input.txt';
     valFTURB, valFPWIDTH, valDELTAE, valDELTIME, valMAXTIME, valMINTIME, ...
     valINTERF] = fcnVAPREAD(strFILE);
 
-[vecEIxCOEFF, vecGJtCOEFF, vecEACOEFF, vecCGCOEFF, vecJTCOEFF, vecLMCOEFF] = fcnSTRUCTREAD(strSTRUCT_INPUT);
+[valSDELTIME, vecEIxCOEFF, vecGJtCOEFF, vecEACOEFF, vecCGCOEFF, vecJTCOEFF, vecLMCOEFF] = fcnSTRUCTREAD(strSTRUCT_INPUT);
 
 % seqALPHA = [2];
 
@@ -63,7 +63,7 @@ strSTRUCT_INPUT = 'inputs/Struct_Input.txt';
 flagPRINT   = 1;
 flagPLOT    = 1;
 flagPLOTWAKEVEL = 0;
-flagVERBOSE = 1;
+flagVERBOSE = 0;
 
 %% Discretize geometry into DVEs
 
@@ -189,7 +189,7 @@ for ai = 1:length(seqALPHA)
             % wing accordingly
             else
                 
-                valDELTIME = 0.000448308725580066;
+                valDELTIME = valSDELTIME;
 
                  matCENTER_old = matCENTER;
 
@@ -282,7 +282,6 @@ for ai = 1:length(seqALPHA)
 %             fprintf('\tCL = %0.5f',vecCL(valTIMESTEP,ai));
 %             fprintf('\tCDi = %0.5f',vecCDI(valTIMESTEP,ai));
 
-            test(:,valTIMESTEP) = vecLIFTDIST;
         end
         
         %% Viscous wrapper

@@ -15,24 +15,13 @@ vecDVESPAN = 2*vecDVEHVSPN(ledves)';
 
 % Deflection velocity after first timestep (referenced to zero initial
 % deflection and twist)
-if valTIMESTEP >= 3
 
-    % Calculate cartesian velocity of DVE edges
-    del_twist = ((matTWISTGLOB(valTIMESTEP,3:sum(vecN,1)+3) - matTWISTGLOB(valTIMESTEP-1,3:sum(vecN,1)+3)));
-    vecXVEL = repmat(valUINF*cos(valALPHA)*cos(valBETA),1,sum(vecN,1)+1);
-    vecYVEL = repmat(valUINF*sin(valBETA),1,size(matSLOPE,2)) + [0,((matSLOPE(valTIMESTEP,2:end) - matSLOPE(valTIMESTEP-1,2:end))./valDELTIME).*vecDVESPAN.*cos(repmat(pi/2,1,size(matSLOPE,2)-1) - matSLOPE(valTIMESTEP,2:end))];
-    vecZVEL = repmat(valUINF*sin(valALPHA)*cos(valBETA),1,sum(vecN,1)+1) + ((matDEFGLOB(valTIMESTEP,3:sum(vecN,1)+3) - matDEFGLOB(valTIMESTEP-1,3:sum(vecN,1)+3))./valDELTIME);
-%      - matDEFGLOB(valTIMESTEP-2,3:sum(vecN,1)+3) -
-%      matTWISTGLOB(valTIMESTEP-2,3:sum(vecN,1)+3)  - matSLOPE(valTIMESTEP-2,2:end)
-else
-    
-    % Calculate cartesian velocity of DVE edges
-    del_twist = ((matTWISTGLOB(valTIMESTEP,3:sum(vecN,1)+3)));
-    vecXVEL = repmat(valUINF*cos(valALPHA)*cos(valBETA),1,sum(vecN,1)+1);
-    vecYVEL = repmat(valUINF*sin(valBETA),1,size(matSLOPE,2)) + [0,((matSLOPE(valTIMESTEP,2:end))./valDELTIME).*vecDVESPAN.*cos(repmat(pi/2,1,size(matSLOPE,2)-1) - matSLOPE(valTIMESTEP-1,2:end))];
-    vecZVEL = repmat(valUINF*sin(valALPHA)*cos(valBETA),1,sum(vecN,1)+1) + ((matDEFGLOB(valTIMESTEP,3:sum(vecN,1)+3))./valDELTIME);
-
-end
+% Calculate cartesian velocity of DVE edges
+del_twist = ((matTWISTGLOB(valTIMESTEP,3:sum(vecN,1)+3) - matTWISTGLOB(valTIMESTEP-1,3:sum(vecN,1)+3)));
+omega = ((matTWISTGLOB(valTIMESTEP,3:sum(vecN,1)+3) - matTWISTGLOB(valTIMESTEP-1,3:sum(vecN,1)+3)))./valDELTIME;
+vecXVEL = repmat(valUINF*cos(valALPHA)*cos(valBETA),1,sum(vecN,1)+1);
+vecYVEL = repmat(valUINF*sin(valBETA),1,size(matSLOPE,2)) + [0,((matSLOPE(valTIMESTEP,2:end) - matSLOPE(valTIMESTEP-1,2:end))./valDELTIME).*vecDVESPAN.*cos(repmat(pi/2,1,size(matSLOPE,2)-1) - matSLOPE(valTIMESTEP,2:end))];
+vecZVEL = repmat(valUINF*sin(valALPHA)*cos(valBETA),1,sum(vecN,1)+1) + ((matDEFGLOB(valTIMESTEP,3:sum(vecN,1)+3) - matDEFGLOB(valTIMESTEP-1,3:sum(vecN,1)+3))./valDELTIME);
 
 % Determine DVEs in each spanwise station
 [matROWS] = fcnDVEROW(ledves, vecDVEPANEL, vecDVEWING, vecM, vecN);
@@ -88,11 +77,17 @@ vecEDGEPITCH = [pitch_root, vecEDGEPITCH, pitch_tip];
 twistXDIST = -temp_r(temp_leftV,1).*cos(del_twist(move_row)+vecEDGEPITCH(move_row))' + ...
     temp_r(temp_leftV,1).*cos(vecEDGEPITCH(move_row))'; % X component of twist 
 twistZDIST = temp_r(temp_leftV,1).*sin(del_twist(move_row)+vecEDGEPITCH(move_row))' -  ...
-    temp_r(temp_leftV,1).*sin(vecEDGEPITCH(move_row))'; % Z component of twist 
+    temp_r(temp_leftV,1).*sin(vecEDGEPITCH(move_row))'; % Z component of twist
+
+v_rot = temp_r(temp_leftV,1).*omega(move_row)';
 
 % Assign twist displacement to translation matrix
-temp_translate(temp_leftV,1) = twistXDIST';
-temp_translate(temp_leftV,3) = twistZDIST';
+temp_translate(temp_leftV,1) = twistXDIST;
+temp_translate(temp_leftV,3) = twistZDIST;
+
+test = zeros(size(matNPVLST,1),3);
+test(temp_leftV,1) = v_rot.*sin(matTWISTGLOB(valTIMESTEP,move_row)+vecEDGEPITCH(move_row))'.*valDELTIME;
+test(temp_leftV,3) = v_rot.*cos(matTWISTGLOB(valTIMESTEP,move_row)+vecEDGEPITCH(move_row))'.*valDELTIME;
 
 % Translate left edge vertices due to freestream and bending
 translateNPVLST(temp_leftV,1) = valDELTIME.*vecXVEL(move_row);
@@ -106,6 +101,7 @@ temp_rightV = reshape(temp_rightV,sum(vecN,1),[]);
 
 [move_row,~] = find(temp_rightV); % Vector correspond to which index of deflection velocity matrix should be used for each element
 
+v_rot = temp_r(temp_leftV,1).*omega(move_row+1)';
 % Translate right edge vertices due to twist
 twistXDIST = -temp_r(temp_rightV,1).*cos(del_twist(move_row+1)+vecEDGEPITCH(move_row+1))' + ...
     temp_r(temp_rightV,1).*cos(vecEDGEPITCH(move_row+1))'; % X component of twist
@@ -115,9 +111,20 @@ twistZDIST = temp_r(temp_rightV,1).*sin(del_twist(move_row+1)+vecEDGEPITCH(move_
 temp_translate(temp_rightV,1) = twistXDIST';
 temp_translate(temp_rightV,3) = twistZDIST';
 
+test(temp_rightV,1) = v_rot.*sin(matTWISTGLOB(valTIMESTEP,move_row+1)+vecEDGEPITCH(move_row+1))'.*valDELTIME;
+test(temp_rightV,3) = v_rot.*cos(matTWISTGLOB(valTIMESTEP,move_row+1)+vecEDGEPITCH(move_row+1))'.*valDELTIME;
+
 % Assign appropriate sign to twist movement
-temp_translate(:,1) = xz_sign.*temp_translate(:,1);
-temp_translate(:,3) = xz_sign.*temp_translate(:,3);
+% temp_translate(:,1) = xz_sign.*temp_translate(:,1);
+% temp_translate(:,3) = xz_sign.*temp_translate(:,3);
+
+% ======================================================================= %
+% =============== TRYING NEW TRANSLATION FROM TWIST ===================== %
+% ======================================================================= %
+temp_translate(:,1) = xz_sign.*test(:,1);
+temp_translate(:,3) = xz_sign.*test(:,3);
+% ======================================================================= %
+% ======================================================================= %
 
 % Translate right edge vertices due to freestream and bending
 translateNPVLST(temp_rightV,1) = valDELTIME.*vecXVEL(move_row+1);

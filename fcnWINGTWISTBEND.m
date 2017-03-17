@@ -60,7 +60,7 @@ vecSLOPE = zeros(1,valNSELE-1);
 % vecSLOPE = [];
 
 % Temporary cross sectional area calculation
-C = -0.0333*vecSPANDIST + 0.76*ones(1,length(vecSPANDIST)) ;
+C = -0.0333*vecSPANDIST + 0.76*ones(length(vecSPANDIST),1) ;
 tk = 0.02 ;
 Tk = 0.15 ;
 vecSPANAREA = pi*tk*C*(1 + Tk);
@@ -125,7 +125,7 @@ valSTRUCTTIME = valTIMESTEP;
             %% Geometric property assembly
 
             % Assemble mass matrix
-            matMASS = [vecLM(yy-2), -vecLM(yy-2).*vecLSM(yy-2); -vecLM(yy-2).*vecLSM(yy-2), vecLM(yy-2).*(vecLSM(yy-2)+(vecJT(yy-2)./(vecSPANAREA(yy-2))))];
+            matMASS = [vecLM(yy-2), -vecLM(yy-2).*vecLSM(yy-2); -vecLM(yy-2).*vecLSM(yy-2), vecLM(yy-2).*(vecLSM(yy-2)*vecLSM(yy-2)+(vecJT(yy-2)./(vecSPANAREA(yy-2))))];
 
             % Assemble stiffness matrices
             matK_1 = [matEIx(yy-2,3), 0; 0, 0];
