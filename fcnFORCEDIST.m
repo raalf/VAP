@@ -1,5 +1,5 @@
 function [vecLIFTDIST, vecMOMDIST] = fcnFORCEDIST(liftfree, liftind, matSCLST, valDENSITY, valWEIGHT, valCL, vecDVEHVSPN, vecLEDVES, vecN, vecM,...
-    vecDVEWING, vecDVEPANEL, matCENTER, vecSPANDIST, matNPVLST, matNPDVE, matSC, matLIFTDIR, vecMAC, valCM, valAREA, vecSPNWSEAREA,vecLSAC,A,B,C,s)
+    vecDVEWING, vecDVEPANEL, matCENTER, vecSPANDIST, matNPVLST, matNPDVE, matSC, matLIFTDIR, vecMAC, valCM, valAREA, vecSPNWSEAREA,valUINF)
 
 % This function computes the dimensional force and moment distribution
 % across the wing, resolved to the shear center line. Moment is taken
@@ -15,8 +15,9 @@ function [vecLIFTDIST, vecMOMDIST] = fcnFORCEDIST(liftfree, liftind, matSCLST, v
 
 % Calculate qinf required for steady level flight. This will be used for
 % load calculations
-q_inf = valWEIGHT/(valCL*valAREA);
+% q_inf = valWEIGHT/(valCL*valAREA);
 % valVINF = sqrt(2*q_inf/valDENSITY);
+q_inf = 0.5*valDENSITY*valUINF*valUINF;
 
 [matROWS] = fcnDVEROW(vecLEDVES, vecDVEPANEL, vecDVEWING, vecM, vecN);
 
@@ -92,10 +93,10 @@ for i = 1:vecM(1)
     
 end
 
-vecGAMMA = A(vecLEDVES) + vecDVEHVSPN(vecLEDVES)'.*B(vecLEDVES) + vecDVEHVSPN(vecLEDVES)'.*vecDVEHVSPN(vecLEDVES)'.*C(vecLEDVES);
-gamma_root = A(vecLEDVES(1)) - vecDVEHVSPN(vecLEDVES(1))'.*B(vecLEDVES(1)) + vecDVEHVSPN(vecLEDVES(1))'.*vecDVEHVSPN(vecLEDVES(1))'.*C(vecLEDVES(1));
-
-vecGAMMA = [gamma_root,vecGAMMA];
+% vecGAMMA = A(vecLEDVES) + vecDVEHVSPN(vecLEDVES)'.*B(vecLEDVES) + vecDVEHVSPN(vecLEDVES)'.*vecDVEHVSPN(vecLEDVES)'.*C(vecLEDVES);
+% gamma_root = A(vecLEDVES(1)) - vecDVEHVSPN(vecLEDVES(1))'.*B(vecLEDVES(1)) + vecDVEHVSPN(vecLEDVES(1))'.*vecDVEHVSPN(vecLEDVES(1))'.*C(vecLEDVES(1));
+% 
+% vecGAMMA = [gamma_root,vecGAMMA];
 
 vecMOMDIST = sum(matMOMDIST,2);
 vecMOMDIST = [vecMOMDIST(1:(end-1)).*valDENSITY./(2*vecDVEHVSPN(vecLEDVES)); 0];
