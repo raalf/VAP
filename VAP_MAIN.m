@@ -325,6 +325,8 @@ ylabel('Twist (deg)')
 hold off
 end
 
+save('Structural_Dynamics.mat');
+
 toc
 %% Viscous wrapper
 
