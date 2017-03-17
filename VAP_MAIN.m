@@ -43,7 +43,7 @@ strSTRUCT_INPUT = 'inputs/Struct_Input.txt';
     valFTURB, valFPWIDTH, valDELTAE, valDELTIME, valMAXTIME, valMINTIME, ...
     valINTERF] = fcnVAPREAD(strFILE);
 
-[vecEIxCOEFF, vecGJtCOEFF, vecEACOEFF, vecCGCOEFF, vecJTCOEFF, vecLMCOEFF] = fcnSTRUCTREAD(strSTRUCT_INPUT);
+[valSDELTIME, vecEIxCOEFF, vecGJtCOEFF, vecEACOEFF, vecCGCOEFF, vecJTCOEFF, vecLMCOEFF] = fcnSTRUCTREAD(strSTRUCT_INPUT);
 
 % seqALPHA = [2];
 
@@ -189,7 +189,7 @@ for ai = 1:length(seqALPHA)
             % wing accordingly
             else
                 
-                valDELTIME = 0.000448308725580066;
+                valDELTIME = valSDELTIME;
 
                  matCENTER_old = matCENTER;
 
@@ -268,7 +268,7 @@ for ai = 1:length(seqALPHA)
                 valWNELE, matWDVE, matWVLST, matWCOEFF, vecWK, vecWDVEHVSPN, vecWDVEHVCRD,vecWDVEROLL, vecWDVEPITCH, vecWDVEYAW, ...
                 vecWDVELESWP, vecWDVETESWP, valWSIZE, valTIMESTEP, vecSYM, vecDVETESWP, valAREA, valSPAN, valBETA, ...
                 vecDVEWING, vecWDVEWING, vecN, vecM, vecDVEPANEL, vecDVEAREA, vecSPNWSECRD, vecSPNWSEAREA, matQTRCRD, valDENSITY, valWEIGHT,...
-                vecLEDVES, vecUINF, matSCLST, vecSPANDIST, matNPVLST, matNPDVE, matSC, vecMAC, valCM,vecLSAC);
+                vecLEDVES, vecUINF, matSCLST, vecSPANDIST, matNPVLST, matNPDVE, matSC, vecMAC, valCM,valUINF);
             
             if flagPRINT == 1 && valTIMESTEP == 1
                 fprintf(' TIMESTEP    CL          CDI\n'); %header
@@ -282,7 +282,6 @@ for ai = 1:length(seqALPHA)
 %             fprintf('\tCL = %0.5f',vecCL(valTIMESTEP,ai));
 %             fprintf('\tCDi = %0.5f',vecCDI(valTIMESTEP,ai));
 
-            test(:,valTIMESTEP) = vecLIFTDIST;
         end
         
         %% Viscous wrapper

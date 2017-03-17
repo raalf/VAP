@@ -1,4 +1,4 @@
-function [vecEIxCOEFF, vecGJtCOEFF, vecEACOEFF, vecCGCOEFF, vecJTCOEFF, vecLMCOEFF] = fcnSTRUCTREAD(strSTRUCT_INPUT)
+function [valSDELTIME, vecEIxCOEFF, vecGJtCOEFF, vecEACOEFF, vecCGCOEFF, vecJTCOEFF, vecLMCOEFF] = fcnSTRUCTREAD(strSTRUCT_INPUT)
 
 % This function reads in the structure input file and stores each parameter
 % in a vector. The vectors are all 1 x 3 with col 1 = A, col 2 = B, and col
@@ -24,11 +24,18 @@ vecEIxCOEFF = zeros(1,3);
 vecGJtCOEFF = zeros(1,3);
 vecEACOEFF = zeros(1,3);
 vecCGCOEFF = zeros(1,3);
-vecJtCOEFF = zeros(1,3);
+vecJTCOEFF = zeros(1,3);
 vecLMCOEFF = zeros(1,3);
 
 % Open structure input file
 fp = fopen(strSTRUCT_INPUT);
+
+% Read structural timestep size 
+ch = fscanf(fp,'%c',1);
+while(ch~='=');
+    ch = fscanf(fp,'%c',1);
+end
+valSDELTIME = fscanf(fp,'%lf');
 
 % Read A,B,C values for bending stiffness distribution
 for i = 1:3

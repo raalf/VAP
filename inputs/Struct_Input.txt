@@ -2,6 +2,8 @@ Input file for VAP Structural Dynamics Package
 Input file m/N/sec
 Please note that the program uses equal, number and : signs as special recognizers!
 
+Width of each time step (sec):	valSDELTIME 	=	0.000448308725580066
+
 ----------------------
 Stiffness Distribution
 ----------------------
