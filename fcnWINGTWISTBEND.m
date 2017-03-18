@@ -62,51 +62,15 @@ vecSLOPE = zeros(1,valNSELE-1);
 % Temporary cross sectional area calculation
 C = -0.0333*vecSPANDIST + 0.76*ones(length(vecSPANDIST),1) ;
 tk = 0.02 ;
-Tk = 0.15 ;
+Tk = 0.13 ;
 vecSPANAREA = pi*tk*C*(1 + Tk);
 
 valSTRUCTTIME = valTIMESTEP;
 
+% vecJT = (0.0000001214.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST - 0.0000017210.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST + 0.0000051317.*vecSPANDIST.*vecSPANDIST - 0.0000073047*vecSPANDIST + 0.0001181334);
+
 
 %% Beam boundary conditions
-
-% for valSTRUCTTIME = 1:ceil(valDELTIME/valSTRUCTDELTIME)
-   
-%     if valSTRUCTTIME == 1 && valTIMESTEP == 3
-%         
-%         % Initial conditions for wing deflection
-%         vecDEF(3:valNSELE+2) = valINITCOND*vecSPANDIST.*vecSPANDIST;
-%         vecDEF(2) = vecDEF(4); % BC for deflection one element beyond root (negative span direction)
-% 
-%         vecDEF(valNSELE+3) = 2*vecDEF(valNSELE+2)...
-%             -vecDEF(valNSELE+1); % BC for deflection one element beyond wing (positive span direction)
-%         vecDEF(valNSELE+4) = 3*vecDEF(valNSELE+2)...
-%             -2*vecDEF(valNSELE+1); % BC for deflection two elements beyond wing (positive span direction)   
-%         
-%         % Initial conditions for wing twist
-%         vecTWIST(3:valNSELE+2) = valINITCOND*(vecSPANDIST./valSPAN);
-%         vecTWIST(valNSELE+3) = vecTWIST(valNSELE+1); % BC for twist one element beyond wing (positive span direction)
-% 
-%         matDEF(valSTRUCTTIME,:) = vecDEF;
-%         matTWIST(valSTRUCTTIME,:) = vecTWIST;
-% 
-%     elseif valSTRUCTTIME == 2 && valTIMESTEP == 3
-%         
-%         % Initial conditions for wing deflection
-%         vecDEF(3:valNSELE+2) = valINITCOND*vecSPANDIST.*vecSPANDIST;
-%         vecDEF(2) = vecDEF(4); % BC for deflection one element beyond root (negative span direction)
-%         
-%         vecDEF(valNSELE+3) = 2*vecDEF(valNSELE+2)...
-%             -vecDEF(valNSELE+1); % BC for deflection one element beyond wing (positive span direction)
-%         vecDEF(valNSELE+4) = 3*vecDEF(valNSELE+2)...
-%             -2*vecDEF(valNSELE+1); % BC for deflection two elements beyond wing (positive span direction)
-%         
-%         % Initial conditions for wing twist
-%         vecTWIST(3:valNSELE+2) = valINITCOND*(vecSPANDIST./valSPAN);
-%         vecTWIST(valNSELE+3) = vecTWIST(valNSELE+1); % BC for twist one element beyond wing (positive span direction)
-% 
-%         matDEF(valSTRUCTTIME,:) = vecDEF;
-%         matTWIST(valSTRUCTTIME,:) = vecTWIST;
         
     if valTIMESTEP >= 3
 
@@ -125,7 +89,7 @@ valSTRUCTTIME = valTIMESTEP;
             %% Geometric property assembly
 
             % Assemble mass matrix
-            matMASS = [vecLM(yy-2), -vecLM(yy-2).*vecLSM(yy-2); -vecLM(yy-2).*vecLSM(yy-2), vecLM(yy-2).*(vecLSM(yy-2)*vecLSM(yy-2)+(vecJT(yy-2)./(vecSPANAREA(yy-2))))];
+            matMASS = [vecLM(yy-2), -vecLM(yy-2).*vecLSM(yy-2); -vecLM(yy-2).*vecLSM(yy-2), vecLM(yy-2).*(vecLSM(yy-2)*vecLSM(yy-2)+ vecJT(yy-2)./vecSPANAREA(yy-2))];
 
             % Assemble stiffness matrices
             matK_1 = [matEIx(yy-2,3), 0; 0, 0];
@@ -159,7 +123,7 @@ valSTRUCTTIME = valTIMESTEP;
 
             tempTWISTBEND = 2.*[matDEF(valSTRUCTTIME-1,yy); matTWIST(valSTRUCTTIME-1,yy)] - [matDEF(valSTRUCTTIME-2,yy); matTWIST(valSTRUCTTIME-2,yy)] ...
                 + (valSTRUCTDELTIME^2).*inv(matMASS)*([matLOAD(yy-2,1); matLOAD(yy-2,2)] - matK_1*[valU_yy; 0] - matK_2*[valU_yyy; valTHETA_y] -...
-                matK_3*[valU_yyyy; valTHETA_yy] - matB*[valUDOT; valTDOT]);
+                matK_3*[valU_yyyy; valTHETA_yy]);
 
             % Output result of deflection and twist to separate vectors
             vecDEF(yy) = tempTWISTBEND(1,:);
