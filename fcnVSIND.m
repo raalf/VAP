@@ -1,4 +1,4 @@
-function [aloc, bloc, cloc] = fcnVSIND(hspan, hchord, phi, fp_0, k)
+function [aloc_0, bloc_0, cloc_0] = fcnVSIND(hspan_0, hchord_0, phi_0, fp_00, k_0)
 % This function finds the influence of a semi-infinite vortex sheet on a
 % point
 
@@ -12,11 +12,61 @@ function [aloc, bloc, cloc] = fcnVSIND(hspan, hchord, phi, fp_0, k)
 %   aloc, bloc, cloc - influence coefficients of the vortex sheet on the point
 
 % T.D.K 2016-09-28 ROTHWELL STREET, AURORA, ONTARIO, CANADA, L4G-0V8
+tic
+if isempty(fp_00) == 1
+    aloc_0 = zeros(0,3);
+    bloc_0 = zeros(0,3);
+    cloc_0 = zeros(0,3);
+else
 
 dbl_eps = 1e-14;
 
-% To save on memory, eta xsi and zeta no longer have their own vectors
-% eta_0 = fp_0(:,2);
+numCORES = 4;
+numPERCORE = ceil(size(fp_00,1)/numCORES);
+% d = reshape(eye(numCORES),[1,numCORES,numCORES]);
+% idx = repmat(d,[numPERCORE 1 1]);
+% idx = reshape(permute(idx,[1,3,2]),[numCORES*numPERCORE,numCORES]);
+tempCUT = numCORES*numPERCORE - size(fp_00,1);
+% idx(end-tempCUT+1:end,:) = [];
+
+d = numPERCORE*numCORES - size(fp_00,1);
+fp_00 = [fp_00; zeros(d,3)];
+fp_00 = permute(reshape(fp_00',[3,numPERCORE,numCORES]),[2 1 3]);
+
+phi_0 = [phi_0; zeros(d,1)];
+phi_0 = reshape(phi_0,[numPERCORE,1,numCORES]);
+
+k_0 = [k_0; zeros(d,1)];
+k_0 = reshape(k_0,[numPERCORE,1,numCORES]);
+
+hchord_0 = [hchord_0; zeros(d,1)];
+hchord_0 = reshape(hchord_0,[numPERCORE,1,numCORES]); 
+
+hspan_0 = [hspan_0; zeros(d,1)];
+hspan_0 = reshape(hspan_0,[numPERCORE,1,numCORES]);
+% bloc_0 = zeros(size(idx,1));
+% cloc_0 = zeros(size(idx,1));
+
+% bloc_0 = zeros(numPERCORE,3,numCORES);
+% cloc_0 = zeros(numPERCORE,3,numCORES);
+bloc_0 = cell(numPERCORE*numCORES,3);
+cloc_0 = cell(numPERCORE*numCORES,3);
+
+parfor i = 1:numCORES  
+% fp_0 = fp_00(idx(:,i)==1,:);
+% hspan = hspan_0(idx(:,i)==1,:);
+% hchord = hchord_0(idx(:,i)==1,:);
+% phi = phi_0(idx(:,i)==1,:);
+% k = k_0(idx(:,i)==1,:);
+
+fp_0 = fp_00(:,:,i);
+hspan = hspan_0(:,:,i);
+hchord = hchord_0(:,:,i);
+phi = phi_0(:,:,i);
+k = k_0(:,:,i);
+
+% 
+% eta_0 = fp_0(:,2) ;
 % xsi_0 = fp_0(:,1);
 % zeta_0 = fp_0(:,3);
 
@@ -249,7 +299,6 @@ b2_zeta(abs(fp_0(:,3)) <= dbl_eps & abs(le_vect) <= dbl_eps & abs(tanphi) > dbl_
 bloc = [b2_xsi b2_eta b2_zeta];
 cloc = [c2_xsi c2_eta c2_zeta];
 % aloc = zeros(size(bloc));
-aloc = [];
 
 % % If the point lies on a swept leading edge
 % idx_LE = abs(zeta_0) <= dbl_eps & abs(xsi_0 - eta_0.*tan(phi)) <= dbl_eps; %& abs(phi) <= dbl_eps;
@@ -273,11 +322,25 @@ cloc(idx_LE,1:2) = zeros(size(cloc(idx_LE,1:2)));
 bloc(idx_LE,3) = 0.5.*log((t1s(idx_LE) + k(idx_LE))./(t2s(idx_LE) + k(idx_LE)));
 cloc(idx_LE,3) = -4.*hspan(idx_LE) + fp_0(idx_LE,2).*2.*bloc(idx_LE,3);
 
-% T = whos('fp_0');
-% fp2 = fopen('size.txt','at');
-% fprintf(fp2,'%f', T.size);
-% fprintf(fp2,'\r\n');
-% fclose(fp2);
+% bloc_0(:,:,i) = bloc;
+% cloc_0(:,:,i) = cloc;
+
+bloc_0{i} = bloc;
+cloc_0{i} = cloc;
 
 end
+
+aloc_0 = [];
+bloc_0 = vertcat(bloc_0{1:numCORES});
+cloc_0 = vertcat(cloc_0{1:numCORES});
+% bloc_0 = reshape(permute(bloc_0,[2 1 3]),[3,numPERCORE*numCORES])';
+% cloc_0 = reshape(permute(cloc_0,[2 1 3]),[3,numPERCORE*numCORES])';
+bloc_0(end-tempCUT+1:end,:) = [];
+cloc_0(end-tempCUT+1:end,:) = [];
+
+
+end
+toc
+end
+
 
