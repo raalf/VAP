@@ -53,9 +53,21 @@ idx1 = dvetype == 0 | dvetype == 2 | dvetype == -3 | dvetype == -4;
 [a1le(idx1,:), b1le(idx1,:), c1le(idx1,:)] = fcnBOUNDIND(vecDVEHVSPN(dvenum(idx1)), vecDVELESWP(dvenum(idx1)), xsiA(idx1,:));
 
 % Vortex sheet at leading edge
-% [~, b2le, c2le] = fcnVSIND(vecDVEHVSPN(dvenum), vecDVEHVCRD(dvenum), vecDVELESWP(dvenum), xsiA, vecK(dvenum)); 
-[~, b2le, c2le] = fcnVSIND(gpuArray(single(vecDVEHVSPN(dvenum))), gpuArray(single(vecDVEHVCRD(dvenum))), gpuArray(single(vecDVELESWP(dvenum))), gpuArray(single(xsiA)), gpuArray(single(vecK(dvenum)))); 
 
+tic
+[~, b2le, c2le] = fcnVSIND(vecDVEHVSPN(dvenum), vecDVEHVCRD(dvenum), vecDVELESWP(dvenum), xsiA, vecK(dvenum)); 
+temp1 = toc;
+
+tic
+[~, b2le, c2le] = fcnVSIND(gpuArray(single(vecDVEHVSPN(dvenum))), gpuArray(single(vecDVEHVCRD(dvenum))), gpuArray(single(vecDVELESWP(dvenum))), gpuArray(single(xsiA)), gpuArray(single(vecK(dvenum)))); 
+b2le = gather(b2le);
+c2le = gather(c2le);
+temp2 = toc;
+
+fp2 = fopen('gpumem.txt','at');
+fprintf(fp2,'%f %f %f', temp1, temp2, length(xsiA(:,1)));
+fprintf(fp2,'\r\n');
+fclose(fp2);
 
 %% Trailing Edge
 
@@ -77,8 +89,7 @@ idx3 = dvetype ~= 3 & dvetype ~= -3;
 % [~, b2te(idx3,:), c2te(idx3,:)] = fcnVSIND(vecDVEHVSPN(dvenum(idx3)), vecDVEHVCRD(dvenum(idx3)), vecDVETESWP(dvenum(idx3)), xsiA(idx3,:), vecK(dvenum(idx3)));
 [~, b2te(idx3,:), c2te(idx3,:)] = fcnVSIND(gpuArray(single(vecDVEHVSPN(dvenum(idx3)))), gpuArray(single(vecDVEHVCRD(dvenum(idx3)))), gpuArray(single(vecDVETESWP(dvenum(idx3)))), gpuArray(single(xsiA(idx3,:))), gpuArray(single(vecK(dvenum(idx3)))));
 
-b2le = gather(b2le);
-c2le = gather(c2le);
+
 b2te = gather(b2te);
 c2te = gather(c2te);
 

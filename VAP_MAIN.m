@@ -3,7 +3,7 @@ clear
 
 warning off
 
-% profile -memory on
+profile -memory on
 
 disp('===========================================================================');
 disp('+---------------+');
@@ -54,7 +54,7 @@ flagPLOTWAKEVEL = 0;
 flagVERBOSE = 0;
 
 
-valMAXTIME = 20
+valMAXTIME = 100
 %% Discretize geometry into DVEs
 
 [matCENTER0, vecDVEHVSPN, vecDVEHVCRD, vecDVELESWP, vecDVEMCSWP, vecDVETESWP, ...
@@ -261,7 +261,7 @@ if flagPLOT == 1
 
 end
 
-% profreport
+profreport
 
 %% Viscous wrapper
 
