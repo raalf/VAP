@@ -119,7 +119,7 @@ vecJT = 0.00045702.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPAND
                 4*matDEF(valSTRUCTTIME-1,yy-1) + matDEF(valSTRUCTTIME-1,yy-2))/(valDY)^4;
 
             % Finite difference relations for partial derivative of twist w.r.t Y
-            valTHETA_y = (matTWIST(valSTRUCTTIME-1,yy+1) - matTWIST(valSTRUCTTIME-1,yy-1))/2*valDY;
+            valTHETA_y = (matTWIST(valSTRUCTTIME-1,yy) - matTWIST(valSTRUCTTIME-1,yy-1))/(valDY);
             valTHETA_yy = (matTWIST(valSTRUCTTIME-1,yy+1) - 2*matTWIST(valSTRUCTTIME-1,yy) + matTWIST(valSTRUCTTIME-1,yy-1))/(valDY^2);
 
             %% Solve matrix equation
