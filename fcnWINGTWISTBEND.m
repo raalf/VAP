@@ -67,7 +67,14 @@ vecSPANAREA = pi*tk*C*(1 + Tk);
 
 valSTRUCTTIME = valTIMESTEP;
 
-% vecJT = (0.0000001214.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST - 0.0000017210.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST + 0.0000051317.*vecSPANDIST.*vecSPANDIST - 0.0000073047*vecSPANDIST + 0.0001181334);
+% vecJT = 0.0000001214.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST -  0.0000017210.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST...
+%     + 0.0000051317.*vecSPANDIST.*vecSPANDIST - 0.0000073047.*vecSPANDIST + 0.0001181334;
+
+vecJT = 0.00045702.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST...
+    - 0.01320713.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST...
+    + 0.14939498.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST - 0.83266230.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST...
+    + 2.35858637.*vecSPANDIST.*vecSPANDIST - 3.18488527.*vecSPANDIST + 1.89798213;
+
 
 
 %% Beam boundary conditions
@@ -89,7 +96,7 @@ valSTRUCTTIME = valTIMESTEP;
             %% Geometric property assembly
 
             % Assemble mass matrix
-            matMASS = [vecLM(yy-2), -vecLM(yy-2).*vecLSM(yy-2); -vecLM(yy-2).*vecLSM(yy-2), vecLM(yy-2).*(vecLSM(yy-2)*vecLSM(yy-2)+ vecJT(yy-2)./vecSPANAREA(yy-2))];
+            matMASS = [vecLM(yy-2), -vecLM(yy-2).*vecLSM(yy-2); -vecLM(yy-2).*vecLSM(yy-2), vecJT(yy-2)];
 
             % Assemble stiffness matrices
             matK_1 = [matEIx(yy-2,3), 0; 0, 0];
@@ -123,7 +130,7 @@ valSTRUCTTIME = valTIMESTEP;
 
             tempTWISTBEND = 2.*[matDEF(valSTRUCTTIME-1,yy); matTWIST(valSTRUCTTIME-1,yy)] - [matDEF(valSTRUCTTIME-2,yy); matTWIST(valSTRUCTTIME-2,yy)] ...
                 + (valSTRUCTDELTIME^2).*inv(matMASS)*([matLOAD(yy-2,1); matLOAD(yy-2,2)] - matK_1*[valU_yy; 0] - matK_2*[valU_yyy; valTHETA_y] -...
-                matK_3*[valU_yyyy; valTHETA_yy]);
+                matK_3*[valU_yyyy; valTHETA_yy] - matB*[valUDOT; valTDOT]);
 
             % Output result of deflection and twist to separate vectors
             vecDEF(yy) = tempTWISTBEND(1,:);
