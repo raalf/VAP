@@ -96,8 +96,9 @@ vecJT = 0.00045702.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPAND
             %% Geometric property assembly
 
             % Assemble mass matrix
+%             matMASS = [vecLM(yy-2), -vecLM(yy-2).*vecLSM(yy-2); -vecLM(yy-2).*vecLSM(yy-2), vecLM(yy-2)*(vecLSM(yy-2)*vecLSM(yy-2) + vecJT(yy-2)/vecSPANAREA(yy-2))];
             matMASS = [vecLM(yy-2), -vecLM(yy-2).*vecLSM(yy-2); -vecLM(yy-2).*vecLSM(yy-2), vecJT(yy-2)];
-
+            
             % Assemble stiffness matrices
             matK_1 = [matEIx(yy-2,3), 0; 0, 0];
             matK_2 = [matEIx(yy-2,2), 0; 0, -matGJt(yy-2,2)]; 
@@ -119,7 +120,7 @@ vecJT = 0.00045702.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPAND
                 4*matDEF(valSTRUCTTIME-1,yy-1) + matDEF(valSTRUCTTIME-1,yy-2))/(valDY)^4;
 
             % Finite difference relations for partial derivative of twist w.r.t Y
-            valTHETA_y = (matTWIST(valSTRUCTTIME-1,yy) - matTWIST(valSTRUCTTIME-1,yy-1))/(valDY);
+            valTHETA_y = (matTWIST(valSTRUCTTIME-1,yy+1) - matTWIST(valSTRUCTTIME-1,yy-1))/(2*valDY);
             valTHETA_yy = (matTWIST(valSTRUCTTIME-1,yy+1) - 2*matTWIST(valSTRUCTTIME-1,yy) + matTWIST(valSTRUCTTIME-1,yy-1))/(valDY^2);
 
             %% Solve matrix equation

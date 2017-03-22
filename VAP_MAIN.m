@@ -271,11 +271,12 @@ for ai = 1:length(seqALPHA)
                 vecLEDVES, vecUINF, matSCLST, vecSPANDIST, matNPVLST, matNPDVE, matSC, vecMAC, valCM,valUINF);
             
             if flagPRINT == 1 && valTIMESTEP == 1
-                fprintf(' TIMESTEP    CL          CDI\n'); %header
-                fprintf('----------------------------------------------\n'); 
+                fprintf(' TIMESTEP    CL          CDI          Tip Def.       Twist (deg)\n'); %header
+                fprintf('----------------------------------------------------------------\n'); 
             end
             if flagPRINT == 1
-                fprintf('  %4d     %0.5f     %0.5f\n',valTIMESTEP,vecCL(valTIMESTEP,ai),vecCDI(valTIMESTEP,ai)); %valTIMESTEP
+                fprintf('  %4d     %0.5f     %0.5f         %0.5f          %0.5f\n',valTIMESTEP,vecCL(valTIMESTEP,ai),vecCDI(valTIMESTEP,ai),...
+                    matDEFGLOB(valTIMESTEP,20),(180/pi)*matTWISTGLOB(valTIMESTEP,20)); %valTIMESTEP
             end
             
 %             fprintf('\n\tTimestep = %0.0f', valTIMESTEP);
@@ -323,6 +324,18 @@ yyaxis right
 plot(vecSPANDIST, (180/pi)*matTWISTGLOB(valTIMESTEP,(3:size(matDEFGLOB,2)-2)));
 ylabel('Twist (deg)')
 hold off
+
+figure(4)
+clf
+plot(valDELTIME*(1:valTIMESTEP),(180/pi)*matTWISTGLOB(:,20))
+xlabel('Time (s)')
+ylabel('Tip Twist (deg)')
+
+figure(5)
+clf
+plot(valDELTIME*(1:valTIMESTEP),matDEFGLOB(:,20))
+xlabel('Time (s)')
+ylabel('Tip Deflection (m)')
 end
 
 save('Structural_Dynamics.mat');
