@@ -34,8 +34,8 @@ disp(' ');
 %% Reading in geometry
 
 % strFILE = 'inputs/VAP christmas.txt';
-strFILE = 'inputs/VAP_SB14.txt';
-strSTRUCT_INPUT = 'inputs/Struct_Input.txt';
+strFILE = 'inputs/VAP_HALE.txt';
+strSTRUCT_INPUT = 'inputs/Struct_Input_HALE.txt';
 
 [flagRELAX, flagSTEADY, flagSTIFFWING, valAREA, valSPAN, valCMAC, valWEIGHT, ...
     valCM, seqALPHA, seqBETA, valKINV, valUINF, valDENSITY, valPANELS, matGEOM, vecSYM, ...
@@ -297,9 +297,11 @@ for ai = 1:length(seqALPHA)
                 fprintf(' TIMESTEP    CL          CDI          Tip Def.       Twist (deg)\n'); %header
                 fprintf('----------------------------------------------------------------\n'); 
             end
-            if flagPRINT == 1
+            if flagPRINT == 1 && flagSTIFFWING == 2
                 fprintf('  %4d     %0.5f     %0.5f         %0.5f          %0.5f\n',valTIMESTEP,vecCL(valTIMESTEP,ai),vecCDI(valTIMESTEP,ai),...
                     matDEFGLOB(valTIMESTEP,20),(180/pi)*matTWISTGLOB(valTIMESTEP,20)); %valTIMESTEP
+            else
+                fprintf('  %4d     %0.5f     %0.5f\n',valTIMESTEP,vecCL(valTIMESTEP,ai),vecCDI(valTIMESTEP,ai)); %valTIMESTEP               
             end
             
 %             fprintf('\n\tTimestep = %0.0f', valTIMESTEP);
