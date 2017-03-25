@@ -75,6 +75,10 @@ vecJT = 0.00045702.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPAND
     + 0.14939498.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST - 0.83266230.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST...
     + 2.35858637.*vecSPANDIST.*vecSPANDIST - 3.18488527.*vecSPANDIST + 1.89798213;
 
+% vecJT = 0.00004993.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST...
+%     - 0.0015111.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST...
+%     + 0.01788802.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST - 0.10454044.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST...
+%     + 0.3130793.*vecSPANDIST.*vecSPANDIST - 0.45287673.*vecSPANDIST + 0.26571032;
 
 
 %% Beam boundary conditions
@@ -103,7 +107,7 @@ vecJT = 0.00045702.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPAND
             matK_1 = [matEIx(yy-2,3), 0; 0, 0];
             matK_2 = [matEIx(yy-2,2), 0; 0, -matGJt(yy-2,2)]; 
             matK_3 = [matEIx(yy-2,1), 0; 0, -matGJt(yy-2,1)];
-            matB = [0 0; 0 100];
+            matB = [100 0; 0 100];
 
             %% Finite difference relations for partial derivatives
             

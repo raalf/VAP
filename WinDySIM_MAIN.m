@@ -43,7 +43,7 @@ strSTRUCT_INPUT = 'inputs/Struct_Input.txt';
     valFTURB, valFPWIDTH, valDELTAE, valDELTIME, valMAXTIME, valMINTIME, ...
     valINTERF] = fcnVAPREAD(strFILE);
 
-[valSDELTIME, vecEIxCOEFF, vecGJtCOEFF, vecEACOEFF, vecCGCOEFF, vecJTCOEFF, vecLMCOEFF] = fcnSTRUCTREAD(strSTRUCT_INPUT);
+[valSDELTIME, valSTIFFSTEPS, flagSTATIC, vecEIxCOEFF, vecGJtCOEFF, vecEACOEFF, vecCGCOEFF, vecJTCOEFF, vecLMCOEFF] = fcnSTRUCTREAD(strSTRUCT_INPUT);
 
 % seqALPHA = [2];
 
@@ -125,6 +125,8 @@ for ai = 1:length(seqALPHA)
         matDEFGLOB = [];
         matTWISTGLOB = [];
         matSLOPE = [];
+        vecLIFTSTATIC = [];
+        vecMOMSTATIC = [];
         vecWDVEHVSPN = [];
         vecWDVEHVCRD = [];
         vecWDVEROLL = [];
@@ -177,7 +179,7 @@ for ai = 1:length(seqALPHA)
             %% Moving the wing and structure
             
             % First two timesteps do not deflect the wing
-            if valTIMESTEP <= 30 || flagSTIFFWING == 1
+            if valTIMESTEP <= valSTIFFSTEPS || flagSTIFFWING == 1
 
                 [matVLST, matCENTER, matNEWWAKE, matNPNEWWAKE, matNTVLST, matNPVLST, matUINF, matDEFGLOB, matTWISTGLOB, valUINF] = fcnSTIFFWING(valALPHA, valBETA, valDELTIME, matVLST, matCENTER, matDVE, vecDVETE,...
                     matNTVLST, matNPVLST, vecN, valTIMESTEP, vecCL, valWEIGHT, valAREA, valDENSITY, valUINF);
@@ -189,26 +191,40 @@ for ai = 1:length(seqALPHA)
             % wing accordingly
             else
                 
-                valDELTIME = valSDELTIME;
-
-                 matCENTER_old = matCENTER;
-
-                [matEIx, matGJt, vecEA, vecCG, vecJT, vecLM, vecLSM, vecLSAC, matAEROCNTR, matSCLST, vecSPANDIST, matSC, vecMAC] = fcnSTRUCTDIST(vecDVEHVSPN, vecDVELE, vecDVETE, vecEIxCOEFF, vecGJtCOEFF,...
-                    vecEACOEFF, vecCGCOEFF, vecJTCOEFF, vecLMCOEFF, matNPVLST, matNPDVE, vecDVEPANEL, vecN, vecM, vecDVEWING, vecDVEROLL, vecDVEPITCH, vecDVEYAW);
-                
-                [vecDEF, vecTWIST, matDEFGLOB, matTWISTGLOB, matDEF, matTWIST, matSLOPE] = fcnWINGTWISTBEND(vecLIFTDIST, vecMOMDIST, matEIx, vecLM, vecJT, matGJt,...
-                    vecLSM, vecN, valSPAN, vecDVEHVSPN, valTIMESTEP, matDEFGLOB, matTWISTGLOB, vecSPANDIST, valDELTIME, matSLOPE);
-                
-                [matNPVLST, matNPNEWWAKE, matNEWWAKE, valUINF] = fcnMOVEFLEXWING(valALPHA, valBETA, valDELTIME, matVLST, matCENTER, matDVE, vecDVETE, vecDVEHVSPN, vecDVELE, matNPVLST, matDEFGLOB,...
-                    matTWISTGLOB, matSLOPE, valTIMESTEP, vecN, vecM, vecDVEWING, vecDVEPANEL, matSCLST, vecDVEPITCH, matNPDVE, vecSPANDIST, vecCL, valWEIGHT, valAREA, valDENSITY,valUINF);
-                
-                [ vecDVEHVSPN, vecDVEHVCRD, ...
-                    vecDVEROLL, vecDVEPITCH, vecDVEYAW, ...
-                    vecDVELESWP, vecDVEMCSWP, vecDVETESWP, ...
-                    vecDVEAREA, matDVENORM, matVLST, matDVE, matCENTER, matNEWWAKE ] = fcnVLST2DVEPARAM( matNPDVE, matNPVLST, matNEWWAKE, vecDVETE );
-                
-                [matUINF] = fcnFLEXUINF(matCENTER_old, matCENTER, valDELTIME);
-                
+%                 valDELTIME = valSDELTIME;
+% 
+%                  matCENTER_old = matCENTER;
+% 
+%                 [matEIx, matGJt, vecEA, vecCG, vecJT, vecLM, vecLSM, vecLSAC, matAEROCNTR, matSCLST, vecSPANDIST, matSC, vecMAC] = fcnSTRUCTDIST(vecDVEHVSPN, vecDVELE, vecDVETE, vecEIxCOEFF, vecGJtCOEFF,...
+%                     vecEACOEFF, vecCGCOEFF, vecJTCOEFF, vecLMCOEFF, matNPVLST, matNPDVE, vecDVEPANEL, vecN, vecM, vecDVEWING, vecDVEROLL, vecDVEPITCH, vecDVEYAW);
+%                 
+%                 % Conditional statement on whether to use constant lift and
+%                 % moment (i.e. for static aeroelasticity) or dynamic loads
+%                 % that change each timestep (dynamic aeroelasticity)
+%                 if flagSTATIC == 1
+%                     [vecDEF, vecTWIST, matDEFGLOB, matTWISTGLOB, matDEF, matTWIST, matSLOPE] = fcnWINGTWISTBEND(vecLIFTDIST, vecMOMDIST, matEIx, vecLM, vecJT, matGJt,...
+%                         vecLSM, vecN, valSPAN, vecDVEHVSPN, valTIMESTEP, matDEFGLOB, matTWISTGLOB, vecSPANDIST, valDELTIME, matSLOPE);
+%                 else
+%                     [vecDEF, vecTWIST, matDEFGLOB, matTWISTGLOB, matDEF, matTWIST, matSLOPE] = fcnWINGTWISTBEND(vecLIFTSTATIC, vecMOMSTATIC, matEIx, vecLM, vecJT, matGJt,...
+%                         vecLSM, vecN, valSPAN, vecDVEHVSPN, valTIMESTEP, matDEFGLOB, matTWISTGLOB, vecSPANDIST, valDELTIME, matSLOPE);
+%                 end
+%                 
+%                 [matNPVLST, matNPNEWWAKE, matNEWWAKE, valUINF] = fcnMOVEFLEXWING(valALPHA, valBETA, valDELTIME, matVLST, matCENTER, matDVE, vecDVETE, vecDVEHVSPN, vecDVELE, matNPVLST, matDEFGLOB,...
+%                     matTWISTGLOB, matSLOPE, valTIMESTEP, vecN, vecM, vecDVEWING, vecDVEPANEL, matSCLST, vecDVEPITCH, matNPDVE, vecSPANDIST, vecCL, valWEIGHT, valAREA, valDENSITY,valUINF);
+%                 
+%                 [ vecDVEHVSPN, vecDVEHVCRD, ...
+%                     vecDVEROLL, vecDVEPITCH, vecDVEYAW, ...
+%                     vecDVELESWP, vecDVEMCSWP, vecDVETESWP, ...
+%                     vecDVEAREA, matDVENORM, matVLST, matDVE, matCENTER, matNEWWAKE ] = fcnVLST2DVEPARAM( matNPDVE, matNPVLST, matNEWWAKE, vecDVETE );
+%                 
+%                 [matUINF] = fcnFLEXUINF(matCENTER_old, matCENTER, valDELTIME);
+                [valDELTIME, matEIx, matGJt, vecEA, vecCG, vecJT, vecLM, vecLSM, vecLSAC, matAEROCNTR, matSCLST,...
+                    vecSPANDIST, matSC, vecMAC, vecDEF, vecTWIST, matDEFGLOB, matTWISTGLOB, matDEF, matTWIST, matSLOPE,...
+                    matNPVLST, matNPNEWWAKE, matNEWWAKE, valUINF, vecDVEHVSPN, vecDVEHVCRD, vecDVEROLL, vecDVEPITCH, vecDVEYAW, ...
+                    vecDVELESWP, vecDVEMCSWP, vecDVETESWP, vecDVEAREA, matDVENORM, matVLST, matDVE, matCENTER, matUINF] = fcnFLEXWING(vecDVEHVSPN,...
+                    vecDVELE, vecDVETE, vecEIxCOEFF, vecGJtCOEFF, vecEACOEFF, vecCGCOEFF, vecJTCOEFF, vecLMCOEFF, matNPVLST, matNPDVE, vecDVEPANEL,...
+                    vecN, vecM, vecDVEWING, vecDVEROLL, vecDVEPITCH, vecDVEYAW, vecLIFTDIST, vecMOMDIST, valSPAN, valTIMESTEP, matDEFGLOB, matTWISTGLOB,...
+                    matSLOPE, vecLIFTSTATIC, vecMOMSTATIC, valALPHA, valBETA, matVLST, matCENTER, matDVE, vecCL, valWEIGHT, valAREA, valDENSITY, valUINF, flagSTATIC, valSDELTIME);
             end
             
             % Update structure location after moving wing
@@ -269,6 +285,13 @@ for ai = 1:length(seqALPHA)
                 vecWDVELESWP, vecWDVETESWP, valWSIZE, valTIMESTEP, vecSYM, vecDVETESWP, valAREA, valSPAN, valBETA, ...
                 vecDVEWING, vecWDVEWING, vecN, vecM, vecDVEPANEL, vecDVEAREA, vecSPNWSECRD, vecSPNWSEAREA, matQTRCRD, valDENSITY, valWEIGHT,...
                 vecLEDVES, vecUINF, matSCLST, vecSPANDIST, matNPVLST, matNPDVE, matSC, vecMAC, valCM,valUINF);
+            
+            if valTIMESTEP == valSTIFFSTEPS && flagSTATIC == 0
+                
+                vecLIFTSTATIC = vecLIFTDIST;
+                vecMOMSTATIC = vecMOMDIST;
+                
+            end
             
             if flagPRINT == 1 && valTIMESTEP == 1
                 fprintf(' TIMESTEP    CL          CDI          Tip Def.       Twist (deg)\n'); %header

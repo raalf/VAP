@@ -1,4 +1,4 @@
-function [valSDELTIME, vecEIxCOEFF, vecGJtCOEFF, vecEACOEFF, vecCGCOEFF, vecJTCOEFF, vecLMCOEFF] = fcnSTRUCTREAD(strSTRUCT_INPUT)
+function [valSDELTIME, valSTIFFSTEPS, flagSTATIC, vecEIxCOEFF, vecGJtCOEFF, vecEACOEFF, vecCGCOEFF, vecJTCOEFF, vecLMCOEFF] = fcnSTRUCTREAD(strSTRUCT_INPUT)
 
 % This function reads in the structure input file and stores each parameter
 % in a vector. The vectors are all 1 x 3 with col 1 = A, col 2 = B, and col
@@ -35,7 +35,21 @@ ch = fscanf(fp,'%c',1);
 while(ch~='=');
     ch = fscanf(fp,'%c',1);
 end
-valSDELTIME = fscanf(fp,'%lf');
+valSDELTIME = fscanf(fp,'%lf',1);
+
+% Read number of timesteps to run without deflecting the wing
+ch = fscanf(fp,'%c',1);
+while(ch~='=');
+    ch = fscanf(fp,'%c',1);
+end
+valSTIFFSTEPS = fscanf(fp,'%d',1);
+
+% Read in flag to denote static or dynamic aeroelasticity
+ch = fscanf(fp,'%c',1);
+while(ch~='=');
+    ch = fscanf(fp,'%c',1);
+end
+flagSTATIC = fscanf(fp,'%d',1);
 
 % Read A,B,C values for bending stiffness distribution
 for i = 1:3
