@@ -115,14 +115,14 @@ test(temp_rightV,1) = v_rot.*sin(matTWISTGLOB(valTIMESTEP,move_row+1)+vecEDGEPIT
 test(temp_rightV,3) = v_rot.*cos(matTWISTGLOB(valTIMESTEP,move_row+1)+vecEDGEPITCH(move_row+1))'.*valDELTIME;
 
 % Assign appropriate sign to twist movement
-% temp_translate(:,1) = xz_sign.*temp_translate(:,1);
-% temp_translate(:,3) = xz_sign.*temp_translate(:,3);
+temp_translate(:,1) = xz_sign.*temp_translate(:,1);
+temp_translate(:,3) = xz_sign.*temp_translate(:,3);
 
 % ======================================================================= %
 % =============== TRYING NEW TRANSLATION FROM TWIST ===================== %
 % ======================================================================= %
-temp_translate(:,1) = xz_sign.*test(:,1);
-temp_translate(:,3) = xz_sign.*test(:,3);
+% temp_translate(:,1) = xz_sign.*test(:,1);
+% temp_translate(:,3) = xz_sign.*test(:,3);
 % ======================================================================= %
 % ======================================================================= %
 

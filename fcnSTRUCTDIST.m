@@ -107,12 +107,12 @@ matSCLST = tempSCLST;
 
 matSCLST = matSCLST - matNPVLST; % Matrix of vectors between shear center and vertex
 
-figure(4)
-clf
-patch('Faces',matNPDVE,'Vertices',matNPVLST,'FaceColor','r')
-hold on
-plot3(matAEROCNTR(:,1), matAEROCNTR(:,2), matAEROCNTR(:,3),'-ok')
-plot3(matSC(:,1), matSC(:,2), matSC(:,3),'-ob')
+% figure(4)
+% clf
+% patch('Faces',matNPDVE,'Vertices',matNPVLST,'FaceColor','r')
+% hold on
+% plot3(matAEROCNTR(:,1), matAEROCNTR(:,2), matAEROCNTR(:,3),'-ok')
+% plot3(matSC(:,1), matSC(:,2), matSC(:,3),'-ob')
 
 end
 

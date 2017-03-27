@@ -9,7 +9,7 @@ Stiff (1) or Flexible (2) Wing:	flagSTIFFWING = 2
 
 Max. number of time steps:		valMAXTIME 	=	250
 Min. number of time steps: 		valMINTIME 	= 	0
-Width of each time step (sec):	valDELTIME 	=	0.00448308725580066
+Width of each time step (sec):	valDELTIME 	=	0.0002966174511601320
 Convergence delta-span effic.:	valDELTAE 	=	0.000000	(0 if only timestepping)
 
 AOA sequence: 			seqALPHA 	= 	0
