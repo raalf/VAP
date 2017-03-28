@@ -72,11 +72,9 @@ valSTRUCTTIME = tempTIME + 2;
 
 %% Beam boundary conditions
 
-% matDEF(1:valSTRUCTTIME-1,:) = matDEFGLOB(1:valTIMESTEP-1,:);
-% matTWIST(1:valSTRUCTTIME-1,:) = matTWISTGLOB(1:valTIMESTEP-1,:);
 if tempTIME == 1
-    matDEF(1:valSTRUCTTIME-1,:) = matDEFGLOB((valTIMESTEP-2):valTIMESTEP-1,:);
-    matTWIST(1:valSTRUCTTIME-1,:) = matTWISTGLOB((valTIMESTEP-2):valTIMESTEP-1,:);
+    matDEF(1:valSTRUCTTIME-1,:) = matDEF((end-1):end,:);
+    matTWIST(1:valSTRUCTTIME-1,:) = matTWIST((end-1):end,:);
 end
 
 vecDEF(3) = 0; % Zero deflection at root BC

@@ -124,6 +124,8 @@ for ai = 1:length(seqALPHA)
         matNPWAKEGEOM = [];
         matDEFGLOB = [];
         matTWISTGLOB = [];
+        matDEF = zeros(2,valNELE+5); % <-------------- FIX THIS TO WORK WITH m > 1
+        matTWIST = zeros(2,valNELE+5); % <-------------- FIX THIS TO WORK WITH m > 1
         matSLOPE = [];
         vecLIFTSTATIC = [];
         vecMOMSTATIC = [];
@@ -224,7 +226,7 @@ for ai = 1:length(seqALPHA)
                     vecDVELESWP, vecDVEMCSWP, vecDVETESWP, vecDVEAREA, matDVENORM, matVLST, matDVE, matCENTER, matUINF] = fcnFLEXWING(vecDVEHVSPN,...
                     vecDVELE, vecDVETE, vecEIxCOEFF, vecGJtCOEFF, vecEACOEFF, vecCGCOEFF, vecJTCOEFF, vecLMCOEFF, matNPVLST, matNPDVE, vecDVEPANEL,...
                     vecN, vecM, vecDVEWING, vecDVEROLL, vecDVEPITCH, vecDVEYAW, vecLIFTDIST, vecMOMDIST, valSPAN, valTIMESTEP, matDEFGLOB, matTWISTGLOB,...
-                    matSLOPE, vecLIFTSTATIC, vecMOMSTATIC, valALPHA, valBETA, matVLST, matCENTER, matDVE, vecCL, valWEIGHT, valAREA, valDENSITY, valUINF, flagSTATIC, valSDELTIME, valDELTIME);
+                    matSLOPE, vecLIFTSTATIC, vecMOMSTATIC, valALPHA, valBETA, matVLST, matCENTER, matDVE, vecCL, valWEIGHT, valAREA, valDENSITY, valUINF, flagSTATIC, valSDELTIME, valDELTIME, matDEF, matTWIST);
             end
             
             % Update structure location after moving wing
@@ -355,12 +357,16 @@ clf
 plot(valDELTIME*(1:valTIMESTEP),(180/pi)*matTWISTGLOB(:,20))
 xlabel('Time (s)')
 ylabel('Tip Twist (deg)')
+grid on
+box on
 
 figure(5)
 clf
 plot(valDELTIME*(1:valTIMESTEP),matDEFGLOB(:,20))
 xlabel('Time (s)')
 ylabel('Tip Deflection (m)')
+grid on
+box on
 end
 
 save('Structural_Dynamics.mat');

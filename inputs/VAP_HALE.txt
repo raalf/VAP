@@ -7,9 +7,9 @@ Relaxed wake (yes 1, no 0):		flagRELAX =		0
 Steady (1) or unsteady (2):		flagSTEADY =	2
 Stiff (1) or Flexible (2) Wing:	flagSTIFFWING = 2
 
-Max. number of time steps:		valMAXTIME 	=	300
+Max. number of time steps:		valMAXTIME 	=	2000
 Min. number of time steps: 		valMINTIME 	= 	0
-Width of each time step (sec):	valDELTIME 	=	0.00148308725580066
+Width of each time step (sec):	valDELTIME 	=	0.0045
 Convergence delta-span effic.:	valDELTAE 	=	0.000000	(0 if only timestepping)
 
 AOA sequence: 			seqALPHA 	= 	0
