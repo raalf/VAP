@@ -4,7 +4,7 @@ Please note that the program uses equal, number and : signs as special recognize
 
 Width of each time step (sec):				valSDELTIME 	=	0.00148308725580066
 Number of timesteps with no deflections: 	valSTIFFSTEPS	=	30
-Static (0) or Dynamic (1) aeroelasticity:	flagSTATIC		=	1
+Static (0) or Dynamic (1) aeroelasticity:	flagSTATIC		=	0
 
 ----------------------
 Stiffness Distribution
