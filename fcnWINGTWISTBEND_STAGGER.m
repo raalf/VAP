@@ -1,5 +1,5 @@
 function [vecDEF, vecTWIST, matDEFGLOB, matTWISTGLOB, matDEF, matTWIST, matSLOPE] = fcnWINGTWISTBEND_STAGGER(vecLIFTDIST, vecMOMDIST, matEIx, vecLM, vecJT, matGJt, vecLSM,...
-    vecN, valSPAN, vecDVEHVSPN, valTIMESTEP, matDEFGLOB, matTWISTGLOB, vecSPANDIST, valSDELTIME, matSLOPE, valDELTIME, tempTIME, matDEF, matTWIST)
+    vecN, valSPAN, vecDVEHVSPN, valTIMESTEP, matDEFGLOB, matTWISTGLOB, vecSPANDIST, valSDELTIME, matSLOPE, valDELTIME, tempTIME, matDEF, matTWIST, valSTIFFSTEPS)
 % This function computes the spanwise deflection and twist using an
 % explicit finite difference method given a loading and structural
 % distribution.
@@ -72,9 +72,14 @@ valSTRUCTTIME = tempTIME + 2;
 
 %% Beam boundary conditions
 
-if tempTIME == 1
-    matDEF(1:valSTRUCTTIME-1,:) = matDEF((end-1):end,:);
-    matTWIST(1:valSTRUCTTIME-1,:) = matTWIST((end-1):end,:);
+if tempTIME == 1 && valTIMESTEP <= valSTIFFSTEPS+1
+    
+    matDEF(1:2,:) = matDEFGLOB([valTIMESTEP-valSTIFFSTEPS,end],:);
+    matTWIST(1:2,:) = matTWISTGLOB([valTIMESTEP-valSTIFFSTEPS,end],:);
+
+elseif tempTIME == 1 && valTIMESTEP > valSTIFFSTEPS+1
+    matDEF(1:2,:) = matDEFGLOB([valTIMESTEP-valSTIFFSTEPS-1,end],:);
+    matTWIST(1:2,:) = matTWISTGLOB([valTIMESTEP-valSTIFFSTEPS-1,end],:);
 end
 
 vecDEF(3) = 0; % Zero deflection at root BC
@@ -95,7 +100,7 @@ for yy = 4:(valNSELE+2)
     matK_1 = [matEIx(yy-2,3), 0; 0, 0];
     matK_2 = [matEIx(yy-2,2), 0; 0, -matGJt(yy-2,2)]; 
     matK_3 = [matEIx(yy-2,1), 0; 0, -matGJt(yy-2,1)];
-    matB = [0 0; 0 3];
+    matB = [1 0; 0 5];
 
     %% Finite difference relations for partial derivatives
 
@@ -105,8 +110,8 @@ for yy = 4:(valNSELE+2)
         valUDOT = (matDEF(valSTRUCTTIME-1,yy) - matDEF(valSTRUCTTIME - 2, yy))./valSTRUCTDELTIME;
         valTDOT = (matTWIST(valSTRUCTTIME-1,yy) - matTWIST(valSTRUCTTIME - 2,yy))./valSTRUCTDELTIME;
     else
-        valUDOT = (matDEF(valSTRUCTTIME-1,yy) - matDEF(valSTRUCTTIME - 2, yy))./valDELTIME;
-        valTDOT = (matTWIST(valSTRUCTTIME-1,yy) - matTWIST(valSTRUCTTIME - 2,yy))./valDELTIME;
+        valUDOT = (matDEF(valSTRUCTTIME-1,yy) - matDEF(valSTRUCTTIME - 2, yy))./(500*valSTRUCTDELTIME);
+        valTDOT = (matTWIST(valSTRUCTTIME-1,yy) - matTWIST(valSTRUCTTIME - 2,yy))./(500*valSTRUCTDELTIME);
     end
 
     % Finite difference relations for partial derivative of deflection w.r.t Y
@@ -160,7 +165,7 @@ vecTWIST = matTWIST(end,:);
 vecSLOPE = [0; vecSLOPE'];
 
 % Spanwise deflection and twist wrt to global timestep
-if tempTIME == floor(valDELTIME/valSDELTIME)
+if tempTIME == 500
     matDEFGLOB(valTIMESTEP,:) = matDEF(end,:);
     matTWISTGLOB(valTIMESTEP,:) = matTWIST(end,:);
 
