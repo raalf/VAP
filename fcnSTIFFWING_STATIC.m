@@ -9,11 +9,11 @@ matCENTER_old = matCENTER;
 
 [matVLST, matCENTER, matNEWWAKE, matNPNEWWAKE, matNTVLST, matNPVLST, valUINF] = fcnMOVEWING_STATIC(valALPHA, valBETA, valDELTIME, matVLST, matCENTER, matDVE, vecDVETE, matNTVLST, matNPVLST, vecCL, valWEIGHT, valAREA, valDENSITY, valTIMESTEP, valUINF, matNPDVE);
 
-[matUINF] = fcnFLEXUINF(matCENTER_old, matCENTER, valDELTIME);
+[matUINF] = fcnFLEXUINF(matCENTER_old, matCENTER, valDELTIME, valTIMESTEP);
 
 if valTIMESTEP == 1
-    matDEFGLOB(valTIMESTEP,:) = zeros(1,sum(vecN,1)+5);
-    matTWISTGLOB(valTIMESTEP,:) = zeros(1,sum(vecN,1)+5);
+    matDEFGLOB(valTIMESTEP,:) = zeros(1,sum(vecN,1)+1);
+    matTWISTGLOB(valTIMESTEP,:) = zeros(1,sum(vecN,1)+1);
 else
     matDEFGLOB(valTIMESTEP,:) = matDEFGLOB(valTIMESTEP - 1,:);
     matTWISTGLOB(valTIMESTEP,:) = matTWISTGLOB(valTIMESTEP - 1,:);

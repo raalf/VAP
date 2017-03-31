@@ -4,8 +4,8 @@ NO TRIM
 Please note that the program uses equal, number and : signs as special recognizers!
 
 Relaxed wake (yes 1, no 0):		flagRELAX =		0
-Steady (1) or unsteady (2):		flagSTEADY =	1
-Stiff (1) or Flexible (2) Wing:	flagSTIFFWING = 1
+Steady (1) or unsteady (2):		flagSTEADY =	2
+Stiff (1) or Flexible (2) Wing:	flagSTIFFWING = 2
 
 Max. number of time steps:		valMAXTIME 	=	600
 Min. number of time steps: 		valMINTIME 	= 	0

@@ -22,13 +22,10 @@ if flagSTATIC == 1
         vecLSM, vecN, valSPAN, vecDVEHVSPN, valTIMESTEP, matDEFGLOB, matTWISTGLOB, vecSPANDIST, valSDELTIME, matSLOPE);
 else
     
-    for tempTIME = 1:5000
-        
-        [vecDEF, vecTWIST, matDEFGLOB, matTWISTGLOB, matDEF, matTWIST, matSLOPE] = fcnWINGTWISTBEND_STAGGER(vecLIFTDIST, vecMOMDIST, matEIx, vecLM, vecJT, matGJt,...
-            vecLSM, vecN, valSPAN, vecDVEHVSPN, valTIMESTEP, matDEFGLOB, matTWISTGLOB, vecSPANDIST, valSDELTIME, matSLOPE, valDELTIME, tempTIME, matDEF, matTWIST, valSTIFFSTEPS);
-        
-    end
-    
+    [matDEFGLOB(valTIMESTEP,:),matSLOPE(valTIMESTEP,:)] = fcnSTATICDEF(vecLIFTDIST,vecLM,matEIx,vecDVEHVSPN);
+    matTWISTGLOB(valTIMESTEP,:) = zeros(1,size(vecLIFTDIST,2));
+    vecDEF = matDEFGLOB;
+    vecTWIST = matTWISTGLOB;
     matDEF_old = matDEF;
     matTWIST_old = matTWIST;
     

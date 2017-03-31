@@ -124,8 +124,8 @@ for ai = 1:length(seqALPHA)
         matNPWAKEGEOM = [];
         matDEFGLOB = [];
         matTWISTGLOB = [];
-        matDEF = zeros(2,valNELE+5); % <-------------- FIX THIS TO WORK WITH m > 1
-        matTWIST = zeros(2,valNELE+5); % <-------------- FIX THIS TO WORK WITH m > 1
+        matDEF = zeros(2,valNELE+1); % <-------------- FIX THIS TO WORK WITH m > 1
+        matTWIST = zeros(2,valNELE+1); % <-------------- FIX THIS TO WORK WITH m > 1
         matSLOPE = [];
         vecLIFTSTATIC = [];
         vecMOMSTATIC = [];
@@ -278,7 +278,7 @@ for ai = 1:length(seqALPHA)
             end
             if flagPRINT == 1 && flagSTIFFWING == 2
                 fprintf('  %4d     %0.5f     %0.5f         %0.5f          %0.5f\n',valTIMESTEP,vecCL(valTIMESTEP,ai),vecCDI(valTIMESTEP,ai),...
-                    matDEFGLOB(valTIMESTEP,20),(180/pi)*matTWISTGLOB(valTIMESTEP,20)); %valTIMESTEP
+                    matDEFGLOB(valTIMESTEP,18),(180/pi)*matTWISTGLOB(valTIMESTEP,18)); %valTIMESTEP
             else
                 fprintf('  %4d     %0.5f     %0.5f\n',valTIMESTEP,vecCL(valTIMESTEP,ai),vecCDI(valTIMESTEP,ai)); %valTIMESTEP               
             end
@@ -320,18 +320,18 @@ end
 if flagSTIFFWING ~= 1
 figure(3)
 clf
-plot(vecSPANDIST, matDEFGLOB(valTIMESTEP,(3:size(matDEFGLOB,2)-2)));
+plot(vecSPANDIST, matDEFGLOB(valTIMESTEP,(1:size(matDEFGLOB,2))));
 ylabel('Deflection (m)')
 xlabel('Span Location (m)')
 hold on
 yyaxis right
-plot(vecSPANDIST, (180/pi)*matTWISTGLOB(valTIMESTEP,(3:size(matDEFGLOB,2)-2)));
+plot(vecSPANDIST, (180/pi)*matTWISTGLOB(valTIMESTEP,(1:size(matDEFGLOB,2))));
 ylabel('Twist (deg)')
 hold off
 
 figure(4)
 clf
-plot(valDELTIME*(1:valTIMESTEP),(180/pi)*matTWISTGLOB(:,20))
+plot(valDELTIME*(1:valTIMESTEP),(180/pi)*matTWISTGLOB(:,end))
 xlabel('Time (s)')
 ylabel('Tip Twist (deg)')
 grid on
@@ -339,7 +339,7 @@ box on
 
 figure(5)
 clf
-plot(valDELTIME*(1:valTIMESTEP),matDEFGLOB(:,20))
+plot(valDELTIME*(1:valTIMESTEP),matDEFGLOB(:,end))
 xlabel('Time (s)')
 ylabel('Tip Deflection (m)')
 grid on

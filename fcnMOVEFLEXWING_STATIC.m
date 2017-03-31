@@ -17,11 +17,11 @@ vecDVESPAN = 2*vecDVEHVSPN(ledves)';
 % deflection and twist)
 
 % Calculate cartesian velocity of DVE edges
-del_twist = ((matTWISTGLOB(valTIMESTEP,3:sum(vecN,1)+3) - matTWISTGLOB(valTIMESTEP-1,3:sum(vecN,1)+3)));
-omega = ((matTWISTGLOB(valTIMESTEP,3:sum(vecN,1)+3) - matTWISTGLOB(valTIMESTEP-1,3:sum(vecN,1)+3)))./valDELTIME;
+del_twist = ((matTWISTGLOB(valTIMESTEP,1:sum(vecN,1)+1) - matTWISTGLOB(valTIMESTEP-1,1:sum(vecN,1)+1)));
+omega = ((matTWISTGLOB(valTIMESTEP,1:sum(vecN,1)+1) - matTWISTGLOB(valTIMESTEP-1,1:sum(vecN,1)+1)))./valDELTIME;
 vecXVEL = repmat(valUINF*cos(valALPHA)*cos(valBETA),1,sum(vecN,1)+1);
 vecYVEL = repmat(valUINF*sin(valBETA),1,size(matSLOPE,2)) + [0,((matSLOPE(valTIMESTEP,2:end) - matSLOPE(valTIMESTEP-1,2:end))./valDELTIME).*vecDVESPAN.*cos(repmat(pi/2,1,size(matSLOPE,2)-1) - matSLOPE(valTIMESTEP,2:end))];
-vecZVEL = repmat(valUINF*sin(valALPHA)*cos(valBETA),1,sum(vecN,1)+1) + ((matDEFGLOB(valTIMESTEP,3:sum(vecN,1)+3) - matDEFGLOB(valTIMESTEP-1,3:sum(vecN,1)+3))./valDELTIME);
+vecZVEL = repmat(valUINF*sin(valALPHA)*cos(valBETA),1,sum(vecN,1)+1) + ((matDEFGLOB(valTIMESTEP,1:sum(vecN,1)+1) - matDEFGLOB(valTIMESTEP-1,1:sum(vecN,1)+1))./valDELTIME);
 
 % Determine DVEs in each spanwise station
 [matROWS] = fcnDVEROW(ledves, vecDVEPANEL, vecDVEWING, vecM, vecN);
