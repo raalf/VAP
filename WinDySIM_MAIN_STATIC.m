@@ -164,6 +164,32 @@ for ai = 1:length(seqALPHA)
         [matEIx, matGJt, vecEA, vecCG, vecJT, vecLM, vecLSM, vecLSAC, matAEROCNTR, matSCLST, vecSPANDIST, matSC, vecMAC] = fcnSTRUCTDIST(vecDVEHVSPN, vecDVELE, vecDVETE, vecEIxCOEFF, vecGJtCOEFF,...
             vecEACOEFF, vecCGCOEFF, vecJTCOEFF, vecLMCOEFF, matNPVLST, matNPDVE, vecDVEPANEL, vecN, vecM, vecDVEWING, vecDVEROLL, vecDVEPITCH, vecDVEYAW);
         
+        [ledves, ~, ~] = find(vecDVELE > 0);
+        
+        tempSPANDIST = matCENTER(ledves,2); % Y coordinate of DVE mid-point (point where DVEPITCH is applied) --> used as "x" term for linear interpolation
+
+        vecEDGEPITCH = vecDVEPITCH(ledves); % DVE pitch along span --> used as "y" term for linear interpolation
+
+        % Some setup of work to be able to perform linear interpolation without a
+        % for loop
+        tempSPANDIST = repmat(tempSPANDIST', size(tempSPANDIST,1),1);
+
+        tempSPANDIST = triu(tempSPANDIST);
+
+        vecEDGEPITCH = repmat(vecEDGEPITCH', size(vecEDGEPITCH,1),1);
+
+        vecEDGEPITCH = triu(vecEDGEPITCH);
+
+        vecEDGEPITCH = ((vecSPANDIST(2:(end-1))' - tempSPANDIST(1,1:(end-1)))./(tempSPANDIST(2,2:end)-...
+            tempSPANDIST(1,1:(end-1)))).*(vecEDGEPITCH(2,2:end)-vecEDGEPITCH(1,1:(end-1))) + vecEDGEPITCH(1,1:(end-1)); % Linear interpolation
+
+        % Adding in root and tip values using a linear extrapolation
+        pitch_root = vecEDGEPITCH(1,1) - (tempSPANDIST(1,1) - vecSPANDIST(1)).*(vecEDGEPITCH(1,2)-vecEDGEPITCH(1,1))./(tempSPANDIST(1,2)-tempSPANDIST(1,1));
+
+        pitch_tip = vecEDGEPITCH(1,end) + (vecSPANDIST(end) - tempSPANDIST(1,end)).*(vecEDGEPITCH(1,end)-vecEDGEPITCH(1,end-1))./(tempSPANDIST(1,end)-tempSPANDIST(1,end-1));
+
+        vecEDGEPITCH = [pitch_root, vecEDGEPITCH, pitch_tip];
+        
         n = 1;
         for valTIMESTEP = 1:valMAXTIME
             %% Timestep to solution
@@ -196,11 +222,11 @@ for ai = 1:length(seqALPHA)
                 [valDELTIME, matEIx, matGJt, vecEA, vecCG, vecJT, vecLM, vecLSM, vecLSAC, matAEROCNTR, matSCLST,...
                     vecSPANDIST, matSC, vecMAC, vecDEF, vecTWIST, matDEFGLOB, matTWISTGLOB, matDEF, matTWIST, matSLOPE,...
                     matNPVLST, matNPNEWWAKE, matNEWWAKE, valUINF, vecDVEHVSPN, vecDVEHVCRD, vecDVEROLL, vecDVEPITCH, vecDVEYAW, ...
-                    vecDVELESWP, vecDVEMCSWP, vecDVETESWP, vecDVEAREA, matDVENORM, matVLST, matDVE, matCENTER] = fcnFLEXWING_STATIC(vecDVEHVSPN,...
+                    vecDVELESWP, vecDVEMCSWP, vecDVETESWP, vecDVEAREA, matDVENORM, matVLST, matDVE, matCENTER, vecEDGEPITCH] = fcnFLEXWING_STATIC(vecDVEHVSPN,...
                     vecDVELE, vecDVETE, vecEIxCOEFF, vecGJtCOEFF, vecEACOEFF, vecCGCOEFF, vecJTCOEFF, vecLMCOEFF, matNPVLST, matNPDVE, vecDVEPANEL,...
                     vecN, vecM, vecDVEWING, vecDVEROLL, vecDVEPITCH, vecDVEYAW, vecLIFTDIST, vecMOMDIST, valSPAN, valTIMESTEP, matDEFGLOB, matTWISTGLOB,...
                     matSLOPE, vecLIFTSTATIC, vecMOMSTATIC, valALPHA, valBETA, matVLST, matCENTER, matDVE, vecCL, valWEIGHT, valAREA, valDENSITY, valUINF,...
-                    flagSTATIC, valSDELTIME, valDELTIME, matDEF, matTWIST, valSTIFFSTEPS);
+                    flagSTATIC, valSDELTIME, valDELTIME, matDEF, matTWIST, valSTIFFSTEPS, vecCLDIST, vecEDGEPITCH, vecLEDVES);
                 
                 n = n + 1;
 

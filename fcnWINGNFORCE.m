@@ -47,33 +47,33 @@ end
 valCL = (ntfree(1) + ntind(1))/q;
 valCLF = ntfree(1)/q;
 
-% vecDVECL = (liftfree + liftind)./q; % Total CL at each DVE
+vecDVECL = (liftfree + liftind)./q; % Total CL at each DVE
 
-% [ledves, ~, ~] = find(vecDVELE > 0);
-% lepanels = vecDVEPANEL(ledves);
-% 
-% for i = 1:max(vecDVEWING)
-% 
-% 	idxdve = ledves(vecDVEWING(ledves) == i);
-% 	idxpanel = lepanels(vecDVEWING(ledves) == i);
-% 
-%     m = vecM(idxpanel);
-%     if any(m - m(1))
-%         disp('Problem with wing chordwise elements.');
-%         break
-%     end
-%     m = m(1);
-% 
-%     tempm = repmat(vecN(idxpanel), 1, m).*repmat([0:m-1],length(idxpanel),1);
-%     
-%     rows = repmat(idxdve,1,m) + tempm;
-%     
-% % 	vecCLDIST = [vecCLDIST; (sum(vecDVECL(rows),2))./(sum(vecDVEAREA(rows),2))]; % Total CL at each spanwise station
-%     vecCLDIST = [vecCLDIST; (sum(vecDVECL(rows),2))];
-%     
-%     matCLDIST(:,1:vecM(1)) = vecDVECL(rows);
-% 
-% end
+[ledves, ~, ~] = find(vecDVELE > 0);
+lepanels = vecDVEPANEL(ledves);
+
+for i = 1:max(vecDVEWING)
+
+	idxdve = ledves(vecDVEWING(ledves) == i);
+	idxpanel = lepanels(vecDVEWING(ledves) == i);
+
+    m = vecM(idxpanel);
+    if any(m - m(1))
+        disp('Problem with wing chordwise elements.');
+        break
+    end
+    m = m(1);
+
+    tempm = repmat(vecN(idxpanel), 1, m).*repmat([0:m-1],length(idxpanel),1);
+    
+    rows = repmat(idxdve,1,m) + tempm;
+    
+% 	vecCLDIST = [vecCLDIST; (sum(vecDVECL(rows),2))./(sum(vecDVEAREA(rows),2))]; % Total CL at each spanwise station
+    vecCLDIST = [vecCLDIST; (sum(vecDVECL(rows),2))];
+    
+    matCLDIST(:,1:vecM(1)) = vecDVECL(rows);
+
+end
 
 [vecLIFTDIST, vecMOMDIST] = fcnFORCEDIST(liftfree, liftind, matSCLST, valDENSITY, valWEIGHT, valCL, vecDVEHVSPN, vecLEDVES, vecN, vecM, vecDVEWING, vecDVEPANEL,...
     matCENTER, vecSPANDIST, matNPVLST, matNPDVE, matSC, matLIFTDIR, vecMAC, valCM, valAREA, vecSPNWSEAREA, valUINF);
