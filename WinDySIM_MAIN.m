@@ -34,8 +34,8 @@ disp(' ');
 %% Reading in geometry
 
 % strFILE = 'inputs/VAP christmas.txt';
-strFILE = 'inputs/VAP_HALE.txt';
-strSTRUCT_INPUT = 'inputs/Struct_Input_HALE.txt';
+strFILE = 'inputs/VAP_SB14.txt';
+strSTRUCT_INPUT = 'inputs/Struct_Input_SB14.txt';
 
 [flagRELAX, flagSTEADY, flagSTIFFWING, valAREA, valSPAN, valCMAC, valWEIGHT, ...
     valCM, seqALPHA, seqBETA, valKINV, valUINF, valDENSITY, valPANELS, matGEOM, vecSYM, ...
@@ -266,7 +266,7 @@ for ai = 1:length(seqALPHA)
                 valWNELE, matWDVE, matWVLST, matWCOEFF, vecWK, vecWDVEHVSPN, vecWDVEHVCRD,vecWDVEROLL, vecWDVEPITCH, vecWDVEYAW, ...
                 vecWDVELESWP, vecWDVETESWP, valWSIZE, valTIMESTEP, vecSYM, vecDVETESWP, valAREA, valSPAN, valBETA, ...
                 vecDVEWING, vecWDVEWING, vecN, vecM, vecDVEPANEL, vecDVEAREA, vecSPNWSECRD, vecSPNWSEAREA, matQTRCRD, valDENSITY, valWEIGHT,...
-                vecLEDVES, vecUINF, matSCLST, vecSPANDIST, matNPVLST, matNPDVE, matSC, vecMAC, valCM,valUINF);
+                vecLEDVES, vecUINF, matSCLST, vecSPANDIST, matNPVLST, matNPDVE, matSC, vecMAC, valCM, valUINF, matAEROCNTR);
             
             if valTIMESTEP == valSTIFFSTEPS && flagSTATIC == 0
                 

@@ -1,22 +1,24 @@
 clear,clc
 
 valNSELE = 25;
+valMAXTIME = 20000;
+L = 1.5;
 
-valDY = 5/valNSELE;
+valDY = L/(valNSELE-1);
 
-valSTRUCTDELTIME = 0.0001;
+valSTRUCTDELTIME = 0.00001;
 
-matEIx(:,1) = 20000*ones(valNSELE,1);
+matEIx(:,1) = 16680*ones(valNSELE,1);
 matEIx(:,2) = zeros(valNSELE,1);
 matEIx(:,3) = zeros(valNSELE,1);
 
-matGJt(:,1) = 10000*ones(valNSELE,1);
+matGJt(:,1) = 10.81*ones(valNSELE,1);
 matGJt(:,2) = zeros(valNSELE,1);
 
-vecJT = 0.1*ones(valNSELE,1);
+vecJT = 0.0059*ones(valNSELE,1);
 
-vecLM = 5*ones(valNSELE,1);
-vecLSM = 0*ones(valNSELE,1);
+vecLM = 1.947*ones(valNSELE,1);
+vecLSM = 0.02316*ones(valNSELE,1);
 
 vecDEF = zeros(1,valNSELE+3);
 vecTWIST = zeros(1,valNSELE+3);
@@ -25,12 +27,15 @@ vecSLOPE = zeros(1,valNSELE-1);
 vecLIFTDIST = zeros(1,valNSELE);
 vecMOMDIST = zeros(1,valNSELE);
 
+matDEF = zeros(valMAXTIME,valNSELE+3);
+matTWIST = zeros(valMAXTIME,valNSELE+3);
 %% Beam boundary conditions
 
-matDEF(1:2,:) = zeros(2,valNSELE+3);
+temp = (0.*(0:valDY:L)./(6*matEIx(:,1)')).*(3*L-(0:valDY:L));
+matDEF(1:2,:) = repmat([temp(2),temp,2*temp(end)-temp(end-1),3*temp(end)-2*temp(end-1)],2,1);
 matTWIST(1:2,:) = zeros(2,valNSELE+3);
 
-for valSTRUCTTIME = 3:10000
+for valSTRUCTTIME = 3:valMAXTIME
 
 vecDEF(2) = 0; % Zero deflection at root BC
 vecTWIST(2) = 0; % Zero twist at root BC
@@ -51,7 +56,7 @@ for yy = 3:(valNSELE+1)
     matK_1 = [matEIx(yy-1,3), 0; 0, 0];
     matK_2 = [matEIx(yy-1,2), 0; 0, -matGJt(yy-1,2)]; 
     matK_3 = [matEIx(yy-1,1), 0; 0, -matGJt(yy-1,1)];
-    matB = [60 0; 0 0];
+    matB = [0 0; 0 0];
 
     %% Finite difference relations for partial derivatives
 

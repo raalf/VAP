@@ -1,6 +1,6 @@
 function [w,vecSLOPE] = fcnSTATICDEF(vecLIFTDIST,vecLM,matEIx,vecDVEHVSPN)
 
-vecLOAD = vecLIFTDIST' - vecLM*9.81;
+vecLOAD = vecLIFTDIST';
 vecLOAD(end) = 0;
 valDY = sum(2*vecDVEHVSPN,1)/length(vecDVEHVSPN);
 valNELE = size(vecLIFTDIST,2);

@@ -16,7 +16,7 @@ valDELTIME = valSDELTIME;
 % that change each timestep (dynamic aeroelasticity)
 if flagSTATIC == 1
     
-    [w] = fcnSTATICDEF(vecLIFTDIST,vecLM,matEIx,vecDVEHVSPN);
+%     [w] = fcnSTATICDEF(vecLIFTDIST,vecLM,matEIx,vecDVEHVSPN);
     
     [vecDEF, vecTWIST, matDEFGLOB, matTWISTGLOB, matDEF, matTWIST, matSLOPE] = fcnWINGTWISTBEND(vecLIFTDIST, vecMOMDIST, matEIx, vecLM, vecJT, matGJt,...
         vecLSM, vecN, valSPAN, vecDVEHVSPN, valTIMESTEP, matDEFGLOB, matTWISTGLOB, vecSPANDIST, valSDELTIME, matSLOPE);

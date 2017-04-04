@@ -1,5 +1,5 @@
 function [vecLIFTDIST, vecMOMDIST] = fcnFORCEDIST(liftfree, liftind, matSCLST, valDENSITY, valWEIGHT, valCL, vecDVEHVSPN, vecLEDVES, vecN, vecM,...
-    vecDVEWING, vecDVEPANEL, matCENTER, vecSPANDIST, matNPVLST, matNPDVE, matSC, matLIFTDIR, vecMAC, valCM, valAREA, vecSPNWSEAREA,valUINF)
+    vecDVEWING, vecDVEPANEL, matCENTER, vecSPANDIST, matNPVLST, matNPDVE, matSC, matLIFTDIR, vecMAC, valCM, valAREA, vecSPNWSEAREA, valUINF, matAEROCNTR)
 
 % This function computes the dimensional force and moment distribution
 % across the wing, resolved to the shear center line. Moment is taken
@@ -80,7 +80,8 @@ end
 matSC = repmat(matSC,1,1,vecM(1));
 
 % Compute moment arm for cross product
-delX = (row_ledves - matSC);
+% delX = (row_ledves - matSC);
+delX = matAEROCNTR - matSC;
 % delX = [vecLSAC, zeros(size(vecLSAC,1),2)];
 % force = [zeros(size(vecLIFTDIST,2),2),vecLIFTDIST'];
 tempMOMDIST = cross(delX,lift_moment); % M' = delx X lift
