@@ -74,6 +74,7 @@ valWSIZE = length(nonzeros(vecDVETE)); % Amount of wake DVEs shed each timestep
 %% Performance sweeps
 % Preallocating for a turbo-boost in performance
 matCTCONV = zeros(valMAXTIME, length(seqJ),length(seqALPHAR));
+matCPCONV = zeros(valMAXTIME, length(seqJ),length(seqALPHAR));
 matCQ = zeros(valMAXTIME, length(seqJ),length(seqALPHAR));
 progress = zeros(length(seqJ),length(seqALPHAR));
 
@@ -129,6 +130,7 @@ for ai = 1:length(seqALPHAR)
     vecWDVETIP = [];
     vecWDVEWING = [];
     vecCTCONV = [];
+    vecCPCONV = [];
     
     % Building rotor resultant
     [vecR] = fcnRESROTOR(valNELE, 0, matCENTER, matDVENORM, matUINF, ...
@@ -225,23 +227,26 @@ for ai = 1:length(seqALPHAR)
             [matWD, vecWR] = fcnWDWAKE([1:valWNELE]', matWADJE, vecWDVEHVSPN, vecWDVESYM, vecWDVETIP, vecWKGAM);
             [matWCOEFF] = fcnSOLVEWD(matWD, vecWR, valWNELE, vecWKGAM, vecWDVEHVSPN);
         end
-
+%if flagPLOT == 1
+    %[hFig2] = fcnPLOTBODY(flagVERBOSE, valNELE, matDVE, matVLST, matCENTER);
+    %[hLogo] = fcnPLOTLOGO(0.97,0.03,14,'k','none');
+    %[hFig2] = fcnPLOTWAKE(flagVERBOSE, hFig2, valWNELE, matWDVE, matWVLST, matWCENTER);
+%end
         % Calculate Forces
-        [valCT, valCQ, vecCTCONV] = fcnRFORCES(valAZNUM, valDIA, valRPM, valWSIZE, valTIMESTEP, valNELE, valWNELE, seqALPHAR, vecCPRADI,vecDVEPITCH, vecDVETE, vecDVEWING, vecWDVEWING, vecK, vecWK, vecWDVEYAW, vecWDVELESWP, vecWDVETESWP, vecDVEYAW, vecDVEMCSWP, vecWDVEHVSPN, vecWDVEHVCRD, vecWDVEROLL, vecDVEROLL,  vecDVEHVCRD, vecDVELE, vecDVEHVSPN, vecWDVEPITCH, vecDVELESWP, vecDVETESWP, vecSYM, vecTHETA, vecCTCONV, matVLST, matDVE, matUINF, matCOEFF, matADJE, matWDVE, matWVLST, matCENTER, matWCOEFF, matTEPTS, matUINFTE);
-        %fprintf('      CT = %0.3f\n',mean(vecCTCONV));
+        [valCT, valCQ, valCP, vecCTCONV, vecCQCONV, vecCPCONV] = fcnRFORCES(valAZNUM, valDIA, valRPM, valWSIZE, valTIMESTEP, valNELE, valWNELE, seqALPHAR, vecCPRADI,vecDVEPITCH, vecDVETE, vecDVEWING, vecWDVEWING, vecK, vecWK, vecWDVEYAW, vecWDVELESWP, vecWDVETESWP, vecDVEYAW, vecDVEMCSWP, vecWDVEHVSPN, vecWDVEHVCRD, vecWDVEROLL, vecDVEROLL,  vecDVEHVCRD, vecDVELE, vecDVEHVSPN, vecWDVEPITCH, vecDVELESWP, vecDVETESWP, vecSYM, vecTHETA, vecCTCONV, vecCPCONV, matVLST, matDVE, matUINF, matCOEFF, matADJE, matWDVE, matWVLST, matCENTER, matWCOEFF, matTEPTS, matUINFTE);
+        fprintf('      %.0f      CT = %0.3f      CP = %0.3f\n',valTIMESTEP, mean(vecCTCONV),  mean(vecCPCONV));
         matCTCONV(valTIMESTEP,ji,ai) = mean(vecCTCONV);
+        matCPCONV(valTIMESTEP,ji,ai) = mean(vecCPCONV);
         matCQ(valTIMESTEP,ji,ai) = valCQ;
         
-        if valTIMESTEP > 1
-            if abs(matCTCONV(valTIMESTEP-1,ji,ai)-matCTCONV(valTIMESTEP, ji,ai)) < valDELTAE
-                break;
-            end
-        end
+%         if valTIMESTEP > 1
+%             if abs(matCTCONV(valTIMESTEP-1,ji,ai)-matCTCONV(valTIMESTEP, ji,ai)) < valDELTAE
+%                 break;
+%             end
+%         end
     end
-    fprintf('Completed Advance Ratio: %.1f\n\n',seqJ(ji))
-    
-    end
-    
+    fprintf('Completed Advance Ratio: %.1f\n\n',seqJ(ji))    
+    end    
     progressbar(ai/length(seqALPHAR))
 end
 
@@ -250,8 +255,8 @@ if flagSAVE ==1
 end
 
 fprintf('DONE\n');
-if flagPLOT == 1
-    [hFig2] = fcnPLOTBODY(flagVERBOSE, valNELE, matDVE, matVLST, matCENTER);
-    [hLogo] = fcnPLOTLOGO(0.97,0.03,14,'k','none');
-    [hFig2] = fcnPLOTWAKE(flagVERBOSE, hFig2, valWNELE, matWDVE, matWVLST, matWCENTER);
-end
+% if flagPLOT == 1
+%     [hFig2] = fcnPLOTBODY(flagVERBOSE, valNELE, matDVE, matVLST, matCENTER);
+%     [hLogo] = fcnPLOTLOGO(0.97,0.03,14,'k','none');
+%     [hFig2] = fcnPLOTWAKE(flagVERBOSE, hFig2, valWNELE, matWDVE, matWVLST, matWCENTER);
+% end

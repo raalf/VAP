@@ -156,7 +156,7 @@ r = (tempr(:,:,1) + 4.*tempr(:,:,2) + tempr(:,:,3)) .* repmat(eta8,1,3) ./3;
 %  R = R + ((7.*R1 - 8.*Ro + 7.*R2).*(eta-eta8)./3);
 r = r + ((7.*tempr(:,:,1) - 8.*tempr(:,:,2) + 7.*tempr(:,:,3)).*repmat((vecDVEHVSPN-eta8),1,3)./3);
 
-% induced thrust force
+% Induced normal force
 nind = dot(r,en,2);
 
 % Induced forces
@@ -166,10 +166,12 @@ axialind = dot(r,ea,2);
 
 % Freestream forces
 thrustfree = nfree.*(en(:,3));
-sidefree = nfree.*(en(:,2));
-axialfree = nfree.*(en(:,1));
+sidefree = nfree.*(dot(es,en,2));
+axialfree = nfree.*(dot(ea,en,2));
 
 % Test plotting
+hold on
+%quiver3(matCENTER(:,1),matCENTER(:,2), matCENTER(:,3),es(:,1),es(:,2),es(:,3))
 %quiver3(matCENTER(:,1),matCENTER(:,2), matCENTER(:,3),matUINF(:,1),matUINF(:,2),matUINF(:,3))
 %quiver3(matCENTER(:,1),matCENTER(:,2), matCENTER(:,3),s(:,1),s(:,2),s(:,3))
 %quiver3(matCENTER(:,1),matCENTER(:,2),matCENTER(:,3),A.*en(:,1),A.*en(:,2),A.*en(:,3))

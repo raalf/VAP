@@ -40,7 +40,7 @@ xte = (matVLST(matDVE(idte,3),:) + matVLST(matDVE(idte,4),:))/2;
 %need to repmat te points to get each tepoint numte times (induced)
 %this will account for the induction of all the wake elements in the
 %current timestep, on all the te points.
-tepoints = repmat(matTEPTS,[numte,1,1]);
+tepoints = repmat(xte,[numte,1,1]);
 
 %need to repmat the wing index of te elements (induced)
 tewings = repmat(vecDVEWING(idte),[numte,1,1]);
@@ -63,10 +63,14 @@ wwings = wwings(repmat(1:valWSIZE,valWSIZE,1),:);
 % the inducers wing is different than the induced points.
 delx  = tepoints-repmat(xte(repmat(1:numte,numte,1),:),[1 1 3]);
 
+% Normalize inflow velocity
+%matUINFTE = (matUINFTE./sqrt(sum(matUINFTE.^2,2)).*(abs(matUINFTE)./max(sqrt(sum(abs(matUINFTE(:,:,:).^2),2))));
+matUINFTE = (matUINFTE./sqrt(sum(matUINFTE.^2,2)));
 % Project into freestream direction
-% NOTE: the induced point is moved it its associated velocity direction
+% NOTE: the induced point is moved in its associated velocity direction
 temps = dot(delx,repmat(matUINFTE,[numte 1]),2);
-tempb = repmat(temps,1,3,1).* repmat(matUINFTE,[numte 1]); %should this be normalized Uinf?
+tempb = repmat(temps,1,3,1).*repmat(matUINFTE,[numte 1]);
+
 
 % original te point - tempb should be new te point
 newtepoint = tepoints - tempb;
@@ -161,5 +165,6 @@ R(:,:) = R(:,:)+((7.*tempr(:,:,1)-8.*tempr(:,:,2)+7.*tempr(:,:,3)).*repmat(vecDV
 %% FORCES
 % Induced drag calculated in torque direction
 inddrag(:,1) = dot(R,[cos(vecTHETA(idte)) sin(vecTHETA(idte)) zeros(numte,1)],2);
-
+quiver3(xte(:,1),xte(:,2),xte(:,3),R(:,1),R(:,2),R(:,3))
+%quiver3(xte(:,1),xte(:,2), xte(:,3),matUINFTE(:,1),matUINFTE(:,2),matUINFTE(:,3));
 end 
