@@ -11,6 +11,8 @@ valDELTIME = valSDELTIME;
 [matEIx, matGJt, vecEA, vecCG, vecJT, vecLM, vecLSM, vecLSAC, matAEROCNTR, matSCLST, vecSPANDIST, matSC, vecMAC] = fcnSTRUCTDIST(vecDVEHVSPN, vecDVELE, vecDVETE, vecEIxCOEFF, vecGJtCOEFF,...
     vecEACOEFF, vecCGCOEFF, vecJTCOEFF, vecLMCOEFF, matNPVLST, matNPDVE, vecDVEPANEL, vecN, vecM, vecDVEWING, vecDVEROLL, vecDVEPITCH, vecDVEYAW);
 
+matCENTER_old = matCENTER;
+
 % Conditional statement on whether to use constant lift and
 % moment (i.e. for static aeroelasticity) or dynamic loads
 % that change each timestep (dynamic aeroelasticity)

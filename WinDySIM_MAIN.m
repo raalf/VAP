@@ -126,7 +126,7 @@ for ai = 1:length(seqALPHA)
         matTWISTGLOB = [];
         matDEF = zeros(2,valNELE+5); % <-------------- FIX THIS TO WORK WITH m > 1
         matTWIST = zeros(2,valNELE+5); % <-------------- FIX THIS TO WORK WITH m > 1
-        matCENTER_old = zeros(size(matCENTER,1),size(matCENTER,2),valMAXTIME);
+        matCENTER_old = zeros(size(matCENTER,1),size(matCENTER,2));
         matSLOPE = [];
         vecLIFTSTATIC = [];
         vecMOMSTATIC = [];
@@ -187,8 +187,6 @@ for ai = 1:length(seqALPHA)
                 [matVLST, matCENTER, matNEWWAKE, matNPNEWWAKE, matNTVLST, matNPVLST, matDEFGLOB, matTWISTGLOB, valUINF] = fcnSTIFFWING(valALPHA, valBETA, valDELTIME, matVLST, matCENTER, matDVE, vecDVETE,...
                     matNTVLST, matNPVLST, vecN, valTIMESTEP, vecCL, valWEIGHT, valAREA, valDENSITY, valUINF);
                 
-                matCENTER_old(:,:,valTIMESTEP) = matCENTER; 
-                
                 [matEIx, matGJt, vecEA, vecCG, vecJT, vecLM, vecLSM, vecLSAC, matAEROCNTR, matSCLST, vecSPANDIST, matSC, vecMAC] = fcnSTRUCTDIST(vecDVEHVSPN, vecDVELE, vecDVETE, vecEIxCOEFF, vecGJtCOEFF,...
                     vecEACOEFF, vecCGCOEFF, vecJTCOEFF, vecLMCOEFF, matNPVLST, matNPDVE, vecDVEPANEL, vecN, vecM, vecDVEWING, vecDVEROLL, vecDVEPITCH, vecDVEYAW);
                               
@@ -204,8 +202,6 @@ for ai = 1:length(seqALPHA)
                     vecN, vecM, vecDVEWING, vecDVEROLL, vecDVEPITCH, vecDVEYAW, vecLIFTDIST, vecMOMDIST, valSPAN, valTIMESTEP, matDEFGLOB, matTWISTGLOB,...
                     matSLOPE, vecLIFTSTATIC, vecMOMSTATIC, valALPHA, valBETA, matVLST, matCENTER, matDVE, vecCL, valWEIGHT, valAREA, valDENSITY, valUINF,...
                     flagSTATIC, valSDELTIME, valDELTIME, matDEF, matTWIST, matCENTER_old);
-                
-                matCENTER_old(:,:,valTIMESTEP) = matCENTER;
                 
             end
             
@@ -281,7 +277,7 @@ for ai = 1:length(seqALPHA)
             end
             if flagPRINT == 1 && flagSTIFFWING == 2
                 fprintf('  %4d     %0.5f     %0.5f         %0.5f          %0.5f\n',valTIMESTEP,vecCL(valTIMESTEP,ai),vecCDI(valTIMESTEP,ai),...
-                    matDEFGLOB(valTIMESTEP,20),(180/pi)*matTWISTGLOB(valTIMESTEP,20)); %valTIMESTEP
+                    matDEFGLOB(valTIMESTEP,end-2),(180/pi)*matTWISTGLOB(valTIMESTEP,end-2)); %valTIMESTEP
             else
                 fprintf('  %4d     %0.5f     %0.5f\n',valTIMESTEP,vecCL(valTIMESTEP,ai),vecCDI(valTIMESTEP,ai)); %valTIMESTEP               
             end
