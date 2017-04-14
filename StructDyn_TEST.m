@@ -1,7 +1,7 @@
 clear,clc
 
 valNSELE = 25;
-valMAXTIME = 20000;
+valMAXTIME = 50000;
 L = 1.5;
 
 valDY = L/(valNSELE-1);
@@ -31,8 +31,9 @@ matDEF = zeros(valMAXTIME,valNSELE+3);
 matTWIST = zeros(valMAXTIME,valNSELE+3);
 %% Beam boundary conditions
 
-temp = (0.*(0:valDY:L)./(6*matEIx(:,1)')).*(3*L-(0:valDY:L));
-matDEF(1:2,:) = repmat([temp(2),temp,2*temp(end)-temp(end-1),3*temp(end)-2*temp(end-1)],2,1);
+% temp = (0.*(0:valDY:L)./(6*matEIx(:,1)')).*(3*L-(0:valDY:L));
+% matDEF(1:2,:) = repmat([temp(2),temp,2*temp(end)-temp(end-1),3*temp(end)-2*temp(end-1)],2,1);
+matDEF(1:2,:) = zeros(2,valNSELE+3);
 matTWIST(1:2,:) = zeros(2,valNSELE+3);
 
 for valSTRUCTTIME = 3:valMAXTIME
@@ -42,7 +43,7 @@ vecTWIST(2) = 0; % Zero twist at root BC
 
 % Assemble load matrix
 matLOAD = [vecLIFTDIST' - vecLM.*9.81, vecMOMDIST' - vecLM.*vecLSM.*9.81];
-% matLOAD(end,:) = [0,0]; 
+matLOAD(end,:) = [0,0]; 
 
 for yy = 3:(valNSELE+1)
 

@@ -3,8 +3,8 @@ Input file m/N/sec
 Please note that the program uses equal, number and : signs as special recognizers!
 
 Width of each time step (sec):				valSDELTIME 	=	0.0015
-Number of timesteps with no deflections: 	valSTIFFSTEPS	=	10
-Static (0) or Dynamic (1) aeroelasticity:	flagSTATIC		=	0
+Number of timesteps with no deflections: 	valSTIFFSTEPS	=	15
+Static (0) or Dynamic (1) aeroelasticity:	flagSTATIC		=	1
 
 ----------------------
 Stiffness Distribution
@@ -18,7 +18,7 @@ Stiffness Distribution
 	Torsion (G*Jt):
 		A Coefficient: vec_GJt = 0
 		B Coefficient: vec_GJt = 0
-		C Coefficient: vec_GJt = 583000
+		C Coefficient: vec_GJt = 10000
 
 --------
 Geometry

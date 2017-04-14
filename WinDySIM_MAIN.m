@@ -34,8 +34,9 @@ disp(' ');
 %% Reading in geometry
 
 % strFILE = 'inputs/VAP christmas.txt';
-strFILE = 'inputs/VAP_SB14.txt';
-strSTRUCT_INPUT = 'inputs/Struct_Input_SB14.txt';
+strFILE = 'inputs/VAP_HALE.txt';
+strSTRUCT_INPUT = 'inputs/Struct_Input_HALE.txt';
+strOUTPUTFILE = 'HALE_New_Moment.mat';
 
 [flagRELAX, flagSTEADY, flagSTIFFWING, valAREA, valSPAN, valCMAC, valWEIGHT, ...
     valCM, seqALPHA, seqBETA, valKINV, valUINF, valDENSITY, valPANELS, matGEOM, vecSYM, ...
@@ -345,7 +346,7 @@ grid on
 box on
 end
 
-save('Structural_Dynamics.mat');
+save(strOUTPUTFILE);
 
 toc
 %% Viscous wrapper
