@@ -56,19 +56,10 @@ vecSPANAREA = pi*tk*C*(1 + Tk);
 valSTRUCTTIME = valTIMESTEP;
 % valSTRUCTTIME = tempTIME + 2;
 
-% vecJT = 0.0000001214.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST -  0.0000017210.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST...
-%     + 0.0000051317.*vecSPANDIST.*vecSPANDIST - 0.0000073047.*vecSPANDIST + 0.0001181334;
-
-% vecJT = 0.00045702.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST...
-%     - 0.01320713.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST...
-%     + 0.14939498.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST - 0.83266230.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST...
-%     + 2.35858637.*vecSPANDIST.*vecSPANDIST - 3.18488527.*vecSPANDIST + 1.89798213;
-
-% vecJT = 0.00004993.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST...
-%     - 0.0015111.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST...
-%     + 0.01788802.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST - 0.10454044.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST...
-%     + 0.3130793.*vecSPANDIST.*vecSPANDIST - 0.45287673.*vecSPANDIST + 0.26571032;
-
+vecJT = 0.00045702.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST...
+    - 0.01320713.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST...
+    + 0.14939498.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST - 0.83266230.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST...
+    + 2.35858637.*vecSPANDIST.*vecSPANDIST - 3.18488527.*vecSPANDIST + 1.89798213;
 
 %% Beam boundary conditions
 
@@ -84,7 +75,7 @@ vecTWIST(3) = 0; % Zero twist at root BC
 
 % Assemble load matrix
 matLOAD = [vecLIFTDIST' - vecLM.*9.81, vecMOMDIST - vecLM.*vecLSM.*9.81];
-matLOAD(end,:) = [0,0]; 
+% matLOAD(end,:) = [0,0]; 
 
 for yy = 4:(valNSELE+2)
 
@@ -104,13 +95,8 @@ for yy = 4:(valNSELE+2)
 
     % Finite difference relations for partial derivatives w.r.t
     % time
-%     if tempTIME ~=1
-        valUDOT = (matDEF(valSTRUCTTIME-1,yy) - matDEF(valSTRUCTTIME - 2, yy))./valSTRUCTDELTIME;
-        valTDOT = (matTWIST(valSTRUCTTIME-1,yy) - matTWIST(valSTRUCTTIME - 2,yy))./valSTRUCTDELTIME;
-%     else
-%         valUDOT = (matDEF(valSTRUCTTIME-1,yy) - matDEF(valSTRUCTTIME - 2, yy))./valDELTIME;
-%         valTDOT = (matTWIST(valSTRUCTTIME-1,yy) - matTWIST(valSTRUCTTIME - 2,yy))./valDELTIME;
-%     end
+    valUDOT = (matDEF(valSTRUCTTIME-1,yy) - matDEF(valSTRUCTTIME - 2, yy))./valSTRUCTDELTIME;
+    valTDOT = (matTWIST(valSTRUCTTIME-1,yy) - matTWIST(valSTRUCTTIME - 2,yy))./valSTRUCTDELTIME;
 
     % Finite difference relations for partial derivative of deflection w.r.t Y
     valU_yy = (matDEF(valSTRUCTTIME-1,yy+1) - 2*matDEF(valSTRUCTTIME-1,yy) + matDEF(valSTRUCTTIME-1,yy-1))/(valDY)^2;
@@ -163,11 +149,10 @@ vecTWIST = matTWIST(end,:);
 vecSLOPE = [0; vecSLOPE'];
 
 % Spanwise deflection and twist wrt to global timestep
-% if tempTIME == floor(valDELTIME/valSDELTIME)
-    matDEFGLOB(valTIMESTEP,:) = matDEF(end,:);
-    matTWISTGLOB(valTIMESTEP,:) = matTWIST(end,:);
+matDEFGLOB(valTIMESTEP,:) = matDEF(end,:);
+matTWISTGLOB(valTIMESTEP,:) = matTWIST(end,:);
 
-    matSLOPE(valTIMESTEP,:) = vecSLOPE';
-% end
+matSLOPE(valTIMESTEP,:) = vecSLOPE';
+
 
 end

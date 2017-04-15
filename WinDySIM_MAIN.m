@@ -34,8 +34,8 @@ disp(' ');
 %% Reading in geometry
 
 % strFILE = 'inputs/VAP christmas.txt';
-strFILE = 'inputs/VAP_HALE.txt';
-strSTRUCT_INPUT = 'inputs/Struct_Input_HALE.txt';
+strFILE = 'inputs/VAP_SB14.txt';
+strSTRUCT_INPUT = 'inputs/Struct_Input_SB14.txt';
 strOUTPUTFILE = 'HALE_New_Moment.mat';
 
 [flagRELAX, flagSTEADY, flagSTIFFWING, valAREA, valSPAN, valCMAC, valWEIGHT, ...

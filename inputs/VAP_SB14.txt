@@ -22,7 +22,7 @@ Reference area:				valAREA 	=	10.84
 Reference span:				valSPAN 	=	17.32
 Mean aerodynamic chord: 	valCMAC 	=	1
 Aircraft weight (N):		valWEIGHT 	=	3434
-Pitching Moment Coeff.:		valCM 		=	-0.05
+Pitching Moment Coeff.:		valCM 		=	-0.1
 
 No. of panels:	valPANELS =	3
 
