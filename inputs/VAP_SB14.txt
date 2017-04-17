@@ -9,7 +9,7 @@ Stiff (1) or Flexible (2) Wing:	flagSTIFFWING = 2
 
 Max. number of time steps:		valMAXTIME 	=	5000
 Min. number of time steps: 		valMINTIME 	= 	0
-Width of each time step (sec):	valDELTIME 	=	0.01
+Width of each time step (sec):	valDELTIME 	=	0.00028
 Convergence delta-span effic.:	valDELTAE 	=	0.000000	(0 if only timestepping)
 
 AOA sequence: 			seqALPHA 	= 	0
@@ -22,7 +22,7 @@ Reference area:				valAREA 	=	10.84
 Reference span:				valSPAN 	=	17.32
 Mean aerodynamic chord: 	valCMAC 	=	1
 Aircraft weight (N):		valWEIGHT 	=	3434
-Pitching Moment Coeff.:		valCM 		=	-0.1
+Pitching Moment Coeff.:		valCM 		=	-0.05
 
 No. of panels:	valPANELS =	3
 

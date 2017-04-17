@@ -36,7 +36,7 @@ disp(' ');
 % strFILE = 'inputs/VAP christmas.txt';
 strFILE = 'inputs/VAP_SB14.txt';
 strSTRUCT_INPUT = 'inputs/Struct_Input_SB14.txt';
-strOUTPUTFILE = 'HALE_New_Moment.mat';
+strOUTPUTFILE = 'Turbo_Time.mat';
 
 [flagRELAX, flagSTEADY, flagSTIFFWING, valAREA, valSPAN, valCMAC, valWEIGHT, ...
     valCM, seqALPHA, seqBETA, valKINV, valUINF, valDENSITY, valPANELS, matGEOM, vecSYM, ...
