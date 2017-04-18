@@ -36,7 +36,7 @@ disp(' ');
 % strFILE = 'inputs/VAP christmas.txt';
 strFILE = 'inputs/VAP_SB14.txt';
 strSTRUCT_INPUT = 'inputs/Struct_Input_SB14.txt';
-strOUTPUTFILE = 'Turbo_Time.mat';
+strOUTPUTFILE = 'Test.mat';
 
 [flagRELAX, flagSTEADY, flagSTIFFWING, valAREA, valSPAN, valCMAC, valWEIGHT, ...
     valCM, seqALPHA, seqBETA, valKINV, valUINF, valDENSITY, valPANELS, matGEOM, vecSYM, ...
@@ -331,7 +331,7 @@ hold off
 
 figure(4)
 clf
-plot(valDELTIME*(1:valTIMESTEP),(180/pi)*matTWISTGLOB(:,20))
+plot(valDELTIME*(1:valTIMESTEP),(180/pi)*matTWISTGLOB(:,end-2))
 xlabel('Time (s)')
 ylabel('Tip Twist (deg)')
 grid on
@@ -339,7 +339,7 @@ box on
 
 figure(5)
 clf
-plot(valDELTIME*(1:valTIMESTEP),matDEFGLOB(:,20))
+plot(valDELTIME*(1:valTIMESTEP),matDEFGLOB(:,end-2))
 xlabel('Time (s)')
 ylabel('Tip Deflection (m)')
 grid on
