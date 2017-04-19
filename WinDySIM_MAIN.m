@@ -3,7 +3,12 @@ clear
 
 warning off
 
+<<<<<<< HEAD:WinDySIM_MAIN.m
 tic
+=======
+% profile -memory on
+
+>>>>>>> refs/remotes/origin/master:VAP_MAIN.m
 disp('===========================================================================');
 disp('+---------------+');
 disp('| RYERSON       |       WinDySIM (Based on FreeWake 2015)');
@@ -34,6 +39,7 @@ disp(' ');
 %% Reading in geometry
 
 % strFILE = 'inputs/VAP christmas.txt';
+<<<<<<< HEAD:WinDySIM_MAIN.m
 strFILE = 'inputs/VAP_SB14.txt';
 strSTRUCT_INPUT = 'inputs/Struct_Input_SB14.txt';
 strOUTPUTFILE = 'New_Span_6S_1A.mat';
@@ -60,6 +66,23 @@ strOUTPUTFILE = 'New_Span_6S_1A.mat';
 
 % flagRELAX = 0;
 % valMAXTIME = 68;
+=======
+strFILE = 'inputs/VAP input.txt';
+
+[flagRELAX, flagSTEADY, valAREA, valSPAN, valCMAC, valWEIGHT, ...
+    seqALPHA, seqBETA, valKINV, valDENSITY, valPANELS, matGEOM, vecSYM, ...
+    vecAIRFOIL, vecN, vecM, valVSPANELS, matVSGEOM, valFPANELS, matFGEOM, ...
+    valFTURB, valFPWIDTH, valDELTAE, valDELTIME, valMAXTIME, valMINTIME, ...
+    valINTERF] = fcnVAPREAD(strFILE);
+
+% strFILE = 'inputs/input.txt';
+% 
+% [flagRELAX, flagSTEADY, valAREA, valSPAN, valCMAC, valWEIGHT, ...
+%     seqALPHA, seqBETA, valKINV, valDENSITY, valPANELS, matGEOM, vecSYM, ...
+%     vecAIRFOIL, vecN, vecM, valVSPANELS, matVSGEOM, valFPANELS, matFGEOM, ...
+%     valFTURB, valFPWIDTH, valDELTAE, valDELTIME, valMAXTIME, valMINTIME, ...
+%     valINTERF] = fcnFWREAD(strFILE);
+>>>>>>> refs/remotes/origin/master:VAP_MAIN.m
 
 flagPRINT   = 1;
 flagPLOT    = 1;
@@ -70,8 +93,13 @@ flagVERBOSE = 0;
 
 [matCENTER0, vecDVEHVSPN, vecDVEHVCRD, vecDVELESWP, vecDVEMCSWP, vecDVETESWP, ...
     vecDVEROLL, vecDVEPITCH, vecDVEYAW, vecDVEAREA, matDVENORM, ...
+<<<<<<< HEAD:WinDySIM_MAIN.m
     matVLST0, matNPVLST0, matNTVLST0, matDVE, valNELE, matADJE, ...
     vecDVESYM, vecDVETIP, vecDVEWING, vecDVELE, vecDVETE, vecDVEPANEL, vecLEDVES] = fcnGENERATEDVES(valPANELS, matGEOM, vecSYM, vecN, vecM);
+=======
+    matVLST0, matNPVLST0, matDVE, valNELE, matADJE, ...
+    vecDVESYM, vecDVETIP, vecDVEWING, vecDVELE, vecDVETE, vecDVEPANEL] = fcnGENERATEDVES(valPANELS, matGEOM, vecSYM, vecN, vecM);
+>>>>>>> refs/remotes/origin/master:VAP_MAIN.m
 
 valWSIZE = length(nonzeros(vecDVETE)); % Amount of wake DVEs shed each timestep
 
@@ -317,6 +345,7 @@ if flagPLOT == 1
 
 end
 
+<<<<<<< HEAD:WinDySIM_MAIN.m
 if flagSTIFFWING ~= 1
 figure(3)
 clf
@@ -349,6 +378,10 @@ end
 save(strOUTPUTFILE);
 
 toc
+=======
+% profreport
+
+>>>>>>> refs/remotes/origin/master:VAP_MAIN.m
 %% Viscous wrapper
 
 % whos
