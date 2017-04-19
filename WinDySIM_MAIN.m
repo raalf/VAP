@@ -36,7 +36,7 @@ disp(' ');
 % strFILE = 'inputs/VAP christmas.txt';
 strFILE = 'inputs/VAP_SB14.txt';
 strSTRUCT_INPUT = 'inputs/Struct_Input_SB14.txt';
-strOUTPUTFILE = 'Test.mat';
+strOUTPUTFILE = 'New_Span_6S_1A.mat';
 
 [flagRELAX, flagSTEADY, flagSTIFFWING, valAREA, valSPAN, valCMAC, valWEIGHT, ...
     valCM, seqALPHA, seqBETA, valKINV, valUINF, valDENSITY, valPANELS, matGEOM, vecSYM, ...
