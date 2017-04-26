@@ -21,7 +21,8 @@ function [valCL,valCLF, valCLI, valCDI, valE, vecDVENFREE, vecDVENIND, vecDVELFR
 
 %% Induced Drag force
 
-[inddrag] =fcnDVEINDDRAG(matCOEFF, matDVE, matVLST, matUINF, vecDVEHVSPN, vecDVEHVCRD, vecDVETE, valWNELE, matWDVE, matWVLST, matWCOEFF, vecWK, vecWDVEHVSPN, vecWDVEHVCRD, vecWDVEROLL, vecWDVEPITCH, vecWDVEYAW, vecWDVELESWP, vecWDVETESWP, ...
+matUINFTE = matUINF(find(vecDVETE>0),:); % Get trailing edge velocities for de-sweeping in induced drag
+[inddrag] =fcnDVEINDDRAG(matCOEFF, matDVE, matVLST, matUINFTE, vecDVEHVSPN, vecDVEHVCRD, vecDVETE, valWNELE, matWDVE, matWVLST, matWCOEFF, vecWK, vecWDVEHVSPN, vecWDVEHVCRD, vecWDVEROLL, vecWDVEPITCH, vecWDVEYAW, vecWDVELESWP, vecWDVETESWP, ...
     valWSIZE, valTIMESTEP, vecSYM, vecDVEWING, vecWDVEWING);
 
 %% Sum up element forces to generate total wing forces

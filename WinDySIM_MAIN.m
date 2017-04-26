@@ -35,9 +35,9 @@ disp(' ');
 %% Reading in geometry
 
 % strFILE = 'inputs/VAP christmas.txt';
-strFILE = 'inputs/VAP_SB14.txt';
-strSTRUCT_INPUT = 'inputs/Struct_Input_SB14.txt';
-strOUTPUTFILE = 'New_Span_6S_1A.mat';
+strFILE = 'inputs/VAP_CASI.txt';
+strSTRUCT_INPUT = 'inputs/Struct_Input_CASI.txt';
+strOUTPUTFILE = 'CASI_Baseline_U_30.mat';
 
 [flagRELAX, flagSTEADY, flagSTIFFWING, valAREA, valSPAN, valCMAC, valWEIGHT, ...
     valCM, seqALPHA, seqBETA, valKINV, valUINF, valDENSITY, valPANELS, matGEOM, vecSYM, ...
