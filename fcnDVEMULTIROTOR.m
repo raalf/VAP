@@ -1,7 +1,7 @@
 function [valNELE, matNEWNPVLST, vecAIRFOIL, vecDVELE, vecDVETE, ...
     vecDVEYAW, vecDVEPANEL, vecDVETIP, vecDVEWING, vecDVESYM, vecM, vecN, ...
     vecDVEROLL, vecDVEAREA, vecDVEPITCH, vecDVEMCSWP, vecDVETESWP, vecDVELESWP, ...
-    vecDVEHVCRD, vecDVEHVSPN, vecSYM, matADJE, matNEWCENTER, matNEWVLST, matDVE, matNEWDVENORM, matVLST] = fcnDVEMULTIROTOR(valNELE, valNUMB, vecDVETIP, vecDVETESWP, vecDVEPITCH, vecDVEWING, vecDVEMCSWP, vecM, vecN, vecDVEPANEL, vecDVEROLL, vecDVELESWP, vecDVEYAW, vecDVEHVCRD, vecDVEHVSPN, vecDVEAREA, vecDVESYM, vecDVELE, vecDVETE, vecSYM, vecROTAX, vecAIRFOIL, matNPVLST, matDVE, matADJE, matVLST, matCENTER, matDVENORM)
+    vecDVEHVCRD, vecDVEHVSPN, vecSYM, vecQARM, matADJE, matNEWCENTER, matNEWVLST, matDVE, matNEWDVENORM, matVLST] = fcnDVEMULTIROTOR(valNELE, valNUMB, vecDVETIP, vecDVETESWP, vecDVEPITCH, vecDVEWING, vecDVEMCSWP, vecM, vecN, vecDVEPANEL, vecDVEROLL, vecDVELESWP, vecDVEYAW, vecDVEHVCRD, vecDVEHVSPN, vecDVEAREA, vecDVESYM, vecDVELE, vecDVETE, vecSYM, vecROTAX, vecAIRFOIL, matNPVLST, matDVE, matADJE, matVLST, matCENTER, matDVENORM)
 % This function modifies the created DVEs and all required input values
 %	for multiple rotor blades.
 %
@@ -135,6 +135,9 @@ vecDVEPANEL = repmat(vecDVEPANEL,[valNUMB 1])+tempADDI;
 %% Updating roll, pitch, yaw, etc
 [~, ~, vecDVEROLL, vecDVEPITCH, vecDVEYAW, ~, ~, ~, ~, matNEWDVENORM, ...
     ~, ~, matNEWCENTER] = fcnVLST2DVEPARAM( matDVE, matNEWVLST);
+
+% Chordwise radial distances
+vecQARM = abs(matNEWCENTER(:,2)-vecROTAX(2));
 
 %% Scatter plot of centers and verticies for validation
 % figure(1)

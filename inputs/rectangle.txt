@@ -8,7 +8,7 @@ Steady (1) or unsteady (2):		flagSTEADY 	=	1
 
 Max. number of time steps:		valMAXTIME 	=	40
 Min. number of time steps: 		valMINTIME 	= 	0
-Number of azmith locations		valAZNUM 	=	80
+Number of azmith locations		valAZNUM 	=	20
 Convergence delta-span effic.:	valDELTAE 	=	0.000000	(0 if only timestepping)
 
 AOA sequence: 			seqALPHAR 	= 	90

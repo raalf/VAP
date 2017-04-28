@@ -1,4 +1,4 @@
-function [matUINF, matUINFTE, matTEPTS, vecTHETA,vecCPRADI] = fcnUINFROT(matCENTER, vecROTAX, valTIMESTEP, valRPM, valALPHAR, valAZNUM, valDIA, valJ, valNUMB, vecDVEHVSPN, vecDVETE, matVLST, matDVE)
+function [matUINF, matUINFTE, matTEPTS, vecTHETA] = fcnUINFROT(matCENTER, vecROTAX, valTIMESTEP, valRPM, valALPHAR, valAZNUM, valDIA, valJ, valNUMB, vecDVEHVSPN, vecDVETE, matVLST, matDVE)
 
 % This function defines the direction and magnitude of the inflow velocity.
 % This is calculated at both the control points and TE points.
