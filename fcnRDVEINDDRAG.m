@@ -165,6 +165,6 @@ R(:,:) = R(:,:)+((7.*tempr(:,:,1)-8.*tempr(:,:,2)+7.*tempr(:,:,3)).*repmat(vecDV
 %% FORCES
 % Induced drag calculated in torque direction
 inddrag(:,1) = dot(R,[cos(vecTHETA(idte)) sin(vecTHETA(idte)) zeros(numte,1)],2);
-quiver3(xte(:,1),xte(:,2),xte(:,3),R(:,1),R(:,2),R(:,3))
+%quiver3(xte(:,1),xte(:,2),xte(:,3),R(:,1),R(:,2),R(:,3))
 %quiver3(xte(:,1),xte(:,2), xte(:,3),matUINFTE(:,1),matUINFTE(:,2),matUINFTE(:,3));
 end 

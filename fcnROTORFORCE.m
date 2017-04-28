@@ -1,4 +1,4 @@
-function [valCT, valCQ, valCP, vecCTCONV, vecCQCONV, vecCPCONV] = fcnROTORFORCE(thrustind, thrustfree, thrustCFfree, axialind, axialfree, inddrag, valRPM, valDIA, valAZNUM, valTIMESTEP, vecCTCONV, vecCPCONV, vecCPRADI)
+function [valCT, valCQ, valCP, vecCTCONV, vecCQCONV, vecCPCONV, vecDISTHRUST, vecDISTORQUE, vecDISNORM] = fcnROTORFORCE(nind, nfree, nfreecs, thrustind, thrustfree, thrustCFfree, axialind, axialfree, inddrag, valRPM, valDIA, valAZNUM, valTIMESTEP, vecCTCONV,  vecCQCONV, vecCPCONV, vecCPRADI)
 %   This function uses the previously calculated induced and freestream
 %   forces and calculates non-dimensionalized values.
 %
@@ -30,7 +30,9 @@ vecCTCONV(temp)= valCT;
 vecCQCONV(temp) = valCQ;
 vecCPCONV(temp) = valCP;
 
-% valCTCONV = mean(vecCTCONV);
-
+% Flow distributions
+vecDISTHRUST = thrustind + thrustfree + thrustCFfree;
+vecDISTORQUE = axialind + axialfree + inddrag;
+vecDISNORM = nind + nfree + nfreecs;
 end
 

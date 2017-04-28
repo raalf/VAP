@@ -170,7 +170,7 @@ sidefree = nfree.*(dot(es,en,2));
 axialfree = nfree.*(dot(ea,en,2));
 
 % Test plotting
-hold on
+%hold on
 %quiver3(matCENTER(:,1),matCENTER(:,2), matCENTER(:,3),es(:,1),es(:,2),es(:,3))
 %quiver3(matCENTER(:,1),matCENTER(:,2), matCENTER(:,3),matUINF(:,1),matUINF(:,2),matUINF(:,3))
 %quiver3(matCENTER(:,1),matCENTER(:,2), matCENTER(:,3),s(:,1),s(:,2),s(:,3))
