@@ -33,7 +33,7 @@ eta8 = vecDVEHVSPN*0.8;
 % matUINF(:,1) = abs(matUINF(:,1));
 % matUINF(:,2) = abs(matUINF(:,2));
 % UxS
-tempb = cross(matUINF,s);
+tempb = cross(matUINF,s,2);
 
 % norm(UxS)
 uxs = sqrt(sum(abs(tempb).^2,2));
