@@ -1,4 +1,4 @@
-function [inddrag]=fcnRDVEINDDRAG(matCOEFF,matDVE,matVLST,matUINFTE,vecDVEHVSPN,vecDVETE,...
+function [inddrag, thrustinddrag, sideinddrag]=fcnRDVEINDDRAG(matCOEFF,matDVE,matVLST,matUINFTE,vecDVEHVSPN,vecDVETE,...
     valWNELE, matWDVE, matWVLST, matWCOEFF, vecWK, vecWDVEHVSPN,vecWDVEHVCRD, vecWDVEROLL, vecWDVEPITCH, vecWDVEYAW, vecWDVELESWP, vecWDVETESWP, ...
     valWSIZE, valTIMESTEP,vecSYM,vecDVEWING,vecWDVEWING, vecTHETA, matTEPTS)
 % This function is a modification to the original fcnDVEINDDRAG but with
@@ -164,7 +164,9 @@ R(:,:) = R(:,:)+((7.*tempr(:,:,1)-8.*tempr(:,:,2)+7.*tempr(:,:,3)).*repmat(vecDV
 % R(:,3) = R(:,3)+((7.*R1(:,3)-8.*Ro(:,3)+7.*R2(:,3)).*(vecDVEHVSPN(idte)-eta8)./3); %//Rz
 %% FORCES
 % Induced drag calculated in torque direction
-inddrag(:,1) = dot(R,[cos(vecTHETA(idte)) sin(vecTHETA(idte)) zeros(numte,1)],2);
+inddrag = dot(R,[cos(vecTHETA(idte)) sin(vecTHETA(idte)) zeros(numte,1)],2);
+thrustinddrag = dot(R,[zeros(numte,1) zeros(numte,1) ones(numte,1)],2);
+sideinddrag = dot(R,[-sin(vecTHETA(idte)) cos(vecTHETA(idte)) zeros(numte,1)],2);
 %quiver3(xte(:,1),xte(:,2),xte(:,3),R(:,1),R(:,2),R(:,3))
 %quiver3(xte(:,1),xte(:,2), xte(:,3),matUINFTE(:,1),matUINFTE(:,2),matUINFTE(:,3));
 end 

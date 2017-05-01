@@ -1,4 +1,4 @@
-function [nfreecs,thrustCFfree] = fcnRCROSSFLOWFORCE(vecDVETESWP,vecDVELESWP,vecDVEHVSPN,vecDVEHVCRD,matDVE,matUINF,matVLST,B,C)
+function [nfreecs,thrustCFfree, axialCFfree, sideCFfree] = fcnRCROSSFLOWFORCE(valNELE, vecTHETA, vecDVETESWP,vecDVELESWP,vecDVEHVSPN,vecDVEHVCRD,matDVE,matUINF,matVLST,B,C)
 % This function calculated the force due to cross flow. This occurs in
 % forward flight at angles other than 90 deg. This is done but integrating
 % vorticity across the a DVE, calculating the lift across a vortex sheet.
@@ -19,12 +19,19 @@ matXi = (tempCPLE-tempCPTE)./(2*vecDVEHVCRD);
 tempb = cross(matUINF,matXi);
 UxXi = sqrt(sum(abs(tempb).^2,2));
 
+% Normal Directions
 en = tempb.*repmat((1./UxXi),1,3);
+% Side direction
+es = [-sin(vecTHETA) cos(vecTHETA) zeros(valNELE,1)];
+% Axial direction
+ea = [cos(vecTHETA) sin(vecTHETA) zeros(valNELE,1)];
 
 % Cross-flow force:
 % nfreecs = 2*(U x Xi)*(2*Xi*B*eta-0.5*(tan(Zeta_LE)+tan(Zeta_TE))*(4/3)*C*eta*eta*eta)
 nfreecs = (2*UxXi'.*(2*vecDVEHVCRD'.*B.*vecDVEHVSPN'-(2/3)*(tan(vecDVELESWP')+tan(vecDVETESWP')).*C.*vecDVEHVSPN'.*vecDVEHVSPN'.*vecDVEHVSPN'))';
 thrustCFfree = nfreecs.*(en(:,3));
+sideCFfree = nfreecs.*(dot(es,en,2));
+axialCFfree = nfreecs.*(dot(ea,en,2));
 
 % Test Plotting
 %quiver3(matCENTER(:,1),matCENTER(:,2),matCENTER(:,3),nfreecs.*en(:,1),nfreecs.*en(:,2),nfreecs.*en(:,3))

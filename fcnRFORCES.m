@@ -5,15 +5,13 @@ function [valCT, valCQ, valCP, vecCTCONV, vecCQCONV, vecCPCONV, vecDISTHRUST, ve
 [nind, nfree, thrustind, thrustfree, sideind, sidefree, axialind, axialfree,A,B,C] = fcnRDVENFORCE(valWSIZE, valTIMESTEP, valNELE, valWNELE, seqALPHAR, vecDVEPITCH, vecK, vecWK, vecWDVEYAW, vecWDVELESWP, vecWDVETESWP, vecDVEYAW, vecDVEMCSWP, vecWDVEHVSPN, vecWDVEHVCRD, vecWDVEROLL, vecDVEROLL,  vecDVEHVCRD, vecDVELE, vecDVEHVSPN, vecWDVEPITCH, vecDVELESWP, vecDVETESWP, vecSYM, vecTHETA, matVLST, matDVE, matUINF, matCOEFF, matADJE, matWDVE, matWVLST, matCENTER, matWCOEFF);
 
 % Calcualte thrust due to crossflow
-[nfreecs,thrustCFfree] = fcnRCROSSFLOWFORCE(vecDVETESWP,vecDVELESWP,vecDVEHVSPN,vecDVEHVCRD,matDVE,matUINF,matVLST,B,C);
+[nfreecs,thrustCFfree, axialCFfree, sideCFfree] = fcnRCROSSFLOWFORCE(valNELE, vecTHETA, vecDVETESWP,vecDVELESWP,vecDVEHVSPN,vecDVEHVCRD,matDVE,matUINF,matVLST,B,C);
 
 %% Calculate induced drag on the rotor
-[inddrag] = fcnRDVEINDDRAG(matCOEFF,matDVE,matVLST,matUINFTE,vecDVEHVSPN,vecDVETE, valWNELE, matWDVE, matWVLST, matWCOEFF, vecWK, vecWDVEHVSPN,vecWDVEHVCRD, vecWDVEROLL, vecWDVEPITCH, vecWDVEYAW, vecWDVELESWP, vecWDVETESWP, valWSIZE, valTIMESTEP,vecSYM,vecDVEWING,vecWDVEWING, vecTHETA, matTEPTS);
+[inddrag, thrustinddrag, sideinddrag] = fcnRDVEINDDRAG(matCOEFF,matDVE,matVLST,matUINFTE,vecDVEHVSPN,vecDVETE, valWNELE, matWDVE, matWVLST, matWCOEFF, vecWK, vecWDVEHVSPN,vecWDVEHVCRD, vecWDVEROLL, vecWDVEPITCH, vecWDVEYAW, vecWDVELESWP, vecWDVETESWP, valWSIZE, valTIMESTEP,vecSYM,vecDVEWING,vecWDVEWING, vecTHETA, matTEPTS);
 
 %% Sum forces and calculate coefficients
-[valCT, valCQ, valCP, vecCTCONV, vecCQCONV, vecCPCONV, vecDISTHRUST, vecDISNORM] = fcnROTORFORCE(nind, nfree, nfreecs, thrustind, thrustfree, thrustCFfree, axialind, axialfree, inddrag, valRPM, valDIA, valAZNUM, valTIMESTEP, vecCTCONV,vecCQCONV, vecCPCONV, vecQARM, vecDVETE);
-
-
+[valCT, valCQ, valCP, vecCTCONV, vecCQCONV, vecCPCONV, vecDISTHRUST, vecDISNORM] = fcnROTORFORCE(nind, nfree, nfreecs, thrustind, thrustfree, thrustCFfree,  thrustinddrag, axialCFfree, axialind, axialfree, inddrag, sideind, sidefree, sideCFfree, sideinddrag, valRPM, valDIA, valAZNUM, valTIMESTEP, vecCTCONV,vecCQCONV, vecCPCONV, vecQARM, vecDVETE, vecTHETA);
 
 % thrust = thrustind+thrustfree+thrustCFfree;
 % torque = axialind+axialfree+inddrag;

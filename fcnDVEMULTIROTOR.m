@@ -118,10 +118,14 @@ tempADDI = ((reshape(repmat(1:valNUMB,numel(matDVE)/4,4),[valNUMB*numel(matDVE)/
 matDVE = repmat(matDVE,[valNUMB 1])+tempADDI; 
 
 % New matADJE
-tempADDI = (reshape(repmat(1:valNUMB,numel(matADJE)/4,2),[valNUMB*numel(matADJE)/4 2]))*(max(max(matADJE(:,1),max(matADJE(:,3)))))- (max(max(matADJE(:,1),max(matADJE(:,3)))));
+if isempty(matADJE) == 1 % If there is only one panel per wing, matADJE will be empty
+    tempADDI = (reshape(repmat(1:valNUMB,numel(matADJE)/4,2),[valNUMB*numel(matADJE)/4 2]))*0;
+else
+    tempADDI = (reshape(repmat(1:valNUMB,numel(matADJE)/4,2),[valNUMB*numel(matADJE)/4 2]))*(max(max(matADJE(:,1),max(matADJE(:,3)))))- (max(max(matADJE(:,1),max(matADJE(:,3)))));
+end
 tempADJEADD = repmat([matADJE(:,1) matADJE(:,3)],[valNUMB 1]) + tempADDI;
 tempADJDUP = repmat([matADJE(:,2) matADJE(:,4)],[valNUMB,1]);
-
+    
 matADJE = [tempADJEADD(:,1),tempADJDUP(:,1),tempADJEADD(:,2),tempADJDUP(:,2)];
 
 % New vecDVEWING
