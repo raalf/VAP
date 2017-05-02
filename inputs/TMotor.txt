@@ -29,7 +29,7 @@ Keep vecM the same for all panels on a wing!
 
 Panel #:3
 Number of spanwise elembers:	vecN		= 1
-Number of chordwise elements:	vecM		= 1
+Number of chordwise elements:	vecM		= 2
 Airfoil number:					vecAIRFOIL	= 1;
 Symmetry edge (0,1 or 2):		vecSYM		= 0;
 x			y			z			chord		epsilon
@@ -38,7 +38,7 @@ x			y			z			chord		epsilon
 
 Panel #:4
 Number of spanwise elembers:	vecN		= 1
-Number of chordwise elements:	vecM		= 1
+Number of chordwise elements:	vecM		= 2
 Airfoil number:					vecAIRFOIL	= 1;
 Symmetry edge (0,1 or 2):		vecSYM		= 0;
 x			y			z			chord		epsilon
@@ -47,7 +47,7 @@ x			y			z			chord		epsilon
 
 Panel #:5
 Number of spanwise elembers:	vecN		= 1
-Number of chordwise elements:	vecM		= 1
+Number of chordwise elements:	vecM		= 2
 Airfoil number:					vecAIRFOIL	= 1;
 Symmetry edge (0,1 or 2):		vecSYM		= 0;
 x			y			z			chord		epsilon
@@ -56,7 +56,7 @@ x			y			z			chord		epsilon
 
 Panel #:6
 Number of spanwise elembers:	vecN		= 1
-Number of chordwise elements:	vecM		= 1
+Number of chordwise elements:	vecM		= 2
 Airfoil number:					vecAIRFOIL	= 1;
 Symmetry edge (0,1 or 2):		vecSYM		= 0;
 x			y			z			chord		epsilon
@@ -65,7 +65,7 @@ x			y			z			chord		epsilon
 
 Panel #:7
 Number of spanwise elembers:	vecN		= 1
-Number of chordwise elements:	vecM		= 1
+Number of chordwise elements:	vecM		= 2
 Airfoil number:					vecAIRFOIL	= 1;
 Symmetry edge (0,1 or 2):		vecSYM		= 0;
 x			y			z			chord		epsilon
@@ -74,7 +74,7 @@ x			y			z			chord		epsilon
 
 Panel #:8
 Number of spanwise elembers:	vecN		= 1
-Number of chordwise elements:	vecM		= 1
+Number of chordwise elements:	vecM		= 2
 Airfoil number:					vecAIRFOIL	= 1;
 Symmetry edge (0,1 or 2):		vecSYM		= 0;
 x			y			z			chord		epsilon
@@ -83,7 +83,7 @@ x			y			z			chord		epsilon
 
 Panel #:9
 Number of spanwise elembers:	vecN		= 1
-Number of chordwise elements:	vecM		= 1
+Number of chordwise elements:	vecM		= 2
 Airfoil number:					vecAIRFOIL	= 1;
 Symmetry edge (0,1 or 2):		vecSYM		= 0;
 x			y			z			chord		epsilon
@@ -92,7 +92,7 @@ x			y			z			chord		epsilon
 
 Panel #:10
 Number of spanwise elembers:	vecN		= 1
-Number of chordwise elements:	vecM		= 1
+Number of chordwise elements:	vecM		= 2
 Airfoil number:					vecAIRFOIL	= 1;
 Symmetry edge (0,1 or 2):		vecSYM		= 0;
 x			y			z			chord		epsilon
@@ -101,7 +101,7 @@ x			y			z			chord		epsilon
 
 Panel #:11
 Number of spanwise elembers:	vecN		= 1
-Number of chordwise elements:	vecM		= 1
+Number of chordwise elements:	vecM		= 2
 Airfoil number:					vecAIRFOIL	= 1;
 Symmetry edge (0,1 or 2):		vecSYM		= 0;
 x			y			z			chord		epsilon
@@ -110,7 +110,7 @@ x			y			z			chord		epsilon
 
 Panel #:12
 Number of spanwise elembers:	vecN		= 1
-Number of chordwise elements:	vecM		= 1
+Number of chordwise elements:	vecM		= 2
 Airfoil number:					vecAIRFOIL	= 1;
 Symmetry edge (0,1 or 2):		vecSYM		= 0;
 x			y			z			chord		epsilon
@@ -119,7 +119,7 @@ x			y			z			chord		epsilon
 
 Panel #:13
 Number of spanwise elembers:	vecN		= 1
-Number of chordwise elements:	vecM		= 1
+Number of chordwise elements:	vecM		= 2
 Airfoil number:					vecAIRFOIL	= 1;
 Symmetry edge (0,1 or 2):		vecSYM		= 0;
 x			y			z			chord		epsilon
@@ -128,7 +128,7 @@ x			y			z			chord		epsilon
 
 Panel #:14
 Number of spanwise elembers:	vecN		= 1
-Number of chordwise elements:	vecM		= 1
+Number of chordwise elements:	vecM		= 2
 Airfoil number:					vecAIRFOIL	= 1;
 Symmetry edge (0,1 or 2):		vecSYM		= 0;
 x			y			z			chord		epsilon
@@ -137,7 +137,7 @@ x			y			z			chord		epsilon
 
 Panel #:15
 Number of spanwise elembers:	vecN		= 1
-Number of chordwise elements:	vecM		= 1
+Number of chordwise elements:	vecM		= 2
 Airfoil number:					vecAIRFOIL	= 1;
 Symmetry edge (0,1 or 2):		vecSYM		= 0;
 x			y			z			chord		epsilon
@@ -146,7 +146,7 @@ x			y			z			chord		epsilon
 
 Panel #:16
 Number of spanwise elembers:	vecN		= 1
-Number of chordwise elements:	vecM		= 1
+Number of chordwise elements:	vecM		= 2
 Airfoil number:					vecAIRFOIL	= 1;
 Symmetry edge (0,1 or 2):		vecSYM		= 0;
 x			y			z			chord		epsilon
@@ -155,7 +155,7 @@ x			y			z			chord		epsilon
 
 Panel #:17
 Number of spanwise elembers:	vecN		= 1
-Number of chordwise elements:	vecM		= 1
+Number of chordwise elements:	vecM		= 2
 Airfoil number:					vecAIRFOIL	= 1;
 Symmetry edge (0,1 or 2):		vecSYM		= 0;
 x			y			z			chord		epsilon
@@ -164,7 +164,7 @@ x			y			z			chord		epsilon
 
 Panel #:18
 Number of spanwise elembers:	vecN		= 1
-Number of chordwise elements:	vecM		= 1
+Number of chordwise elements:	vecM		= 2
 Airfoil number:					vecAIRFOIL	= 1;
 Symmetry edge (0,1 or 2):		vecSYM		= 0;
 x			y			z			chord		epsilon
@@ -173,7 +173,7 @@ x			y			z			chord		epsilon
 
 Panel #:19
 Number of spanwise elembers:	vecN		= 1
-Number of chordwise elements:	vecM		= 1
+Number of chordwise elements:	vecM		= 2
 Airfoil number:					vecAIRFOIL	= 1;
 Symmetry edge (0,1 or 2):		vecSYM		= 0;
 x			y			z			chord		epsilon

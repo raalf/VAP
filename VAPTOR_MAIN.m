@@ -72,9 +72,18 @@ valWSIZE = length(nonzeros(vecDVETE)); % Amount of wake DVEs shed each timestep
 
 %% Performance sweeps
 % Preallocating for a turbo-boost in performance
-matCTCONV = zeros(valMAXTIME, length(seqJ),length(seqALPHAR));
-matCPCONV = zeros(valMAXTIME, length(seqJ),length(seqALPHAR));
-matCQCONV = zeros(valMAXTIME, length(seqJ),length(seqALPHAR));
+matCTCONV = zeros(valMAXTIME,length(seqJ),length(seqALPHAR));
+matCFyCONV = zeros(valMAXTIME,length(seqJ),length(seqALPHAR));
+matCFxCONV = zeros(valMAXTIME,length(seqJ),length(seqALPHAR));
+matCPCONV = zeros(valMAXTIME,length(seqJ),length(seqALPHAR));
+matCQCONV = zeros(valMAXTIME,length(seqJ),length(seqALPHAR));
+matCMxCONV = zeros(valMAXTIME,length(seqJ),length(seqALPHAR));
+matCMyCONV = zeros(valMAXTIME,length(seqJ),length(seqALPHAR));
+matSWPDISNORM = zeros(valNELE,valAZNUM,length(seqJ),length(seqALPHAR));
+matSWPDISTHRUST = zeros(valNELE,valAZNUM,length(seqJ),length(seqALPHAR));
+matSWPDISAXIAL = zeros(valNELE,valAZNUM,length(seqJ),length(seqALPHAR));
+matSWPDISSIDE = zeros(valNELE,valAZNUM,length(seqJ),length(seqALPHAR));
+
 if flagPROGRESS == 1 % Apply progress bar
     progressbar('Angle of Attack','Advance Ratio')
 end
@@ -137,8 +146,16 @@ for ai = 1:length(seqALPHAR)
     vecWDVETIP = [];
     vecWDVEWING = [];
     vecCTCONV = [];
+    vecCFyCONV = [];
+    vecCFxCONV = [];
     vecCPCONV = [];
     vecCQCONV = [];
+    vecCMxCONV = [];
+    vecCMyCONV = [];
+    matDISNORM = [];
+    matDISTHRUST = [];
+    matDISAXIAL = [];
+    matDISSIDE = [];
     
     % Building rotor resultant
     [vecR] = fcnRESROTOR(valNELE, 0, matCENTER, matDVENORM, matUINF, ...
@@ -201,7 +218,7 @@ for ai = 1:length(seqALPHAR)
               valWSIZE+1:end)); 
          [matWCOEFF(end-valWSIZE+1:end,:)] = fcnSOLVEWD(matWD, vecWR, ...
              valWSIZE, vecWKGAM(end-valWSIZE+1:end), vecWDVEHVSPN(end- ...
-             valWSIZE+1:end));   
+             valWSIZE+1:end)); 
          
         %% Generate rotor resultant
         % Calculate inflow velocity
@@ -245,24 +262,27 @@ for ai = 1:length(seqALPHAR)
             [matWCOEFF] = fcnSOLVEWD(matWD, vecWR, valWNELE, ...
                 vecWKGAM, vecWDVEHVSPN);
         end
-        
+                
         %% Calculate Forces
-        [valCT, valCQ, valCP, vecCTCONV, vecCQCONV, vecCPCONV, ...
-            vecDISTHRUST, vecDISNORM] =  ...
-            fcnRFORCES(valAZNUM, valDIA, valRPM, valWSIZE, valTIMESTEP, ...
-            valNELE, valWNELE, seqALPHAR, vecQARM,vecDVEPITCH, ...
-            vecDVETE, vecDVEWING, vecWDVEWING, vecK, vecWK, vecWDVEYAW, ...
-            vecWDVELESWP, vecWDVETESWP, vecDVEYAW, vecDVEMCSWP, ...
-            vecWDVEHVSPN, vecWDVEHVCRD, vecWDVEROLL, vecDVEROLL, ...
-            vecDVEHVCRD, vecDVELE, vecDVEHVSPN, vecWDVEPITCH, ...
-            vecDVELESWP, vecDVETESWP, vecSYM, vecTHETA, vecCTCONV, ...
-            vecCPCONV, vecCQCONV, matVLST, matDVE, matUINF, matCOEFF, ...
-            matADJE, matWDVE, matWVLST, matCENTER, matWCOEFF, matTEPTS, ...
-            matUINFTE);
+        [valCT, valFy, valFx, valCQ, valCP, valCMy, valCMx, vecCTCONV, ...
+            vecCFyCONV, vecCFxCONV, vecCQCONV, vecCPCONV, vecCMyCONV, ...
+            vecCMxCONV, vecDISTHRUST, vecDISNORM, vecDISAXIAL, ...
+            vecDISSIDE, matDISNORM, matDISTHRUST, matDISAXIAL, ...
+            matDISSIDE] = fcnRFORCES(valAZNUM, valDIA, valRPM, valWSIZE,...
+            valTIMESTEP, valNELE, valWNELE, seqALPHAR, vecQARM,...
+            vecDVEPITCH, vecDVETE, vecDVEWING, vecWDVEWING, vecK, vecWK,...
+            vecWDVEYAW, vecWDVELESWP, vecWDVETESWP, vecDVEYAW, ...
+            vecDVEMCSWP, vecWDVEHVSPN, vecWDVEHVCRD, vecWDVEROLL,...
+            vecDVEROLL,  vecDVEHVCRD, vecDVELE, vecDVEHVSPN, ...
+            vecWDVEPITCH, vecDVELESWP, vecDVETESWP, vecSYM, vecTHETA, ...
+            vecCTCONV, vecCFxCONV, vecCFyCONV, vecCPCONV, vecCMxCONV, ...
+            vecCMyCONV, vecCQCONV, matVLST, matDVE, matUINF, matCOEFF, ...
+            matADJE, matWDVE, matWVLST, matCENTER, matWCOEFF, matTEPTS,...
+            matUINFTE, matDISNORM, matDISTHRUST, matDISAXIAL, matDISSIDE);
         
+        temp = valTIMESTEP - (floor((valTIMESTEP-1)/valAZNUM))*(valAZNUM);
         %% Apply viscous effects
         if valTIMESTEP > valMAXTIME - valAZNUM % Only run for last rotation
-            temp = valTIMESTEP - (floor((valTIMESTEP-1)/valAZNUM))*(valAZNUM);
             
             [vecCTCONV(temp), vecCQCONV(temp), vecCPCONV(temp)] = ...
                 fcnRVISCOUS(flagVERBOSE, valCT, valCQ, valCP, valRPM, ...
@@ -271,11 +291,21 @@ for ai = 1:length(seqALPHAR)
                 vecDVEAREA, matUINF, matVLST, matDVE);
         end
         
-        % Parfor Data saving
-        matCTCONV(valTIMESTEP,ji,ai) = mean(vecCTCONV);
-        matCPCONV(valTIMESTEP,ji,ai) = mean(vecCPCONV);
-        matCQCONV(valTIMESTEP,ji,ai) = valCQ;        
-        fprintf('      %.0f      CT = %0.3f      CP = %0.3f\n',valTIMESTEP, mean(vecCTCONV),  mean(vecCPCONV));
+        %% Parfor Data saving
+         matCTCONV(valTIMESTEP,ji,ai) = vecCTCONV(temp);
+         matCFyCONV(valTIMESTEP,ji,ai) = vecCFyCONV(temp);
+         matCFxCONV(valTIMESTEP,ji,ai) = vecCFxCONV(temp);
+         matCPCONV(valTIMESTEP,ji,ai) = vecCPCONV(temp);
+         matCQCONV(valTIMESTEP,ji,ai) = vecCQCONV(temp);
+         matCMxCONV(valTIMESTEP,ji,ai) = vecCMxCONV(temp);
+         matCMyCONV(valTIMESTEP,ji,ai) = vecCMyCONV(temp);
+         if valTIMESTEP == valMAXTIME
+            matSWPDISNORM(:,:,ji,ai) = matDISNORM;
+            matSWPDISTHRUST(:,:,ji,ai) = matDISTHRUST;
+            matSWPDISAXIAL(:,:,ji,ai) = matDISAXIAL;
+            matSWPDISSIDE(:,:,ji,ai) = matDISSIDE;
+         end
+        fprintf('      %.0f      CT = %0.3f      CP = %0.3f\n',valTIMESTEP, mean(vecCTCONV),  mean(vecCPCONV));       
     end
     fprintf('Completed Advance Ratio: %.1f\n\n',seqJ(ji))    
     end
@@ -284,7 +314,6 @@ for ai = 1:length(seqALPHAR)
     end
 end            
            
-
 if flagSAVE ==1
     save(filename)
 end

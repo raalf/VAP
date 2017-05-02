@@ -1,4 +1,4 @@
-function [valCT, valCQ, valCP, vecCTCONV, vecCQCONV, vecCPCONV, vecDISTHRUST, vecDISNORM] = fcnROTORFORCE(nind, nfree, nfreecs, thrustind, thrustfree, thrustCFfree,  thrustinddrag, axialCFfree, axialind, axialfree, inddrag, sideind, sidefree, sideCFfree, sideinddrag, valRPM, valDIA, valAZNUM, valTIMESTEP, vecCTCONV,vecCQCONV, vecCPCONV, vecQARM, vecDVETE, vecTHETA)
+function [valCT, valFy, valFx, valCQ, valCP, valCMy, valCMx, vecCTCONV, vecCFyCONV, vecCFxCONV, vecCQCONV, vecCPCONV, vecCMyCONV, vecCMxCONV, vecDISTHRUST, vecDISNORM, vecDISAXIAL, vecDISSIDE, matDISNORM, matDISTHRUST, matDISAXIAL, matDISSIDE] = fcnROTORFORCE(nind, nfree, nfreecs, thrustind, thrustfree, thrustCFfree,  thrustinddrag, axialCFfree, axialind, axialfree, inddrag, sideind, sidefree, sideCFfree, sideinddrag, valRPM, valDIA, valAZNUM, valTIMESTEP, vecCTCONV, vecCFxCONV, vecCFyCONV, vecCQCONV, vecCPCONV, vecCMxCONV, vecCMyCONV, vecQARM, vecDVETE, vecTHETA, matDISNORM, matDISTHRUST, matDISAXIAL, matDISSIDE)
 %   This function uses the previously calculated induced and freestream
 %   forces and calculates non-dimensionalized values.
 %
@@ -18,34 +18,45 @@ tempSi(vecDVETE==3) = sideinddrag;
 % Flow distributions
 vecDISNORM = nind + nfree + nfreecs;
 vecDISTHRUST = thrustind + thrustfree + thrustCFfree + tempTi;
-vecDISTAXIAL = axialind + axialfree + tempDi + axialCFfree; 
-vecDISTSIDE = sideind + sidefree + sideCFfree + tempTi;
+vecDISAXIAL = axialind + axialfree + tempDi + axialCFfree; 
+vecDISSIDE = sideind + sidefree + sideCFfree + tempSi;
 
 % Calculate total force and moment values per density
 thrust = sum(thrustind)+sum(thrustfree)+sum(thrustCFfree) + sum(thrustinddrag);
-Py = sum(vecDISTSIDE.*sin(vecTHETA) + vecDISTAXIAL.*sin(pi - vecTHETA));
-Px = sum(vecDISTSIDE.*cos(vecTHETA) + vecDISTAXIAL.*cos(pi - vecTHETA));
+Fy = sum(vecDISSIDE.*sin(vecTHETA) + vecDISAXIAL.*sin(pi - vecTHETA));
+Fx = sum(vecDISSIDE.*cos(vecTHETA) + vecDISAXIAL.*cos(pi - vecTHETA));
 
 torque = sum(axialind.*vecQARM)+sum(axialfree.*vecQARM)+sum(inddrag.*vecQARM(vecDVETE==3)) + sum(axialCFfree.*vecQARM);
 power = torque*2.*pi.*(valRPM./60);
-Mx = vecDISTHRUST.*(vecQARM.*sin(vecTHETA));
-My = vecDISTHRUST.*(vecQARM.*cos(vecTHETA));
+Mx = sum(vecDISTHRUST.*(vecQARM.*sin(vecTHETA)));
+My = sum(vecDISTHRUST.*(vecQARM.*cos(vecTHETA)));
 
 % Calculate non-dimensionalized coefficient using US customary definitions
 % CT = T/(rho*Omega^2*D^4)
 valCT = thrust/(((valRPM/60)^2)*((valDIA)^4));
+valFy = Fy/(((valRPM/60)^2)*((valDIA)^4));
+valFx = Fx/(((valRPM/60)^2)*((valDIA)^4));
 
-% CQ = Q/(rho*A*Omega^2*D^3)
 valCQ = torque/(((valRPM/60)^2)*((valDIA)^5));
-
-% CP = P/(rho(RPM/60)^3*D^5);
 valCP = power/((valRPM/60)^3*(valDIA^5));
+valCMy = My/(((valRPM/60)^2)*((valDIA)^5));
+valCMx = Mx/(((valRPM/60)^2)*((valDIA)^5));
 
-% Convergence Thrust (average thrust across 1 full rotation)
+% Convergence Forces and Moments (average thrust across 1 full rotation)
 temp = valTIMESTEP - (floor((valTIMESTEP-1)/valAZNUM))*(valAZNUM);
 vecCTCONV(temp)= valCT;
+vecCFyCONV(temp)= valFy;
+vecCFxCONV(temp) = valFx;
+
 vecCQCONV(temp) = valCQ;
 vecCPCONV(temp) = valCP;
+vecCMyCONV(temp) = valCMy;
+vecCMxCONV(temp) = valCMx;
+
+matDISNORM(:,temp) = vecDISNORM;
+matDISTHRUST(:,temp) = vecDISTHRUST;
+matDISAXIAL(:,temp) = vecDISAXIAL;
+matDISSIDE(:,temp) = vecDISSIDE;
 
 end
 
