@@ -3,8 +3,8 @@ Input file m/N/sec
 Please note that the program uses equal, number and : signs as special recognizers!
 
 Width of each time step (sec):				valSDELTIME 	=	0.0005
-Number of timesteps with no deflections: 	valSTIFFSTEPS	=	15
-Static (0) or Dynamic (1) aeroelasticity:	flagSTATIC		=	1
+Number of timesteps with no deflections: 	valSTIFFSTEPS	=	25
+Static (0) or Dynamic (1) aeroelasticity:	flagSTATIC		=	0
 
 ----------------------
 Stiffness Distribution
@@ -12,13 +12,13 @@ Stiffness Distribution
 
 	Bending (E*Ix)
 		A Coefficient: vec_EIx = 0
-		B Coefficient: vec_EIx = 0
-		C Coefficient: vec_EIx = 250000
+		B Coefficient: vec_EIx = -15625
+		C Coefficient: vec_EIx = 375000
 
 	Torsion (G*Jt):
 		A Coefficient: vec_GJt = 0
-		B Coefficient: vec_GJt = 0
-		C Coefficient: vec_GJt = 150000
+		B Coefficient: vec_GJt = -9375
+		C Coefficient: vec_GJt = 225000
 
 --------
 Geometry
@@ -36,8 +36,8 @@ Geometry
 
 	Torsion Constant (Jt):
 		A Coefficient: vec_Jt = 0
-		B Coefficient: vec_Jt = 0
-		C Coefficient: vec_Jt = 0.1
+		B Coefficient: vec_Jt = -0.00625
+		C Coefficient: vec_Jt = 0.15
 
 -----------------
 Mass Distribution
@@ -45,5 +45,5 @@ Mass Distribution
 
 	Linear Mass (mu):
 		A Coefficient: vec_LM = 0
-		B Coefficient: vec_LM = 0
-		C Coefficient: vec_LM = 0.5
+		B Coefficient: vec_LM = -0.03125
+		C Coefficient: vec_LM = 0.75

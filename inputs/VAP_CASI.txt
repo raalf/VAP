@@ -4,15 +4,15 @@ NO TRIM
 Please note that the program uses equal, number and : signs as special recognizers!
 
 Relaxed wake (yes 1, no 0):		flagRELAX =		0
-Steady (1) or unsteady (2):		flagSTEADY =	2
+Steady (1) or unsteady (2):		flagSTEADY =	1
 Stiff (1) or Flexible (2) Wing:	flagSTIFFWING = 2
 
-Max. number of time steps:		valMAXTIME 	=	2500
+Max. number of time steps:		valMAXTIME 	=	200
 Min. number of time steps: 		valMINTIME 	= 	0
-Width of each time step (sec):	valDELTIME 	=	0.0025
+Width of each time step (sec):	valDELTIME 	=	0.0075
 Convergence delta-span effic.:	valDELTAE 	=	0.000000	(0 if only timestepping)
 
-AOA sequence: 			seqALPHA 	= 	0
+AOA sequence: 			seqALPHA 	= 	8.34
 Sideslip angle [deg]:	seqBETA 	=	0.0
 Density:				valDENSITY 	= 	0.4135
 Kinematic viscosity:	valKINV		=	1.460000e-05
@@ -35,8 +35,8 @@ Number of chordwise elements: 	vecM 		= 1.
 Airfoil number: 				vecAIRFOIL 	= 1
 Symmetry edge (0, 1 or 2): 		vecSYM 		= 1;
 xleft		yleft		zleft		chord		epsilon
-0.0000000	0.000000	0.0000000	1.000000	4.150000
-0.0000000	16.00000	0.0000000	1.000000	4.150000
+0.0000000	0.000000	0.0000000	1.000000	0.00000
+0.0000000	16.00000	0.0000000	1.000000	0.00000
 
 %<- special identifier
 Vertical tail information:

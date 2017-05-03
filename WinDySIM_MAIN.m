@@ -34,14 +34,9 @@ disp(' ');
 
 %% Reading in geometry
 
-<<<<<<< HEAD:WinDySIM_MAIN.m
-% strFILE = 'inputs/VAP christmas.txt';
 strFILE = 'inputs/VAP_CASI.txt';
 strSTRUCT_INPUT = 'inputs/Struct_Input_CASI.txt';
-strOUTPUTFILE = 'CASI_Baseline_U_30.mat';
-=======
-strFILE = 'inputs/VAP input.txt';
->>>>>>> refs/remotes/origin/master:VAP_MAIN.m
+strOUTPUTFILE = 'CASI_Flex_Wing_Parab_All_U_30.mat';
 
 [flagRELAX, flagSTEADY, flagSTIFFWING, valAREA, valSPAN, valCMAC, valWEIGHT, ...
     valCM, seqALPHA, seqBETA, valKINV, valUINF, valDENSITY, valPANELS, matGEOM, vecSYM, ...
@@ -60,7 +55,7 @@ strFILE = 'inputs/VAP input.txt';
 flagPRINT   = 1;
 flagPLOT    = 1;
 flagPLOTWAKEVEL = 0;
-flagVERBOSE = 0;
+flagVERBOSE = 1;
 
 %% Discretize geometry into DVEs
 
@@ -189,7 +184,7 @@ for ai = 1:length(seqALPHA)
                               
             % Remaining timesteps compute wing deflection and translate the
             % wing accordingly
-            else
+            elseif valTIMESTEP == valSTIFFSTEPS + 1
 
                 [valDELTIME, matEIx, matGJt, vecEA, vecCG, vecJT, vecLM, vecLSM, vecLSAC, matAEROCNTR, matSCLST,...
                     vecSPANDIST, matSC, vecMAC, vecDEF, vecTWIST, matDEFGLOB, matTWISTGLOB, matDEF, matTWIST, matSLOPE,...
@@ -199,6 +194,12 @@ for ai = 1:length(seqALPHA)
                     vecN, vecM, vecDVEWING, vecDVEROLL, vecDVEPITCH, vecDVEYAW, vecLIFTDIST, vecMOMDIST, valSPAN, valTIMESTEP, matDEFGLOB, matTWISTGLOB,...
                     matSLOPE, vecLIFTSTATIC, vecMOMSTATIC, valALPHA, valBETA, matVLST, matCENTER, matDVE, vecCL, valWEIGHT, valAREA, valDENSITY, valUINF,...
                     flagSTATIC, valSDELTIME, valDELTIME, matDEF, matTWIST, matCENTER_old);
+                
+            else
+             
+                [matVLST, matCENTER, matNEWWAKE, matNPNEWWAKE, matNTVLST, matNPVLST, matUINF, matDEFGLOB, matTWISTGLOB, valUINF] = fcnSTIFFWING_STATIC(valALPHA, valBETA,...
+                    valDELTIME, matVLST, matCENTER, matDVE, vecDVETE, matNTVLST, matNPVLST, vecN, valTIMESTEP, vecCL, valWEIGHT, valAREA, valDENSITY, valUINF, matNPDVE,...
+                    matDEFGLOB, matTWISTGLOB);              
                 
             end
             

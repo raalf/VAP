@@ -4,7 +4,7 @@ Please note that the program uses equal, number and : signs as special recognize
 
 Width of each time step (sec):				valSDELTIME 	=	0.0015
 Number of timesteps with no deflections: 	valSTIFFSTEPS	=	15
-Static (0) or Dynamic (1) aeroelasticity:	flagSTATIC		=	1
+Static (0) or Dynamic (1) aeroelasticity:	flagSTATIC		=	0
 
 ----------------------
 Stiffness Distribution
@@ -46,4 +46,4 @@ Mass Distribution
 	Linear Mass (mu):
 		A Coefficient: vec_LM = 0
 		B Coefficient: vec_LM = 0
-		C Coefficient: vec_LM = 0.75
+		C Coefficient: vec_LM = 0.375
