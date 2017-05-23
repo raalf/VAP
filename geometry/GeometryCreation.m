@@ -6,7 +6,7 @@
 clear,clc
 
 %% Load input data
-rotor = importdata('T_motor.mat');
+rotor = importdata('T_motor_w_zerolift.mat');
 rotor_raduis = 0.4572/2; % Rotor raduis (m)
 
 %% Calcualte each input required
