@@ -30,13 +30,13 @@ strFILE = 'inputs/TMotor.txt';
     valNUMB ,vecROTAX0, valPANELS, matGEOM, vecAIRFOIL, vecN, vecM, ...
     vecSYM, valINTERF] = fcnVAPTORREAD(strFILE);
 
-flagPRINT   = 1;
+flagPRINT   = 0;
 flagPLOT    = 1;
 flagPLOTWAKEVEL = 0;
 flagVERBOSE = 0;
-flagSAVE = 0;
+flagSAVE = 1;
 flagPROGRESS = 0;
-filename = 'TMotor Data'; % Save workspace name
+filename = 'UpdatedPower'; % Save workspace name
 
 
 %% Discretize geometry into DVEs
@@ -45,7 +45,6 @@ filename = 'TMotor Data'; % Save workspace name
     matDVENORM0, matVLST0, matNPVLST0, matDVE, valNELE, matADJE, ...
     vecDVESYM, vecDVETIP, vecDVEWING, vecDVELE, vecDVETE, ...
     vecDVEPANEL] = fcnGENERATEDVES(valPANELS, matGEOM, vecSYM, vecN, vecM);
-
 
 %% Apply multiple blades
 [valNELE, matNPVLST0, vecAIRFOIL, vecDVELE, vecDVETE, vecDVEYAW, ...
@@ -83,6 +82,8 @@ matSWPDISNORM = zeros(valNELE,valAZNUM,length(seqJ),length(seqALPHAR));
 matSWPDISTHRUST = zeros(valNELE,valAZNUM,length(seqJ),length(seqALPHAR));
 matSWPDISAXIAL = zeros(valNELE,valAZNUM,length(seqJ),length(seqALPHAR));
 matSWPDISSIDE = zeros(valNELE,valAZNUM,length(seqJ),length(seqALPHAR));
+%convCT = zeros(valMAXTIME,length(seqAZNUM));
+%convCP = zeros(valMAXTIME,length(seqAZNUM));
 
 if flagPROGRESS == 1 % Apply progress bar
     progressbar('Angle of Attack','Advance Ratio')
@@ -92,7 +93,7 @@ for ai = 1:length(seqALPHAR)
     if flagPROGRESS == 1
         progressbar([],0)
     end
-    for ji= 1:length(seqJ)
+    parfor ji= 1:length(seqJ)
     if flagPROGRESS == 1
         progressbar([],ji/length(seqJ))
     end
@@ -262,7 +263,7 @@ for ai = 1:length(seqALPHAR)
             [matWCOEFF] = fcnSOLVEWD(matWD, vecWR, valWNELE, ...
                 vecWKGAM, vecWDVEHVSPN);
         end
-                
+
         %% Calculate Forces
         [valCT, valFy, valFx, valCQ, valCP, valCMy, valCMx, vecCTCONV, ...
             vecCFyCONV, vecCFxCONV, vecCQCONV, vecCPCONV, vecCMyCONV, ...
@@ -292,6 +293,8 @@ for ai = 1:length(seqALPHAR)
         end
         
         %% Parfor Data saving
+         %convCT(valTIMESTEP) = mean(vecCTCONV);
+         %convCP(valTIMESTEP) = mean(vecCPCONV);
          matCTCONV(valTIMESTEP,ji,ai) = vecCTCONV(temp);
          matCFyCONV(valTIMESTEP,ji,ai) = vecCFyCONV(temp);
          matCFxCONV(valTIMESTEP,ji,ai) = vecCFxCONV(temp);
@@ -299,13 +302,13 @@ for ai = 1:length(seqALPHAR)
          matCQCONV(valTIMESTEP,ji,ai) = vecCQCONV(temp);
          matCMxCONV(valTIMESTEP,ji,ai) = vecCMxCONV(temp);
          matCMyCONV(valTIMESTEP,ji,ai) = vecCMyCONV(temp);
-         if valTIMESTEP == valMAXTIME
-            matSWPDISNORM(:,:,ji,ai) = matDISNORM;
-            matSWPDISTHRUST(:,:,ji,ai) = matDISTHRUST;
-            matSWPDISAXIAL(:,:,ji,ai) = matDISAXIAL;
-            matSWPDISSIDE(:,:,ji,ai) = matDISSIDE;
-         end
-        fprintf('      %.0f      CT = %0.3f      CP = %0.3f\n',valTIMESTEP, mean(vecCTCONV),  mean(vecCPCONV));       
+%         if valTIMESTEP == valMAXTIME
+%             matSWPDISNORM(:,:,ji,ai) = matDISNORM;
+%             matSWPDISTHRUST(:,:,ji,ai) = matDISTHRUST;
+%             matSWPDISAXIAL(:,:,ji,ai) = matDISAXIAL;
+%             matSWPDISSIDE(:,:,ji,ai) = matDISSIDE;
+%          end
+            %fprintf('      %.0f      CT = %0.3f      CP = %0.3f\n',valTIMESTEP, mean(vecCTCONV),  mean(vecCPCONV));       
     end
     fprintf('Completed Advance Ratio: %.1f\n\n',seqJ(ji))    
     end
@@ -319,8 +322,8 @@ if flagSAVE ==1
 end
 
 fprintf('\nDONE\n');
-if flagPLOT == 1
-    [hFig2] = fcnPLOTBODY(flagVERBOSE, valNELE, matDVE, matVLST, matCENTER);
-    [hLogo] = fcnPLOTLOGO(0.97,0.03,14,'k','none');
-    [hFig2] = fcnPLOTWAKE(flagVERBOSE, hFig2, valWNELE, matWDVE, matWVLST, matWCENTER);
-end
+% if flagPLOT == 1
+%     [hFig2] = fcnPLOTBODY(flagVERBOSE, valNELE, matDVE, matVLST, matCENTER);
+%     %[hLogo] = fcnPLOTLOGO(0.97,0.03,14,'k','none');
+%     [hFig2] = fcnPLOTWAKE(flagVERBOSE, hFig2, valWNELE, matWDVE, matWVLST, matWCENTER);
+% end

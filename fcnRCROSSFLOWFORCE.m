@@ -31,7 +31,7 @@ ea = [cos(vecTHETA) sin(vecTHETA) zeros(valNELE,1)];
 nfreecs = (2*UxXi'.*(2*vecDVEHVCRD'.*B.*vecDVEHVSPN'-(2/3)*(tan(vecDVELESWP')+tan(vecDVETESWP')).*C.*vecDVEHVSPN'.*vecDVEHVSPN'.*vecDVEHVSPN'))';
 thrustCFfree = nfreecs.*(en(:,3));
 sideCFfree = nfreecs.*(dot(es,en,2));
-axialCFfree = nfreecs.*(dot(ea,en,2));
+axialCFfree = -1*nfreecs.*(dot(ea,en,2));
 
 % Test Plotting
 %quiver3(matCENTER(:,1),matCENTER(:,2),matCENTER(:,3),nfreecs.*en(:,1),nfreecs.*en(:,2),nfreecs.*en(:,3))

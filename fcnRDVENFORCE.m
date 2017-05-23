@@ -168,17 +168,17 @@ axialind = dot(r,ea,2);
 % Freestream forces
 thrustfree = nfree.*(en(:,3));
 sidefree = nfree.*(dot(es,en,2));
-axialfree = nfree.*(dot(ea,en,2));
+axialfree = -1*nfree.*(dot(ea,en,2));
 
 % Test plotting
-%hold on
+hold on
 %quiver3(matCENTER(:,1),matCENTER(:,2), matCENTER(:,3),es(:,1),es(:,2),es(:,3))
 %quiver3(matCENTER(:,1),matCENTER(:,2), matCENTER(:,3),matUINF(:,1),matUINF(:,2),matUINF(:,3))
 %quiver3(matCENTER(:,1),matCENTER(:,2), matCENTER(:,3),s(:,1),s(:,2),s(:,3))
 %quiver3(matCENTER(:,1),matCENTER(:,2),matCENTER(:,3),A.*en(:,1),A.*en(:,2),A.*en(:,3))
 %quiver3(matCENTER(:,1),matCENTER(:,2),matCENTER(:,3),(thrustfree+thrustind).*et(:,1),(thrustfree + thrustind).*et(:,2),(thrustind+thrustfree).*et(:,3),'k')
 %quiver3(matCENTER(:,1),matCENTER(:,2),matCENTER(:,3),A(:,1),A(:,2),A(:,3))
-%quiver3(matCENTER(:,1),matCENTER(:,2), matCENTER(:,3),ea(:,1),ea(:,2),ea(:,3))
+%quiver3(matCENTER(:,1),matCENTER(:,2), matCENTER(:,3),en(:,1),en(:,2),en(:,3))
 %clf
 %plot((matCENTER(:,1)/abs(matCENTER(:,1)))*sqrt(matCENTER(:,1).^2+matCENTER(:,1).^2),thrustfree+thrustind,'*')
 end
