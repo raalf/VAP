@@ -36,7 +36,7 @@ disp(' ');
 
 strFILE = 'inputs/VAP_CASI.txt';
 strSTRUCT_INPUT = 'inputs/Struct_Input_CASI.txt';
-strOUTPUTFILE = 'CASI_Flex_Wing_Parab_All_U_30.mat';
+strOUTPUTFILE = 'CASI_Flex_Wing_Parab_1.75G_ParabEA_U_30.mat';
 
 [flagRELAX, flagSTEADY, flagSTIFFWING, valAREA, valSPAN, valCMAC, valWEIGHT, ...
     valCM, seqALPHA, seqBETA, valKINV, valUINF, valDENSITY, valPANELS, matGEOM, vecSYM, ...
@@ -55,7 +55,7 @@ strOUTPUTFILE = 'CASI_Flex_Wing_Parab_All_U_30.mat';
 flagPRINT   = 1;
 flagPLOT    = 1;
 flagPLOTWAKEVEL = 0;
-flagVERBOSE = 1;
+flagVERBOSE = 0;
 
 %% Discretize geometry into DVEs
 

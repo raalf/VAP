@@ -11,21 +11,21 @@ Stiffness Distribution
 ----------------------
 
 	Bending (E*Ix)
-		A Coefficient: vec_EIx = 0
-		B Coefficient: vec_EIx = -15625
-		C Coefficient: vec_EIx = 375000
+		A Coefficient: vec_EIx = -732.421875
+		B Coefficient: vec_EIx = 0
+		C Coefficient: vec_EIx = 312500
 
 	Torsion (G*Jt):
-		A Coefficient: vec_GJt = 0
-		B Coefficient: vec_GJt = -9375
-		C Coefficient: vec_GJt = 225000
+		A Coefficient: vec_GJt = -439.453125
+		B Coefficient: vec_GJt = 0
+		C Coefficient: vec_GJt = 187500
 
 --------
 Geometry
 --------
 
 	Elastic Axis (X_ea):
-		A Coefficient: vec_EA = 0
+		A Coefficient: vec_EA = -0.001171875
 		B Coefficient: vec_EA = 0
 		C Coefficient: vec_EA = 0.5
 
@@ -36,8 +36,8 @@ Geometry
 
 	Torsion Constant (Jt):
 		A Coefficient: vec_Jt = 0
-		B Coefficient: vec_Jt = -0.00625
-		C Coefficient: vec_Jt = 0.15
+		B Coefficient: vec_Jt = 0
+		C Coefficient: vec_Jt = 0.1
 
 -----------------
 Mass Distribution
@@ -45,5 +45,5 @@ Mass Distribution
 
 	Linear Mass (mu):
 		A Coefficient: vec_LM = 0
-		B Coefficient: vec_LM = -0.03125
-		C Coefficient: vec_LM = 0.75
+		B Coefficient: vec_LM = 0
+		C Coefficient: vec_LM = 0.5
