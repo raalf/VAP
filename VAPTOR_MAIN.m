@@ -18,7 +18,8 @@ disp('                                    ~_|___|__');
 disp(' ');
 disp('===========================================================================');
 disp(' ');
-
+filename = 'NumberOfLiftingLineConvergence';
+parfor n = 1:2
 %% Reading in geometry
 %strFILE = 'inputs/ROTORINPUT_MA11by7.txt';
 %strFILE = 'inputs/rectangle.txt';
@@ -30,13 +31,15 @@ strFILE = 'inputs/TMotor.txt';
     valNUMB ,vecROTAX0, valPANELS, matGEOM, vecAIRFOIL, vecN, vecM, ...
     vecSYM, valINTERF] = fcnVAPTORREAD(strFILE);
 
+vecM = vecM.*n;
+
 flagPRINT   = 0;
 flagPLOT    = 1;
 flagPLOTWAKEVEL = 0;
 flagVERBOSE = 0;
-flagSAVE = 1;
+flagSAVE = 0;
 flagPROGRESS = 0;
-filename = 'UpdatedPower'; % Save workspace name
+% filename = 'UpdatedPower'; % Save workspace name
 
 
 %% Discretize geometry into DVEs
@@ -82,8 +85,8 @@ matSWPDISNORM = zeros(valNELE,valAZNUM,length(seqJ),length(seqALPHAR));
 matSWPDISTHRUST = zeros(valNELE,valAZNUM,length(seqJ),length(seqALPHAR));
 matSWPDISAXIAL = zeros(valNELE,valAZNUM,length(seqJ),length(seqALPHAR));
 matSWPDISSIDE = zeros(valNELE,valAZNUM,length(seqJ),length(seqALPHAR));
-%convCT = zeros(valMAXTIME,length(seqAZNUM));
-%convCP = zeros(valMAXTIME,length(seqAZNUM));
+convCT = zeros(valMAXTIME,1);
+convCP = zeros(valMAXTIME,1);
 
 if flagPROGRESS == 1 % Apply progress bar
     progressbar('Angle of Attack','Advance Ratio')
@@ -93,7 +96,7 @@ for ai = 1:length(seqALPHAR)
     if flagPROGRESS == 1
         progressbar([],0)
     end
-    parfor ji= 1:length(seqJ)
+    for ji= 1:length(seqJ)
     if flagPROGRESS == 1
         progressbar([],ji/length(seqJ))
     end
@@ -263,6 +266,9 @@ for ai = 1:length(seqALPHAR)
             [matWCOEFF] = fcnSOLVEWD(matWD, vecWR, valWNELE, ...
                 vecWKGAM, vecWDVEHVSPN);
         end
+     %[hFig2] = fcnPLOTBODY(flagVERBOSE, valNELE, matDVE, matVLST, matCENTER);
+     %[hLogo] = fcnPLOTLOGO(0.97,0.03,14,'k','none');
+     %[hFig2] = fcnPLOTWAKE(flagVERBOSE, hFig2, valWNELE, matWDVE, matWVLST, matWCENTER);
 
         %% Calculate Forces
         [valCT, valFy, valFx, valCQ, valCP, valCMy, valCMx, vecCTCONV, ...
@@ -293,8 +299,8 @@ for ai = 1:length(seqALPHAR)
         end
         
         %% Parfor Data saving
-         %convCT(valTIMESTEP) = mean(vecCTCONV);
-         %convCP(valTIMESTEP) = mean(vecCPCONV);
+         convCT(valTIMESTEP) = mean(vecCTCONV);
+         convCP(valTIMESTEP) = mean(vecCPCONV);
          matCTCONV(valTIMESTEP,ji,ai) = vecCTCONV(temp);
          matCFyCONV(valTIMESTEP,ji,ai) = vecCFyCONV(temp);
          matCFxCONV(valTIMESTEP,ji,ai) = vecCFxCONV(temp);
@@ -308,7 +314,7 @@ for ai = 1:length(seqALPHAR)
 %             matSWPDISAXIAL(:,:,ji,ai) = matDISAXIAL;
 %             matSWPDISSIDE(:,:,ji,ai) = matDISSIDE;
 %          end
-            %fprintf('      %.0f      CT = %0.3f      CP = %0.3f\n',valTIMESTEP, mean(vecCTCONV),  mean(vecCPCONV));       
+            fprintf('      %.0f      CT = %0.3f      CP = %0.3f\n',valTIMESTEP, mean(vecCTCONV),  mean(vecCPCONV));       
     end
     fprintf('Completed Advance Ratio: %.1f\n\n',seqJ(ji))    
     end
@@ -316,12 +322,14 @@ for ai = 1:length(seqALPHAR)
         progressbar(ai/length(seqALPHAR))
     end
 end            
-           
-if flagSAVE ==1
-    save(filename)
+CT(n) = convCT(end);  
+CP(n) = convCP(end);
+% if flagSAVE ==1
+%     save(filename)
+% end
 end
-
 fprintf('\nDONE\n');
+save(filename)
 % if flagPLOT == 1
 %     [hFig2] = fcnPLOTBODY(flagVERBOSE, valNELE, matDVE, matVLST, matCENTER);
 %     %[hLogo] = fcnPLOTLOGO(0.97,0.03,14,'k','none');
