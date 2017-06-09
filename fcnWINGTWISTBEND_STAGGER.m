@@ -55,7 +55,7 @@ vecSPANAREA = pi*tk*C*(1 + Tk);
 
 % valSTRUCTTIME = valTIMESTEP;
 valSTRUCTTIME = tempTIME + 2;
-
+% 
 % vecJT = 0.00037078.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST...
 %     - 0.01102270.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST...
 %     + 0.12838255.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST - 0.73708913.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST...
@@ -86,7 +86,7 @@ for yy = 4:(valNSELE+2)
     matK_1 = [matEIx(yy-2,3), 0; 0, 0];
     matK_2 = [matEIx(yy-2,2), 0; 0, -matGJt(yy-2,2)]; 
     matK_3 = [matEIx(yy-2,1), 0; 0, -matGJt(yy-2,1)];
-    matB = [5 0; 0 10];
+    matB = [25 0; 0 100];
 
     %% Finite difference relations for partial derivatives
 
@@ -152,8 +152,8 @@ vecSLOPE = [0; vecSLOPE'];
 
 % Spanwise deflection and twist wrt to global timestep
 if tempTIME == ceil(valDELTIME/valSDELTIME)
-    matDEFGLOB(valTIMESTEP,:) = matDEF(end,:);
-    matTWISTGLOB(valTIMESTEP,:) = matTWIST(end,:);
+    matDEFGLOB(valTIMESTEP,:) = matDEF(tempTIME,:);
+    matTWISTGLOB(valTIMESTEP,:) = matTWIST(tempTIME,:);
 
     matSLOPE(valTIMESTEP,:) = vecSLOPE';
 end

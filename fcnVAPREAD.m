@@ -1,8 +1,8 @@
-function [flagRELAX, flagSTEADY, flagSTIFFWING, valAREA, valSPAN, valCMAC, valWEIGHT, ...
-    valCM, seqALPHA, seqBETA, valKINV, valUINF, valDENSITY, valPANELS, matGEOM, vecSYM, ...
-    vecAIRFOIL, vecN, vecM, valVSPANELS, matVSGEOM, valFPANELS, matFGEOM, ...
-    valFTURB, valFPWIDTH, valDELTAE, valDELTIME, valMAXTIME, valMINTIME, ...
-    valINTERF] = fcnVAPREAD(strFILE)
+function [flagRELAX, flagSTEADY, flagSTIFFWING, flagGUSTMODE, valAREA, valSPAN,...
+    valCMAC, valWEIGHT, valCM, seqALPHA, seqBETA, valKINV, valUINF, valGUSTAMP,...
+    valGUSTL, valDENSITY, valPANELS, matGEOM, vecSYM, vecAIRFOIL, vecN, vecM,...
+    valVSPANELS, matVSGEOM, valFPANELS, matFGEOM, valFTURB, valFPWIDTH, valDELTAE,...
+    valDELTIME, valMAXTIME, valMINTIME, valINTERF] = fcnVAPREAD(strFILE)
 
 % INPUT:
 %   strFILE - file name of input text file in the local directory (or if not, with the appropriate path in the name)
@@ -61,12 +61,19 @@ while(ch~='=');
 end
 flagSTEADY = fscanf(fp,'%d');
 
-% Reading steady or unsteady flag
+% Reading stiff or flexible flag
 ch = fscanf(fp,'%c',1);
 while(ch~='=');
     ch = fscanf(fp,'%c',1);
 end
 flagSTIFFWING = fscanf(fp,'%d');
+
+% Reading gust mode flag
+ch = fscanf(fp,'%c',1);
+while(ch~='=');
+    ch = fscanf(fp,'%c',1);
+end
+flagGUSTMODE = fscanf(fp,'%d');
 
 %% Reading time step information
 % Reading maximum number of time steps
@@ -133,6 +140,20 @@ while(ch~='=');
     ch = fscanf(fp,'%c',1);
 end
 valUINF = fscanf(fp,'%lf');
+
+% Reading gust amplitude
+ch = fscanf(fp,'%c',1);
+while(ch~='=');
+    ch = fscanf(fp,'%c',1);
+end
+valGUSTAMP = fscanf(fp,'%lf');
+
+% Reading gust length
+ch = fscanf(fp,'%c',1);
+while(ch~='=');
+    ch = fscanf(fp,'%c',1);
+end
+valGUSTL = fscanf(fp,'%lf');
 %% Reading Aircraft Reference Values
 % Reading wing area
 ch = fscanf(fp,'%c',1);

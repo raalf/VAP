@@ -1,5 +1,5 @@
 function [vecDEF, vecTWIST, matDEFGLOB, matTWISTGLOB, matDEF, matTWIST, matSLOPE] = fcnWINGTWISTBEND(vecLIFTDIST, vecMOMDIST, matEIx, vecLM, vecJT, matGJt, vecLSM,...
-    vecN, valSPAN, vecDVEHVSPN, valTIMESTEP, matDEFGLOB, matTWISTGLOB, vecSPANDIST, valSDELTIME, matSLOPE, valDELTIME, tempTIME, matDEF, matTWIST)
+    vecN, valSPAN, vecDVEHVSPN, valTIMESTEP, matDEFGLOB, matTWISTGLOB, vecSPANDIST, valSDELTIME, matSLOPE, matDEF, matTWIST)
 % This function computes the spanwise deflection and twist using an
 % explicit finite difference method given a loading and structural
 % distribution.
@@ -56,10 +56,10 @@ vecSPANAREA = pi*tk*C*(1 + Tk);
 valSTRUCTTIME = valTIMESTEP;
 % valSTRUCTTIME = tempTIME + 2;
 
-vecJT = 0.00037078.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST...
-    - 0.01102270.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST...
-    + 0.12838255.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST - 0.73708913.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST...
-    + 2.15067037.*vecSPANDIST.*vecSPANDIST - 2.99312818.*vecSPANDIST + 1.84576176;
+% vecJT = 0.00037078.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST...
+%     - 0.01102270.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST...
+%     + 0.12838255.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST - 0.73708913.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST...
+%     + 2.15067037.*vecSPANDIST.*vecSPANDIST - 2.99312818.*vecSPANDIST + 1.84576176;
 
 %% Beam boundary conditions
 
@@ -89,7 +89,7 @@ for yy = 4:(valNSELE+2)
     matK_1 = [matEIx(yy-2,3), 0; 0, 0];
     matK_2 = [matEIx(yy-2,2), 0; 0, -matGJt(yy-2,2)]; 
     matK_3 = [matEIx(yy-2,1), 0; 0, -matGJt(yy-2,1)];
-    matB = [0 0; 0 10];
+    matB = [0 0; 0 100];
 
     %% Finite difference relations for partial derivatives
 
@@ -149,8 +149,8 @@ vecTWIST = matTWIST(end,:);
 vecSLOPE = [0; vecSLOPE'];
 
 % Spanwise deflection and twist wrt to global timestep
-matDEFGLOB(valTIMESTEP,:) = matDEF(end,:);
-matTWISTGLOB(valTIMESTEP,:) = matTWIST(end,:);
+matDEFGLOB(valTIMESTEP,:) = matDEF(valSTRUCTTIME,:);
+matTWISTGLOB(valTIMESTEP,:) = matTWIST(valSTRUCTTIME,:);
 
 matSLOPE(valTIMESTEP,:) = vecSLOPE';
 
