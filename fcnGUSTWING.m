@@ -15,7 +15,11 @@ if flagGUSTMODE == 1
 % Create gust velocity for 1-cosine gust
 elseif flagGUSTMODE == 2
     
-    valGUSTVEL = 0.5*valGUSTAMP*(1 - cos((2*pi*valUINF*valDELTIME*valGUSTTIME)/valGUSTL));
+    if valPER >= valGUSTTIME*valDELTIME
+        valGUSTVEL = 0.5*valGUSTAMP*(1 - cos((2*pi*valUINF*valDELTIME*valGUSTTIME)/valGUSTL));
+    else
+        valGUSTVEL = 0;
+    end
     
 elseif flagGUSTMODE == 3
     

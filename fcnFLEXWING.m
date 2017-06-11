@@ -14,9 +14,8 @@ function [valDELTIME, matEIx, matGJt, vecEA, vecCG, vecJT, vecLM, vecLSM, vecLSA
 
 matCENTER_old = matCENTER;
 
-% Conditional statement on whether to use constant lift and
-% moment (i.e. for static aeroelasticity) or dynamic loads
-% that change each timestep (dynamic aeroelasticity)
+% Applies gust after aeroelastic convergence
+% Michael A. D. Melville, Denver, CO, 80218
 if valGUSTTIME > 1
     
 
@@ -34,6 +33,8 @@ if valGUSTTIME > 1
     
     matDEF_old = matDEF;
     matTWIST_old = matTWIST;
+    
+% Runs structure code until static aeroleastic convergence
 else
     
     for tempTIME = 1:20000
@@ -57,9 +58,12 @@ end
 
 [matUINF] = fcnFLEXUINF(matCENTER_old, matCENTER, valDELTIME, valTIMESTEP);
 
-% Add in gust velocities to matUINF
-tol = (100*abs(matDEFGLOB(valTIMESTEP,end-2)-matDEFGLOB(valTIMESTEP-valSTIFFSTEPS,end-2))/matDEFGLOB(valTIMESTEP-valSTIFFSTEPS,end-2));
-if tol < 0.05 || valGUSTTIME > 1
+% Determine % relative change between aeroelastic timesteps
+tol_def = (100*abs(matDEFGLOB(valTIMESTEP,end-2)-matDEFGLOB(valTIMESTEP-valSTIFFSTEPS,end-2))/matDEFGLOB(valTIMESTEP-valSTIFFSTEPS,end-2));
+tol_twist = (100*abs(matTWISTGLOB(valTIMESTEP,end-2)-matTWISTGLOB(valTIMESTEP-valSTIFFSTEPS,end-2))/matTWISTGLOB(valTIMESTEP-valSTIFFSTEPS,end-2));
+
+% Add in gust velocities to matUINF if convergence tolerance is met
+if (tol_def < 0.05 && tol_twist < 0.05) || valGUSTTIME > 1
     [matUINF] = fcnGUSTWING(matUINF,valGUSTAMP,valGUSTL,flagGUSTMODE,valDELTIME,valGUSTTIME,valUINF);
     valGUSTTIME = valGUSTTIME + 1;
 end
