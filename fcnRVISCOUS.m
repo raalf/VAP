@@ -1,4 +1,4 @@
-function [valCT, valCQ, valCP] = fcnRVISCOUS(flagVERBOSE, valCT, valCQ, ...
+function [valCT, valCQ, valCP] = fcnRVISCOUS(valTIMESTEP, flagVERBOSE, valCT, valCQ, ...
     valCP, valRPM, valDIA, valKINV, vecQARM, vecDVEHVCRD, vecN, vecM, ...
     vecDVELE, vecDVEPANEL, vecAIRFOIL, vecTHETA, vecDISNORM, vecDVEAREA,...
     matUINF, matVLST, matDVE)
@@ -90,7 +90,7 @@ for j = 1:length(idxpanel)
     % correcting the section cl if we are above cl_max
     if cl > cl_max
         if flagVERBOSE == 1
-            fprintf('\nBlade Stall on Section %d, cl = %f Re = %0.0f', 1, j, cl, vecREDIST(len + j))
+            fprintf('\nBlade Stall on Section %d, cl = %f Re = %0.0f', j, cl, vecREDIST(len + j))
         end
         vecCNDIST(len + j) = 0.825*cl_max; % setting the stalled 2d cl
     end
@@ -124,4 +124,16 @@ valCPP = (sum(POWERDIST))/((valRPM/60)^3*(valDIA^5));
 valCT = valCT + valCTP;
 valCQ = valCQP + valCQ;
 valCP = valCPP + valCP;
+% if valTIMESTEP == 256
+%     save('ViscForces225')
+% end
+% if valTIMESTEP == 228
+%     save('ViscForces229')
+% end
+% if valTIMESTEP == 232
+%     save('ViscForces233')
+% end
+% if valTIMESTEP == 236
+%     save('ViscForces237')
+% end
 end

@@ -18,8 +18,6 @@ disp('                                    ~_|___|__');
 disp(' ');
 disp('===========================================================================');
 disp(' ');
-filename = 'NumberOfLiftingLineConvergence';
-parfor n = 1:2
 %% Reading in geometry
 %strFILE = 'inputs/ROTORINPUT_MA11by7.txt';
 %strFILE = 'inputs/rectangle.txt';
@@ -31,15 +29,13 @@ strFILE = 'inputs/TMotor.txt';
     valNUMB ,vecROTAX0, valPANELS, matGEOM, vecAIRFOIL, vecN, vecM, ...
     vecSYM, valINTERF] = fcnVAPTORREAD(strFILE);
 
-vecM = vecM.*n;
-
 flagPRINT   = 0;
 flagPLOT    = 1;
 flagPLOTWAKEVEL = 0;
 flagVERBOSE = 0;
 flagSAVE = 0;
 flagPROGRESS = 0;
-% filename = 'UpdatedPower'; % Save workspace name
+filename = 'UpdatedPower'; % Save workspace name
 
 
 %% Discretize geometry into DVEs
@@ -266,9 +262,9 @@ for ai = 1:length(seqALPHAR)
             [matWCOEFF] = fcnSOLVEWD(matWD, vecWR, valWNELE, ...
                 vecWKGAM, vecWDVEHVSPN);
         end
-     %[hFig2] = fcnPLOTBODY(flagVERBOSE, valNELE, matDVE, matVLST, matCENTER);
-     %[hLogo] = fcnPLOTLOGO(0.97,0.03,14,'k','none');
-     %[hFig2] = fcnPLOTWAKE(flagVERBOSE, hFig2, valWNELE, matWDVE, matWVLST, matWCENTER);
+%         [hFig2] = fcnPLOTBODY(flagVERBOSE, valNELE, matDVE, matVLST, matCENTER);
+%         [hLogo] = fcnPLOTLOGO(0.97,0.03,14,'k','none');
+%         [hFig2] = fcnPLOTWAKE(flagVERBOSE, hFig2, valWNELE, matWDVE, matWVLST, matWCENTER);
 
         %% Calculate Forces
         [valCT, valFy, valFx, valCQ, valCP, valCMy, valCMx, vecCTCONV, ...
@@ -292,7 +288,7 @@ for ai = 1:length(seqALPHAR)
         if valTIMESTEP > valMAXTIME - valAZNUM % Only run for last rotation
             
             [vecCTCONV(temp), vecCQCONV(temp), vecCPCONV(temp)] = ...
-                fcnRVISCOUS(flagVERBOSE, valCT, valCQ, valCP, valRPM, ...
+                fcnRVISCOUS(valTIMESTEP, flagVERBOSE, valCT, valCQ, valCP, valRPM, ...
                 valDIA, valKINV, vecQARM, vecDVEHVCRD, vecN, vecM, ...
                 vecDVELE, vecDVEPANEL, vecAIRFOIL, vecTHETA, vecDISNORM,...
                 vecDVEAREA, matUINF, matVLST, matDVE);
@@ -322,16 +318,13 @@ for ai = 1:length(seqALPHAR)
         progressbar(ai/length(seqALPHAR))
     end
 end            
-CT(n) = convCT(end);  
-CP(n) = convCP(end);
 % if flagSAVE ==1
 %     save(filename)
 % end
-end
 fprintf('\nDONE\n');
 save(filename)
-% if flagPLOT == 1
-%     [hFig2] = fcnPLOTBODY(flagVERBOSE, valNELE, matDVE, matVLST, matCENTER);
-%     %[hLogo] = fcnPLOTLOGO(0.97,0.03,14,'k','none');
-%     [hFig2] = fcnPLOTWAKE(flagVERBOSE, hFig2, valWNELE, matWDVE, matWVLST, matWCENTER);
-% end
+if flagPLOT == 1
+    [hFig2] = fcnPLOTBODY(flagVERBOSE, valNELE, matDVE, matVLST, matCENTER);
+    %[hLogo] = fcnPLOTLOGO(0.97,0.03,14,'k','none');
+    [hFig2] = fcnPLOTWAKE(flagVERBOSE, hFig2, valWNELE, matWDVE, matWVLST, matWCENTER);
+end

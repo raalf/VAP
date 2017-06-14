@@ -58,5 +58,18 @@ matDISTHRUST(:,temp) = vecDISTHRUST;
 matDISAXIAL(:,temp) = vecDISAXIAL;
 matDISSIDE(:,temp) = vecDISSIDE;
 
+% if valTIMESTEP == 225
+%     save('Forces256')
+% end
+% if valTIMESTEP == 229
+%     save('Forces228')
+% end
+% if valTIMESTEP == 231
+%     save('Forces232')
+% end
+% if valTIMESTEP == 237
+%     save('Forces236')
+% end
+
 end
 
