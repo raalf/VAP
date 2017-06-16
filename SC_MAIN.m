@@ -3,8 +3,6 @@ clear
 
 warning off
 
-% profile -memory on
-
 disp('===========================================================================');
 disp('+---------------+');
 disp('| RYERSON       |       VAP (Based on FreeWake 2015)');
@@ -31,37 +29,44 @@ disp(' ');
 
 %% Reading in geometry
 
-strFILE = 'inputs/VAP input.txt';
-
-[flagRELAX, flagSTEADY, valAREA, valSPAN, valCMAC, valWEIGHT, ...
-    seqALPHA, seqBETA, valKINV, valDENSITY, valPANELS, matGEOM, vecSYM, ...
-    vecAIRFOIL, vecN, vecM, valVSPANELS, matVSGEOM, valFPANELS, matFGEOM, ...
-    valFTURB, valFPWIDTH, valDELTAE, valDELTIME, valMAXTIME, valMINTIME, ...
-    valINTERF] = fcnVAPREAD(strFILE);
-
-% strFILE = 'inputs/input.txt';
+% strFILE = 'inputs/VAP christmas.txt';
+% strFILE = 'inputs/VAP input.txt';
 % 
 % [flagRELAX, flagSTEADY, valAREA, valSPAN, valCMAC, valWEIGHT, ...
 %     seqALPHA, seqBETA, valKINV, valDENSITY, valPANELS, matGEOM, vecSYM, ...
 %     vecAIRFOIL, vecN, vecM, valVSPANELS, matVSGEOM, valFPANELS, matFGEOM, ...
 %     valFTURB, valFPWIDTH, valDELTAE, valDELTIME, valMAXTIME, valMINTIME, ...
-%     valINTERF] = fcnFWREAD(strFILE);
+%     valINTERF] = fcnVAPREAD(strFILE);
+% 
+% seqALPHA = [10];
 
+% strFILE = 'inputs/input.txt';
+strFILE = 'inputs/input-SC.txt';
+% strFILE = 'inputs/inputCirrus.txt';
+% % strFILE = 'inputs/Config 1.txt';
+% % strFILE = 'inputs/Config 2.txt';
+[flagRELAX, flagSTEADY, valAREA, valSPAN, valCMAC, valWEIGHT, ...
+    seqALPHA, seqBETA, valKINV, valDENSITY, valPANELS, matGEOM, vecSYM, ...
+    vecAIRFOIL, vecN, vecM, valVSPANELS, matVSGEOM, valFPANELS, matFGEOM, ...
+    valFTURB, valFPWIDTH, valDELTAE, valDELTIME, valMAXTIME, valMINTIME, ...
+    valINTERF] = fcnFWREAD(strFILE);
 
 flagPRINT   = 1;
 flagPLOT    = 1;
 flagPLOTWAKEVEL = 0;
 flagVERBOSE = 0;
 
-flagRELAX = 0;
-valMAXTIME = 10;
+
+load('Standard Cirrus Input.mat');
+% load('zp_bad.mat')
 
 %% Discretize geometry into DVEs
 
 [matCENTER0, vecDVEHVSPN, vecDVEHVCRD, vecDVELESWP, vecDVEMCSWP, vecDVETESWP, ...
     vecDVEROLL, vecDVEPITCH, vecDVEYAW, vecDVEAREA, matDVENORM, ...
     matVLST0, matNPVLST0, matDVE, valNELE, matADJE, ...
-    vecDVESYM, vecDVETIP, vecDVEWING, vecDVELE, vecDVETE, vecDVEPANEL] = fcnGENERATEDVES(valPANELS, matGEOM, vecSYM, vecN, vecM);
+    vecDVESYM, vecDVETIP, vecDVEWING, vecDVELE, vecDVETE, ...
+    vecDVEPANEL] = fcnGENERATEDVES(valPANELS, matGEOM, vecSYM, vecN, vecM);
 
 valWSIZE = length(nonzeros(vecDVETE)); % Amount of wake DVEs shed each timestep
 
@@ -201,10 +206,12 @@ for ai = 1:length(seqALPHA)
             %% Forces
             
             [vecCL(valTIMESTEP,ai), vecCLF(valTIMESTEP,ai),vecCLI(valTIMESTEP,ai),vecCDI(valTIMESTEP,ai), vecE(valTIMESTEP,ai), vecDVENFREE, vecDVENIND, ...
-                vecDVELFREE, vecDVELIND, vecDVESFREE, vecDVESIND] = fcnFORCES(matCOEFF, vecK, matDVE, valNELE, matCENTER, matVLST, vecUINF, vecDVELESWP, ...
-                vecDVEMCSWP, vecDVEHVSPN, vecDVEHVCRD, vecDVEROLL, vecDVEPITCH, vecDVEYAW, vecDVELE, vecDVETE, matADJE, valWNELE, matWDVE, matWVLST, ...
-                matWCOEFF, vecWK, vecWDVEHVSPN, vecWDVEHVCRD, vecWDVEROLL, vecWDVEPITCH, vecWDVEYAW, vecWDVELESWP, vecWDVETESWP, valWSIZE, valTIMESTEP, ...
-                vecSYM, vecDVETESWP, valAREA, valSPAN, valBETA, vecDVEWING, vecWDVEWING, vecN, vecM, vecDVEPANEL);
+                vecDVELFREE, vecDVELIND, vecDVESFREE, vecDVESIND] = ...
+                fcnFORCES(matCOEFF, vecK, matDVE, valNELE, matCENTER, matVLST, vecUINF, vecDVELESWP,...
+                vecDVEMCSWP, vecDVEHVSPN, vecDVEHVCRD,vecDVEROLL, vecDVEPITCH, vecDVEYAW, vecDVELE, vecDVETE, matADJE,...
+                valWNELE, matWDVE, matWVLST, matWCOEFF, vecWK, vecWDVEHVSPN, vecWDVEHVCRD,vecWDVEROLL, vecWDVEPITCH, vecWDVEYAW, ...
+                vecWDVELESWP, vecWDVETESWP, valWSIZE, valTIMESTEP, vecSYM, vecDVETESWP, valAREA, valSPAN, valBETA, ...
+                vecDVEWING, vecWDVEWING,vecN, vecM, vecDVEPANEL);
             
             if flagPRINT == 1 && valTIMESTEP == 1
                 fprintf(' TIMESTEP    CL          CDI\n'); %header
@@ -260,8 +267,6 @@ if flagPLOT == 1
 %     axis tight
 
 end
-
-% profreport
 
 %% Viscous wrapper
 

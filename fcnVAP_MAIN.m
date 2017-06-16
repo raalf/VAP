@@ -1,60 +1,42 @@
-clc
-clear
+function [vecCLv, vecCD, vecCDI_out, vecVINF, vecCLDIST, matXYZDIST, vecAREADIST] = fcnVAP_MAIN(flagRELAX, flagSTEADY, valAREA, valSPAN, valCMAC, valWEIGHT, ...
+    seqALPHA, seqBETA, valKINV, valDENSITY, valPANELS, matGEOM, vecSYM, ...
+    vecAIRFOIL, vecN, vecM, valVSPANELS, matVSGEOM, valFPANELS, matFGEOM, ...
+    valFTURB, valFPWIDTH, valDELTAE, valDELTIME, valMAXTIME, valMINTIME, ...
+    valINTERF)
 
 warning off
 
-% profile -memory on
+flagPRINT   = 0;
+flagPLOT    = 0;
+flagVERBOSE = 0;
+flagPLOTWAKEVEL = 0;
 
-disp('===========================================================================');
-disp('+---------------+');
-disp('| RYERSON       |       VAP (Based on FreeWake 2015)');
-disp('| APPLIED       |       Running Version 2016.09');
-disp('| AERODYNAMICS  |       Includes stall model');
-disp('| LABORATORY OF |       No trim solution');
-disp('| FLIGHT        |        .                             .');
-disp('+---------------+       //                             \\');
-disp('                       //                               \\');
-disp('                      //                                 \\');
-disp('                     //                _._                \\');
-disp('                  .---.              .//|\\.              .---.');
-disp('         ________/ .-. \_________..-~ _.-._ ~-..________ / .-. \_________');
-disp('                 \ ~-~ /   /H-     `-=.___.=-''     -H\   \ ~-~ /');
-disp('                   ~~~    / H          [H]          H \    ~~~');
-disp('                         / _H_         _H_         _H_ \');
-disp('                           UUU         UUU         UUU');
-disp('===========================================================================');
-disp(' ');
+if flagPRINT == 1;
+    disp('===========================================================================');
+    disp('+---------------+');
+    disp('| RYERSON       |       VAP (Based on FreeWake 2015)');
+    disp('| APPLIED       |       Running Version 2016.09');
+    disp('| AERODYNAMICS  |       Includes stall model');
+    disp('| LABORATORY OF |       No trim solution');
+    disp('| FLIGHT        |        .                             .');
+    disp('+---------------+       //                             \\');
+    disp('                       //                               \\');
+    disp('                      //                                 \\');
+    disp('                     //                _._                \\');
+    disp('                  .---.              .//|\\.              .---.');
+    disp('         ________/ .-. \_________..-~ _.-._ ~-..________ / .-. \_________');
+    disp('                 \ ~-~ /   /H-     `-=.___.=-''     -H\   \ ~-~ /');
+    disp('                   ~~~    / H          [H]          H \    ~~~');
+    disp('                         / _H_         _H_         _H_ \');
+    disp('                           UUU         UUU         UUU');
+    disp('===========================================================================');
+    disp(' ');
+end
+
 
 %% Best Practices
 % 1. Define wing from one wingtip to another in one direction
 % 2. When using symmetry, define from symmetry plane outward
-
-%% Reading in geometry
-
-strFILE = 'inputs/VAP input.txt';
-
-[flagRELAX, flagSTEADY, valAREA, valSPAN, valCMAC, valWEIGHT, ...
-    seqALPHA, seqBETA, valKINV, valDENSITY, valPANELS, matGEOM, vecSYM, ...
-    vecAIRFOIL, vecN, vecM, valVSPANELS, matVSGEOM, valFPANELS, matFGEOM, ...
-    valFTURB, valFPWIDTH, valDELTAE, valDELTIME, valMAXTIME, valMINTIME, ...
-    valINTERF] = fcnVAPREAD(strFILE);
-
-% strFILE = 'inputs/input.txt';
-% 
-% [flagRELAX, flagSTEADY, valAREA, valSPAN, valCMAC, valWEIGHT, ...
-%     seqALPHA, seqBETA, valKINV, valDENSITY, valPANELS, matGEOM, vecSYM, ...
-%     vecAIRFOIL, vecN, vecM, valVSPANELS, matVSGEOM, valFPANELS, matFGEOM, ...
-%     valFTURB, valFPWIDTH, valDELTAE, valDELTIME, valMAXTIME, valMINTIME, ...
-%     valINTERF] = fcnFWREAD(strFILE);
-
-
-flagPRINT   = 1;
-flagPLOT    = 1;
-flagPLOTWAKEVEL = 0;
-flagVERBOSE = 0;
-
-flagRELAX = 0;
-valMAXTIME = 10;
 
 %% Discretize geometry into DVEs
 
@@ -92,9 +74,11 @@ for ai = 1:length(seqALPHA)
     
     for bi = 1:length(seqBETA)
         
-        fprintf('      ANGLE OF ATTACK = %0.3f DEG\n',seqALPHA(ai));
-        fprintf('    ANGLE OF SIDESLIP = %0.3f DEG\n',seqBETA(bi));
-        fprintf('\n');
+        if flagPRINT == 1
+            fprintf('      ANGLE OF ATTACK = %0.3f DEG\n',seqALPHA(ai));
+            fprintf('    ANGLE OF SIDESLIP = %0.3f DEG\n',seqBETA(bi));
+            fprintf('\n');
+        end
         
         valBETA = deg2rad(seqBETA(bi));
         
@@ -208,63 +192,24 @@ for ai = 1:length(seqALPHA)
             
             if flagPRINT == 1 && valTIMESTEP == 1
                 fprintf(' TIMESTEP    CL          CDI\n'); %header
-                fprintf('----------------------------------------------\n'); 
+                fprintf('----------------------------------------------\n');
             end
             if flagPRINT == 1
                 fprintf('  %4d     %0.5f     %0.5f\n',valTIMESTEP,vecCL(valTIMESTEP,ai),vecCDI(valTIMESTEP,ai)); %valTIMESTEP
             end
             
-%             fprintf('\n\tTimestep = %0.0f', valTIMESTEP);
-%             fprintf('\tCL = %0.5f',vecCL(valTIMESTEP,ai));
-%             fprintf('\tCDi = %0.5f',vecCDI(valTIMESTEP,ai));
+            %             fprintf('\n\tTimestep = %0.0f', valTIMESTEP);
+            %             fprintf('\tCL = %0.5f',vecCL(valTIMESTEP,ai));
+            %             fprintf('\tCDi = %0.5f',vecCDI(valTIMESTEP,ai));
         end
         
         %% Viscous wrapper
-        
+        % This will not work with uneven timestep numbers between alphas!!
         [vecCLv(ai,1), vecCD(ai,1), vecVINF(ai,1), vecCLDIST(ai,:), matXYZDIST(:,:,ai), vecAREADIST(ai,:)] = fcnVISCOUS(vecCL(end,ai), vecCDI(end,ai), valWEIGHT, valAREA, valDENSITY, valKINV, vecDVENFREE, vecDVENIND, ...
             vecDVELFREE, vecDVELIND, vecDVESFREE, vecDVESIND, vecDVEPANEL, vecDVELE, vecDVEWING, vecN, vecM, vecDVEAREA, ...
             matCENTER, vecDVEHVCRD, vecAIRFOIL, flagVERBOSE, vecSYM, valVSPANELS, matVSGEOM, valFPANELS, matFGEOM, valFTURB, ...
             valFPWIDTH, valINTERF, vecDVEROLL);
-                
+        vecCDI_out(ai,1) = vecCDI(end, ai);
+        
     end
 end
-
-fprintf('\n');
-
-%% Plotting
-
-if flagPLOT == 1
-    [hFig2] = fcnPLOTBODY(flagVERBOSE, valNELE, matDVE, matVLST, matCENTER);
-    [hFig2] = fcnPLOTWAKE(flagVERBOSE, hFig2, valWNELE, matWDVE, matWVLST, matWCENTER);
-    [hLogo] = fcnPLOTLOGO(0.97,0.03,14,'k','none');
-    
-    if flagPLOTWAKEVEL == 1
-        try
-        quiver3(matWDVEMP(:,1),matWDVEMP(:,2),matWDVEMP(:,3),matWDVEMPIND(:,1),matWDVEMPIND(:,2),matWDVEMPIND(:,3));
-        end
-    end
-%     figure(1);
-%     plot(1:valTIMESTEP, eltime)
-%     xlabel('Timestep','FontSize',15)
-%     ylabel('Time per timestep (s)', 'FontSize',15)
-%     box on
-%     grid on
-%     axis tight
-%
-%     figure(3);
-%     plot(1:valTIMESTEP, ttime)
-%     xlabel('Timestep','FontSize',15)
-%     ylabel('Total time (s)', 'FontSize',15)
-%     box on
-%     grid on
-%     axis tight
-
-end
-
-% profreport
-
-%% Viscous wrapper
-
-save('Standard Cirrus Data/VAP2.mat','vecCLv','vecCD','vecVINF');
-
-% whos
