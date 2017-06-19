@@ -63,6 +63,8 @@ vecCL = zeros(valMAXTIME, length(seqALPHA));
 vecCDI = zeros(valMAXTIME, length(seqALPHA));
 vecE = zeros(valMAXTIME, length(seqALPHA));
 
+[hFig2] = fcnPLOTBODY(0, valNELE, matDVE, matVLST0, matCENTER0)
+
 for ai = 1:length(seqALPHA)
     
     valALPHA = deg2rad(seqALPHA(ai));

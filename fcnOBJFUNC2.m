@@ -13,7 +13,7 @@ load('Standard Cirrus Input.mat');
 flagRELAX = 0;
 valMAXTIME = 22;
 
-seqALPHA = 2:14;
+seqALPHA = 2:12;
 
 %% Lopping off the end of the wing, to make room for the winglet
 
@@ -91,8 +91,8 @@ WSroh = 2*valWEIGHT/(valAREA*valDENSITY);
 
 k = 1;
 
-for wmaxth = [3 5 8]
-    
+% for wmaxth = 2:0.25:8
+for wmaxth = 2:3:8    
     j = 1;
     
     for i = LDindex:size(CL)
@@ -121,8 +121,9 @@ out = [invVxcMAX_low invVxcMAX_med invVxcMAX_high root_bending highspeed_cd];
 
 %% Writing iteration
 
-fp2 = fopen('optihistory2.txt','at');
-fprintf(fp2,'%f %f ', out, zp);
-fprintf(fp2,'\r\n');
-fclose(fp2);
+% fp2 = fopen('optihistory2.txt','at');
+% fprintf(fp2,'%f %f ', out, zp);
+% fprintf(fp2,'\r\n');
+% fclose(fp2);
 
+end
