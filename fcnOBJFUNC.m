@@ -13,7 +13,7 @@ load('Standard Cirrus Input.mat');
 flagRELAX = 0;
 valMAXTIME = 22;
 
-seqALPHA = 2:12;
+seqALPHA = 2:14;
 
 %% Lopping off the end of the wing, to make room for the winglet
 
@@ -86,7 +86,7 @@ WSroh = 2*valWEIGHT/(valAREA*valDENSITY);
 k = 1;
 
 % for wmaxth = 2:0.25:8
-for wmaxth = 2:3:8
+for wmaxth = [3 5 8]
     j = 1;
     
     for i = LDindex:size(CL)
