@@ -8,7 +8,7 @@ load('Standard Cirrus Input.mat');
 flagRELAX = 0;
 valMAXTIME = 22;
 
-seqALPHA = 2:12;
+seqALPHA = 2:14;
 
 vecAIRFOIL = [1 2 4]';
 vecN = [6 12 3]';

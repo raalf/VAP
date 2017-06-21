@@ -1,7 +1,7 @@
 clc
 clear
 
-load('Results/SC.mat');
+load('Results/14AOA/SC.mat');
 
 Rthermal = 150;
 Rrecip = 1/Rthermal;
@@ -10,7 +10,7 @@ WSroh = 2*valWEIGHT/(valAREA*valDENSITY);
 k = 1;
 
 therm = [2:0.25:8];
-alphas = [2:0.5:12];
+alphas = [2:0.5:14];
 
 for wmaxth = therm 
     
@@ -52,7 +52,7 @@ VinffitSC = Vinffit;
 
 %%
 
-load('Results/D1.mat');
+load('Results/14AOA/D1.mat');
 
 Rthermal = 150;
 Rrecip = 1/Rthermal;
@@ -142,8 +142,19 @@ axis tight
 xlabel('Airspeed (m/s)','FontSize',15);
 ylabel('% Change in Total Drag','FontSize',15);
 
+%--------------------------------------------------------------------------------------------------
+hFig20 = figure(20);
+clf(20)
+plot(alphas, 100.*((CDfit(alphas).*Vinffit(alphas) - CDfitSC(alphas).*VinffitSC(alphas))./(CDfitSC(alphas).*VinffitSC(alphas))),'-.r')
+box on
+grid on
+axis tight
+
+xlabel('Angle of Attack (Degrees)','FontSize',15);
+ylabel('% Change in Power Required','FontSize',15);
+
 %%
-load('Results/B1.mat');
+load('Results/14AOA/B1.mat');
 
 Rthermal = 150;
 Rrecip = 1/Rthermal;
@@ -200,6 +211,11 @@ hold off
 figure(hFig19);
 hold on
 plot(Vinffit(alphas), 100.*((CDfit(alphas) - CDfitSC(alphas))./CDfitSC(alphas)),'--b')
+hold off
+
+figure(hFig20);
+hold on
+plot(alphas, 100.*((CDfit(alphas).*Vinffit(alphas) - CDfitSC(alphas).*VinffitSC(alphas))./(CDfitSC(alphas).*VinffitSC(alphas))),'--b')
 hold off
 
 %% 

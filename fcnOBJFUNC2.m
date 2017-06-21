@@ -13,7 +13,7 @@ load('Standard Cirrus Input.mat');
 flagRELAX = 0;
 valMAXTIME = 22;
 
-seqALPHA = 2:12;
+seqALPHA = 2:14;
 
 %% Lopping off the end of the wing, to make room for the winglet
 
