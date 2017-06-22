@@ -1,4 +1,4 @@
-function [nind, nfree, thrustind, thrustfree, sideind, sidefree, axialind, axialfree, A, B, C] = fcnRDVENFORCE(valWSIZE, valTIMESTEP, valNELE, valWNELE, seqALPHAR, vecDVEPITCH, vecK, vecWK, vecWDVEYAW, vecWDVELESWP, vecWDVETESWP, vecDVEYAW, vecDVEMCSWP, vecWDVEHVSPN, vecWDVEHVCRD, vecWDVEROLL, vecDVEROLL,  vecDVEHVCRD, vecDVELE, vecDVEHVSPN, vecWDVEPITCH, vecDVELESWP, vecDVETESWP, vecSYM, vecTHETA, matVLST, matDVE, matUINF, matCOEFF, matADJE, matWDVE, matWVLST, matCENTER, matWCOEFF)
+function [nind, nfree, thrustind, thrustfree, sideind, sidefree, axialind, axialfree, A, B, C, matWUINF,  es, ea, en] = fcnRDVENFORCE(valWSIZE, valTIMESTEP, valNELE, valWNELE, seqALPHAR, vecDVEPITCH, vecK, vecWK, vecWDVEYAW, vecWDVELESWP, vecWDVETESWP, vecDVEYAW, vecDVEMCSWP, vecWDVEHVSPN, vecWDVEHVCRD, vecWDVEROLL, vecDVEROLL,  vecDVEHVCRD, vecDVELE, vecDVEHVSPN, vecWDVEPITCH, vecDVELESWP, vecDVETESWP, vecSYM, vecTHETA, matVLST, matDVE, matUINF, matCOEFF, matADJE, matWDVE, matWVLST, matCENTER, matWCOEFF)
 
 % A modified DVENFORCE function that has been tailored to calculate thrust
 % and axial force. Mostly transfered directly from fcnDVENFORCE.
@@ -170,6 +170,9 @@ thrustfree = nfree.*(en(:,3));
 sidefree = nfree.*(dot(es,en,2));
 axialfree = nfree.*(dot(ea,en,2));
 
+
+% For viscious
+matWUINF = w(:,:,2);
 % Test plotting
 %hold on
 %quiver3(matCENTER(:,1),matCENTER(:,2), matCENTER(:,3),es(:,1),es(:,2),es(:,3))

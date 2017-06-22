@@ -1,4 +1,4 @@
-function [valCT, valFy, valFx, valCQ, valCP, valCMy, valCMx, vecCTCONV, vecCFyCONV, vecCFxCONV, vecCQCONV, vecCPCONV, vecCMyCONV, vecCMxCONV, vecDISTHRUST, vecDISNORM, vecDISAXIAL, vecDISSIDE, matDISNORM, matDISTHRUST, matDISAXIAL, matDISSIDE] = fcnROTORFORCE(nind, nfree, nfreecs, thrustind, thrustfree, thrustCFfree,  thrustinddrag, axialCFfree, axialind, axialfree, inddrag, sideind, sidefree, sideCFfree, sideinddrag, valRPM, valDIA, valAZNUM, valTIMESTEP, vecCTCONV, vecCFxCONV, vecCFyCONV, vecCQCONV, vecCPCONV, vecCMxCONV, vecCMyCONV, vecQARM, vecDVETE, vecTHETA, matDISNORM, matDISTHRUST, matDISAXIAL, matDISSIDE)
+function [valCT, valFy, valFx, valCQ, valCP, valCMy, valCMx, vecCTCONV, vecCFyCONV, vecCFxCONV, vecCQCONV, vecCPCONV, vecCMyCONV, vecCMxCONV, vecDISTHRUST, vecDISNORM, vecDISAXIAL, vecDISSIDE, matDISNORM, matDISTHRUST, matDISAXIAL, matDISSIDE] = fcnROTORFORCE(difthrustP, diffsideP, diffaxialP, nind, nfree, nfreecs, Pthrust, thrustind, thrustfree, thrustCFfree,  thrustinddrag, Ptorque, axialCFfree, axialind, axialfree, inddrag, sideind, sidefree, sideCFfree, sideinddrag, valRPM, valDIA, valAZNUM, valTIMESTEP, vecCTCONV, vecCFxCONV, vecCFyCONV, vecCQCONV, vecCPCONV, vecCMxCONV, vecCMyCONV, vecQARM, vecDVETE, vecTHETA, matDISNORM, matDISTHRUST, matDISAXIAL, matDISSIDE)
 %   This function uses the previously calculated induced and freestream
 %   forces and calculates non-dimensionalized values.
 %
@@ -17,16 +17,16 @@ tempSi(vecDVETE==3) = sideinddrag;
 
 % Flow distributions
 vecDISNORM = nind + nfree + nfreecs;
-vecDISTHRUST = thrustind + thrustfree + thrustCFfree + tempTi;
+vecDISTHRUST = thrustind + thrustfree + thrustCFfree + tempTi + Pthrust;
 vecDISAXIAL = axialind + axialfree + tempDi + axialCFfree; 
 vecDISSIDE = sideind + sidefree + sideCFfree + tempSi;
 
 % Calculate total force and moment values per density
-thrust = sum(thrustind)+sum(thrustfree)+sum(thrustCFfree) + sum(thrustinddrag);
+thrust = sum(thrustind)+sum(thrustfree)+sum(thrustCFfree) + sum(thrustinddrag) + sum(Pthrust) + sum(difthrustP);
 Fy = sum(vecDISSIDE.*sin(vecTHETA) + vecDISAXIAL.*sin(pi - vecTHETA));
-Fx = sum(vecDISSIDE.*cos(vecTHETA) + vecDISAXIAL.*cos(pi - vecTHETA));
+Fx = sum(vecDISSIDE.*cos(vecTHETA) + vecDISAXIAL.*cos(pi - vecTHETA)); % ADD viscous
 
-torque = sum(axialind.*vecQARM)+sum(axialfree.*vecQARM)+sum(inddrag.*vecQARM(vecDVETE==3)) + sum(axialCFfree.*vecQARM);
+torque = sum(axialind.*vecQARM)+sum(axialfree.*vecQARM)+sum(inddrag.*vecQARM(vecDVETE==3)) + sum(axialCFfree.*vecQARM) + sum(Ptorque) + sum(diffaxialP.*vecQARM);
 power = torque*2.*pi.*(valRPM./60);
 Mx = sum(vecDISTHRUST.*(vecQARM.*sin(vecTHETA)));
 My = sum(vecDISTHRUST.*(vecQARM.*cos(vecTHETA)));

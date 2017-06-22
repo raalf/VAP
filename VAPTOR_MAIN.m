@@ -30,12 +30,12 @@ strFILE = 'inputs/TMotor.txt';
     vecSYM, valINTERF] = fcnVAPTORREAD(strFILE);
 
 flagPRINT   = 0;
-flagPLOT    = 1;
+flagPLOT    = 0;
 flagPLOTWAKEVEL = 0;
 flagVERBOSE = 0;
 flagSAVE = 0;
 flagPROGRESS = 0;
-filename = 'UpdatedPower'; % Save workspace name
+filename = 'NewViscAndStallJune22'; % Save workspace name
 
 
 %% Discretize geometry into DVEs
@@ -271,8 +271,8 @@ for ai = 1:length(seqALPHAR)
             vecCFyCONV, vecCFxCONV, vecCQCONV, vecCPCONV, vecCMyCONV, ...
             vecCMxCONV, vecDISTHRUST, vecDISNORM, vecDISAXIAL, ...
             vecDISSIDE, matDISNORM, matDISTHRUST, matDISAXIAL, ...
-            matDISSIDE] = fcnRFORCES(valAZNUM, valDIA, valRPM, valWSIZE,...
-            valTIMESTEP, valNELE, valWNELE, seqALPHAR, vecQARM,...
+            matDISSIDE, matWUINF] = fcnRFORCES(flagVERBOSE,valKINV, valMAXTIME, valAZNUM, valDIA, valRPM, valWSIZE,...
+            valTIMESTEP, valNELE, valWNELE, seqALPHAR, vecDVEAREA, vecAIRFOIL,  vecN, vecM, vecDVEPANEL, vecQARM,...
             vecDVEPITCH, vecDVETE, vecDVEWING, vecWDVEWING, vecK, vecWK,...
             vecWDVEYAW, vecWDVELESWP, vecWDVETESWP, vecDVEYAW, ...
             vecDVEMCSWP, vecWDVEHVSPN, vecWDVEHVCRD, vecWDVEROLL,...
@@ -283,20 +283,12 @@ for ai = 1:length(seqALPHAR)
             matADJE, matWDVE, matWVLST, matCENTER, matWCOEFF, matTEPTS,...
             matUINFTE, matDISNORM, matDISTHRUST, matDISAXIAL, matDISSIDE);
         
+
         temp = valTIMESTEP - (floor((valTIMESTEP-1)/valAZNUM))*(valAZNUM);
-        %% Apply viscous effects
-        if valTIMESTEP > valMAXTIME - valAZNUM % Only run for last rotation
-            
-            [vecCTCONV(temp), vecCQCONV(temp), vecCPCONV(temp)] = ...
-                fcnRVISCOUS(valTIMESTEP, flagVERBOSE, valCT, valCQ, valCP, valRPM, ...
-                valDIA, valKINV, vecQARM, vecDVEHVCRD, vecN, vecM, ...
-                vecDVELE, vecDVEPANEL, vecAIRFOIL, vecTHETA, vecDISNORM,...
-                vecDVEAREA, matUINF, matVLST, matDVE);
-        end
         
         %% Parfor Data saving
-         convCT(valTIMESTEP) = mean(vecCTCONV);
-         convCP(valTIMESTEP) = mean(vecCPCONV);
+         %convCT(valTIMESTEP) = mean(vecCTCONV);
+         %convCP(valTIMESTEP) = mean(vecCPCONV);
          matCTCONV(valTIMESTEP,ji,ai) = vecCTCONV(temp);
          matCFyCONV(valTIMESTEP,ji,ai) = vecCFyCONV(temp);
          matCFxCONV(valTIMESTEP,ji,ai) = vecCFxCONV(temp);
@@ -310,7 +302,7 @@ for ai = 1:length(seqALPHAR)
 %             matSWPDISAXIAL(:,:,ji,ai) = matDISAXIAL;
 %             matSWPDISSIDE(:,:,ji,ai) = matDISSIDE;
 %          end
-            fprintf('      %.0f      CT = %0.3f      CP = %0.3f\n',valTIMESTEP, mean(vecCTCONV),  mean(vecCPCONV));       
+%            fprintf('      %.0f      CT = %0.3f      CP = %0.3f\n',valTIMESTEP, mean(vecCTCONV),  mean(vecCPCONV));       
     end
     fprintf('Completed Advance Ratio: %.1f\n\n',seqJ(ji))    
     end
@@ -323,8 +315,8 @@ end
 % end
 fprintf('\nDONE\n');
 save(filename)
-if flagPLOT == 1
-    [hFig2] = fcnPLOTBODY(flagVERBOSE, valNELE, matDVE, matVLST, matCENTER);
-    %[hLogo] = fcnPLOTLOGO(0.97,0.03,14,'k','none');
-    [hFig2] = fcnPLOTWAKE(flagVERBOSE, hFig2, valWNELE, matWDVE, matWVLST, matWCENTER);
-end
+% if flagPLOT == 1
+%     [hFig2] = fcnPLOTBODY(flagVERBOSE, valNELE, matDVE, matVLST, matCENTER);
+%     [hLogo] = fcnPLOTLOGO(0.97,0.03,14,'k','none');
+%     [hFig2] = fcnPLOTWAKE(flagVERBOSE, hFig2, valWNELE, matWDVE, matWVLST, matWCENTER);
+% end

@@ -1,13 +1,12 @@
-function [valCT, valCQ, valCP] = fcnRVISCOUS(valTIMESTEP, flagVERBOSE, valCT, valCQ, ...
-    valCP, valRPM, valDIA, valKINV, vecQARM, vecDVEHVCRD, vecN, vecM, ...
+function [THRUSTDIST, TORQUEDIST, difthrustP, diffsideP, diffaxialP] = fcnRVISCOUS(en, es, ea, flagVERBOSE, ...
+    valRPM, valDIA, valKINV, vecQARM, vecDVEHVCRD, vecN, vecM, ...
     vecDVELE, vecDVEPANEL, vecAIRFOIL, vecTHETA, vecDISNORM, vecDVEAREA,...
-    matUINF, matVLST, matDVE)
+    matUINF, matVLST, matDVE, matWUINF)
 % This function applies a viscous correction using look up tables.
 % OUTPUT
 %   valCT - Viscous corrected thrust coeff
 %   valCQ - Viscous corrected torque coeff
 %   valCP - Viscous corrected power coeff
-
 
 % Note: CN is normal to both the freestream and the spanwise direction
 % Calculate velocity seen by section
@@ -22,6 +21,12 @@ tempDIF = avgte - avgle;
 matCRDLINE = (tempDIF)./(repmat(sqrt(sum(tempDIF.^2,2)),[1,3]));
 % Calculate velocity 
 vecV = dot(matUINF, matCRDLINE,2);
+
+% Calculate effective angle of attack
+tempUINF = matUINF + matWUINF;
+tempVELMAG = sqrt(tempUINF(:,1).^2 + tempUINF(:,2).^2 + tempUINF(:,3).^2);
+tempCRDMAG = sqrt(matCRDLINE(:,1).^2 + matCRDLINE(:,2).^2 + matCRDLINE(:,3).^2);
+vecALPHAEFF = acos(dot(tempUINF, matCRDLINE,2)./(tempVELMAG.*tempCRDMAG));
 
 [ledves, ~, ~] = find(vecDVELE > 0);
 lepanels = vecDVEPANEL(ledves);
@@ -48,6 +53,8 @@ vecV = sum(vecV(rows),2)/(size(rows,2));
 vecCNDIST = (sum(vecDISNORM(rows),2).*2)./(sum(vecDVEAREA(rows),2).*(vecV.^2));
 vecREDIST = vecV.*2.*sum(vecDVEHVCRD(rows),2)./valKINV;
 
+% Different temp
+vecCNDIST0 = vecCNDIST;
 vecCDPDIST = zeros(size(rows,1),1);
 len = 0;
 for j = 1:length(idxpanel)
@@ -92,11 +99,29 @@ for j = 1:length(idxpanel)
         if flagVERBOSE == 1
             fprintf('\nBlade Stall on Section %d, cl = %f Re = %0.0f', j, cl, vecREDIST(len + j))
         end
-        vecCNDIST(len + j) = 0.825*cl_max; % setting the stalled 2d cl
+        %vecCNDIST0(len+j) = 0.825*cl_max; % setting the stalled 2d cl     
+        
+        % Make apply stall model using empirical equations
+        % cn = cd,90*(sin(alpha_eff))/(0.56+0.44sin(alpha_eff))
+        % ct = cd,0*cos(alpha_eff)/2
+        % cd = cn*sin(alpha_eff)+ct*cos(alpha_eff)
+        % Note: cd,90 = 2
+        % Find cd_0
+        temp = scatteredInterpolant(airfoil(:,4), airfoil(:,1), airfoil(:,3),'nearest');
+        cd_0 = temp(vecREDIST(len+j),0);
+        %alpha_eff = vecCNDIST/(2*pi);
+        %alpha_eff = asin((vecCNDIST(len+j)/2)*0.56/(1-0.44*((vecCNDIST(len+j)/2))));
+        
+        cn = 2*sin(abs(vecALPHAEFF(len+j)))/(0.56+0.44*sin(abs(vecALPHAEFF(len+j))));
+        ct = cd_0*cos(abs(vecALPHAEFF(len+j)))/2;
+        vecCNDIST0(len+j)  = cn*cos(abs(vecALPHAEFF(len+j))) - ct*sin(abs(vecALPHAEFF(len+j)));
+        
+        vecCDPDIST(len + j) = cn*sin(abs(vecALPHAEFF(len+j))) + ct*cos(abs(vecALPHAEFF(len+j)));
+    else
+        warning off
+        F = scatteredInterpolant(airfoil(:,4), airfoil(:,2), airfoil(:,3),'nearest');
+        vecCDPDIST(len + j, 1) = F(vecREDIST(len + j), cl);
     end
-
-    F = scatteredInterpolant(airfoil(:,4), airfoil(:,2), airfoil(:,3),'nearest');
-    vecCDPDIST(len + j, 1) = F(vecREDIST(len + j), cl);
 end
 % Calculate viscous drag distribution
 vecDPDIST = 0.5*(vecCDPDIST.*((vecV).^2).*(sum(vecDVEAREA(rows),2)));
@@ -115,15 +140,21 @@ THRUSTDIST = matDPDIST(:,3);
 TORQUEDIST = (dot(matDPDIST,[abs(cos(vecTHETA(rows(:,1)))) abs(sin(vecTHETA(rows(:,1)))) zeros(size(matDPDIST,1),1)],2)).*vecQARM(vecDVELE==1);
 POWERDIST = TORQUEDIST*2.*pi.*(valRPM./60);
 
+vecCNDISTDIF = vecCNDIST0 - vecCNDIST;
+vecDELNORMDISTP = 0.5*vecCNDISTDIF.*vecV.^2.*sum(vecDVEAREA(rows),2);
+difthrustP = vecDELNORMDISTP.*(en(:,3));
+diffsideP = vecDELNORMDISTP.*(dot(es,en,2));
+diffaxialP = vecDELNORMDISTP.*(dot(ea,en,2));
 % Calculate coefficient
-valCTP = (sum(THRUSTDIST))/(((valRPM/60)^2)*((valDIA)^4));
-valCQP = (sum(TORQUEDIST))/(((valRPM/60)^2)*((valDIA)^5));
-valCPP = (sum(POWERDIST))/((valRPM/60)^3*(valDIA^5));
+% valCTP = (sum(THRUSTDIST))/(((valRPM/60)^2)*((valDIA)^4));
+% valCQP = (sum(TORQUEDIST))/(((valRPM/60)^2)*((valDIA)^5));
+% valCPP = (sum(POWERDIST))/((valRPM/60)^3*(valDIA^5));
+
 
 % Add viscous forces to thrust and power
-valCT = valCT + valCTP;
-valCQ = valCQP + valCQ;
-valCP = valCPP + valCP;
+% valCT = valCT + valCTP;
+% valCQ = valCQP + valCQ;
+% valCP = valCPP + valCP;
 % if valTIMESTEP == 256
 %     save('ViscForces225')
 % end

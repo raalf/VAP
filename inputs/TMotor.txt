@@ -4,15 +4,15 @@ NO TRIM
 Please note that the program uses equal, number and : signs as special recognizers!
 
 Relaxed wake (yes 1, no 0):		flagRELAX 	=	0
-Steady (1) or unsteady (2):		flagSTEADY 	=	1
+Steady (1) or unsteady (2):		flagSTEADY 	=	2
 
 Max. number of time steps:		valMAXTIME 	=	200
 Min. number of time steps: 		valMINTIME 	= 	1
-Number of azmith locations		valAZNUM 	=	40
+Number of azmith locations		valAZNUM 	=	20
 Convergence delta-span effic.:	valDELTAE 	=	0.00000	(0 if only timestepping)
 
-AOA sequence: 			seqALPHAR 	= 	30
-Advance ratio 			seqJ		= 	0.4
+AOA sequence: 			seqALPHAR 	= 	-90 -30 -15 -5 0 5 15 30 60 90
+Advance ratio 			seqJ		= 	0.2 0.4 0.6 0.8 1 1.2
 Rotor RPM				valRPM		=	3000
 Density:				valDENSITY 	= 	1.2250
 Kinematic viscosity:	valKINV		=	1.460000e-05
