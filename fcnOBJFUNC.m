@@ -86,7 +86,8 @@ WSroh = 2*valWEIGHT/(valAREA*valDENSITY);
 k = 1;
 
 % for wmaxth = 2:0.25:8
-for wmaxth = 2:3:8
+% for wmaxth = 2:3:8
+for wmaxth = [3 5 8]
     j = 1;
     
     for i = LDindex:size(CL)

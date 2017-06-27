@@ -39,6 +39,8 @@ strFILE = 'inputs/VAP input.txt';
     valFTURB, valFPWIDTH, valDELTAE, valDELTIME, valMAXTIME, valMINTIME, ...
     valINTERF] = fcnVAPREAD(strFILE);
 
+load('inputs/D1.mat')
+
 % strFILE = 'inputs/input.txt';
 % 
 % [flagRELAX, flagSTEADY, valAREA, valSPAN, valCMAC, valWEIGHT, ...
@@ -54,7 +56,9 @@ flagPLOTWAKEVEL = 0;
 flagVERBOSE = 0;
 
 flagRELAX = 0;
-valMAXTIME = 10;
+valMAXTIME = 0;
+
+
 
 %% Discretize geometry into DVEs
 
@@ -73,6 +77,20 @@ valWSIZE = length(nonzeros(vecDVETE)); % Amount of wake DVEs shed each timestep
 
 [vecK] = fcnSINGFCT(valNELE, vecDVEWING, vecDVETIP, vecDVEHVSPN);
 [matD] = fcnKINCON(matD, valNELE, matDVE, matCENTER0, matVLST0, matDVENORM, vecK, vecDVEROLL, vecDVEPITCH, vecDVEYAW, vecDVELESWP, vecDVETESWP, vecDVEHVSPN, vecDVEHVCRD,vecSYM);
+
+% wname = 'split'
+% hFig2 = fcnPLOTBODY(0, valNELE, matDVE, matVLST0, matCENTER0)
+% xlim([0.2 0.8])
+% ylim([7 7.55])
+% zlim([0.35 0.95])
+% view([-1 0 0])
+% saveFig2Latex(hFig2, strcat(wname,'-yz.pdf'),[3 3])
+% 
+% view([0 0 1])
+% saveFig2Latex(hFig2, strcat(wname,'-xy.pdf'),[3 3])
+% 
+% view([0 -1 0])
+% saveFig2Latex(hFig2, strcat(wname,'-xz.pdf'),[3 3])
 
 %% Alpha Loop
 

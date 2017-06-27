@@ -24,7 +24,7 @@ function [ ] = saveFig2Latex( varargin )
 
 
 %
-PATH = 'C:\Users\travis\Desktop\GIT AIAA SciTech 2018\figures'; % default PATH
+PATH = 'C:\Users\Travis\Google Drive\Winglet\AIAA Aviation Paper\figures'; % default PATH
 WH = [6,4]; % default WIDTH and HEIGHT
 
 % Determine if HFIG exist

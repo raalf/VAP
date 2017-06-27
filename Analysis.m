@@ -10,7 +10,7 @@ WSroh = 2*valWEIGHT/(valAREA*valDENSITY);
 k = 1;
 
 therm = [2:0.25:8];
-alphas = [2:0.5:14];
+alphas = [2:0.5:12];
 
 for wmaxth = therm 
     
@@ -183,39 +183,56 @@ for wmaxth = therm
     
 end
 
+
+wh = [5 5];  
+
 figure(hFig14);
 hold on
 plot(VxcSC(:,1), 100.*(VxcB1(:,2) - VxcSC(:,2))./VxcSC(:,2),'--b')
+legend('Split Winglet','Blended Winglet','Location','NorthEast');
+saveFig2Latex(hFig14, 'res-vxc.pdf', wh);
 hold off
 
 figure(hFig15);
 hold on
 plot(Vinffit(alphas), 100.*((Vinffit(alphas)./LDfit(alphas)) - (VinffitSC(alphas)./LDfitSC(alphas)))./(VinffitSC(alphas)./LDfitSC(alphas)),'--b')
+legend('Split Winglet','Blended Winglet','Location','NorthEast');
+saveFig2Latex(hFig15, 'res-wsink.pdf', wh);
 hold off
 
 figure(hFig16);
 hold on
 plot(CDfit(alphas), CLfit(alphas),'--b')
+legend('Base Aircraft','With Split Winglet','With Blended Winglet','Location','SouthEast');
+saveFig2Latex(hFig16, 'res-clcd.pdf', wh);
 hold off
 
 figure(hFig17);
 hold on
 plot(Vinffit(alphas), 100.*((Cdifit(alphas) - CdifitSC(alphas))./CdifitSC(alphas)),'--b')
+legend('Split Winglet','Blended Winglet','Location','SouthWest');
+saveFig2Latex(hFig17, 'res-cdi.pdf', wh);
 hold off
 
 figure(hFig18);
 hold on
 plot(Vinffit(alphas), 100.*(((CDfit(alphas) - Cdifit(alphas)) - (CDfitSC(alphas) - CdifitSC(alphas)))./(CDfitSC(alphas) - CdifitSC(alphas))),'--b')
+legend('Split Winglet','Blended Winglet','Location','NorthEast');
+saveFig2Latex(hFig18, 'res-cdp.pdf', wh);
 hold off
 
 figure(hFig19);
 hold on
 plot(Vinffit(alphas), 100.*((CDfit(alphas) - CDfitSC(alphas))./CDfitSC(alphas)),'--b')
+legend('Split Winglet','Blended Winglet','Location','NorthEast');
+saveFig2Latex(hFig19, 'res-cd.pdf', wh);
 hold off
 
 figure(hFig20);
 hold on
 plot(alphas, 100.*((CDfit(alphas).*Vinffit(alphas) - CDfitSC(alphas).*VinffitSC(alphas))./(CDfitSC(alphas).*VinffitSC(alphas))),'--b')
+legend('Split Winglet','Blended Winglet','Location','NorthWest');
+saveFig2Latex(hFig20, 'res-preq.pdf', wh);
 hold off
 
 %% 
