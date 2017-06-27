@@ -35,7 +35,7 @@ disp(' ');
 %% Reading in geometry
 
 strFILE = 'inputs/WinDySIM_Gust.txt';
-strSTRUCT_INPUT = 'inputs/Struct_Input_CASI.txt';
+strSTRUCT_INPUT = 'inputs/Struct_Input_AIAA.txt';
 strOUTPUTFILE = 'Test.mat';
 
 [flagRELAX, flagSTEADY, flagSTIFFWING, flagGUSTMODE, valAREA, valSPAN,...
@@ -183,7 +183,7 @@ for ai = 1:length(seqALPHA)
                     matNTVLST, matNPVLST, vecN, valTIMESTEP, vecCL, valWEIGHT, valAREA, valDENSITY, valUINF);
                 
                 % Only move structure if flex wing case is selected
-                if valSTIFFWING == 0
+                if flagSTIFFWING == 2
                 
                     [matEIx, matGJt, vecEA, vecCG, vecJT, vecLM, vecLSM, vecLSAC, matAEROCNTR, matSCLST, vecSPANDIST, matSC, vecMAC] = fcnSTRUCTDIST(vecDVEHVSPN, vecDVELE, vecDVETE, vecEIxCOEFF, vecGJtCOEFF,...
                         vecEACOEFF, vecCGCOEFF, vecJTCOEFF, vecLMCOEFF, matNPVLST, matNPDVE, vecDVEPANEL, vecN, vecM, vecDVEWING, vecDVEROLL, vecDVEPITCH, vecDVEYAW);
