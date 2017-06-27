@@ -44,6 +44,14 @@ strOUTPUTFILE = 'Test.mat';
     valVSPANELS, matVSGEOM, valFPANELS, matFGEOM, valFTURB, valFPWIDTH, valDELTAE,...
     valDELTIME, valMAXTIME, valMINTIME, valINTERF] = fcnVAPREAD(strFILE);
 
+% Preallocating variables to avoid issues when running only stiff wing case
+valSTIFFSTEPS = 0;
+matSCLST = [];
+vecSPANDIST = [];
+matSC = [];
+vecMAC = [];
+matAEROCNTR = [];
+
 if flagSTIFFWING == 2
     [valSDELTIME, valSTIFFSTEPS, flagSTATIC, vecEIxCOEFF, vecGJtCOEFF, vecEACOEFF, vecCGCOEFF, vecJTCOEFF, vecLMCOEFF] = fcnSTRUCTREAD(strSTRUCT_INPUT);
 end
@@ -114,8 +122,8 @@ for ai = 1:length(seqALPHA)
         matNPWAKEGEOM = [];
         matDEFGLOB = [];
         matTWISTGLOB = [];
-        matDEF = zeros(2,valNELE+5); % <-------------- FIX THIS TO WORK WITH m > 1
-        matTWIST = zeros(2,valNELE+5); % <-------------- FIX THIS TO WORK WITH m > 1
+        matDEF = zeros(2,size(vecLEDVES,1)+5);
+        matTWIST = zeros(2,size(vecLEDVES,1)+5);
         matCENTER_old = zeros(size(matCENTER,1),size(matCENTER,2));
         matSLOPE = [];
         vecLIFTSTATIC = [];
@@ -270,7 +278,7 @@ for ai = 1:length(seqALPHA)
                 valWNELE, matWDVE, matWVLST, matWCOEFF, vecWK, vecWDVEHVSPN, vecWDVEHVCRD,vecWDVEROLL, vecWDVEPITCH, vecWDVEYAW, ...
                 vecWDVELESWP, vecWDVETESWP, valWSIZE, valTIMESTEP, vecSYM, vecDVETESWP, valAREA, valSPAN, valBETA, ...
                 vecDVEWING, vecWDVEWING, vecN, vecM, vecDVEPANEL, vecDVEAREA, vecSPNWSECRD, vecSPNWSEAREA, matQTRCRD, valDENSITY, valWEIGHT,...
-                vecLEDVES, vecUINF, matSCLST, vecSPANDIST, matNPVLST, matNPDVE, matSC, vecMAC, valCM, valUINF, matAEROCNTR);
+                vecLEDVES, vecUINF, matSCLST, vecSPANDIST, matNPVLST, matNPDVE, matSC, vecMAC, valCM, valUINF, matAEROCNTR, flagSTIFFWING);
             
             if flagPRINT == 1 && valTIMESTEP == 1
                 fprintf(' TIMESTEP    CL          CDI          Tip Def.       Twist (deg)\n'); %header
