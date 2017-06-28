@@ -30,7 +30,7 @@ strFILE = 'inputs/TMotor.txt';
     vecSYM, valINTERF] = fcnVAPTORREAD(strFILE);
 
 flagPRINT   = 0;
-flagPLOT    = 0;
+flagPLOT    = 1;
 flagPLOTWAKEVEL = 0;
 flagVERBOSE = 0;
 flagSAVE = 0;
@@ -167,6 +167,13 @@ for ai = 1:length(seqALPHAR)
     [matCOEFF] = fcnSOLVED(matD, vecR, valNELE);
         
     for valTIMESTEP = 1:valMAXTIME
+%         if valTIMESTEP <= 20
+%             valJ = 1;
+%             flagRELAX = 0;
+%         else
+%             valJ = 0;
+%             flagRELAX = 1;
+%         end
         %% Timestep to solution
         %   Move rotor
         %   Generate new wake elements
@@ -302,21 +309,21 @@ for ai = 1:length(seqALPHAR)
 %             matSWPDISAXIAL(:,:,ji,ai) = matDISAXIAL;
 %             matSWPDISSIDE(:,:,ji,ai) = matDISSIDE;
 %          end
-%            fprintf('      %.0f      CT = %0.3f      CP = %0.3f\n',valTIMESTEP, mean(vecCTCONV),  mean(vecCPCONV));       
+            fprintf('      %.0f      CT = %0.3f      CP = %0.3f\n',valTIMESTEP, mean(vecCTCONV),  mean(vecCPCONV));       
     end
     fprintf('Completed Advance Ratio: %.1f\n\n',seqJ(ji))    
     end
     if flagPROGRESS == 1
         progressbar(ai/length(seqALPHAR))
     end
-end            
+end
 % if flagSAVE ==1
 %     save(filename)
 % end
 fprintf('\nDONE\n');
 save(filename)
-% if flagPLOT == 1
-%     [hFig2] = fcnPLOTBODY(flagVERBOSE, valNELE, matDVE, matVLST, matCENTER);
-%     [hLogo] = fcnPLOTLOGO(0.97,0.03,14,'k','none');
-%     [hFig2] = fcnPLOTWAKE(flagVERBOSE, hFig2, valWNELE, matWDVE, matWVLST, matWCENTER);
-% end
+if flagPLOT == 1
+    [hFig2] = fcnPLOTBODY(flagVERBOSE, valNELE, matDVE, matVLST, matCENTER);
+    [hLogo] = fcnPLOTLOGO(0.97,0.03,14,'k','none');
+    [hFig2] = fcnPLOTWAKE(flagVERBOSE, hFig2, valWNELE, matWDVE, matWVLST, matWCENTER);
+end
