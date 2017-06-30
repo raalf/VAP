@@ -2,10 +2,10 @@
 
 <VAP>
 	<settings>
-		<flagRELAX>FALSE</flagRELAX>
+		<flagRELAX>TRUE</flagRELAX>
 		<flagSTEADY>TRUE</flagSTEADY>
 		<flagTRI>TRUE</flagTRI>
-		<valMAXTIME>10</valMAXTIME>
+		<valMAXTIME>80</valMAXTIME>
 		<valMINTIME>2</valMINTIME>
 		<valDELTIME>0.25</valDELTIME>
 		<valDELTAE>0</valDELTAE>
@@ -23,7 +23,7 @@
 
 		<vinf>1</vinf>
 
-		<alpha>15</alpha>
+		<alpha>7</alpha>
 		<beta>0</beta>
 		<roll>0</roll>
 		<fpa>0</fpa>
@@ -37,7 +37,7 @@
 			<incidence>0</incidence>
 			<trimable>FALSE</trimable>
 
-			<M>3</M>
+			<M>2</M>
 
 			<xwingorig>0</xwingorig>
 			<ywingorig>0</ywingorig>
@@ -88,7 +88,7 @@
 			<incidence>0</incidence>
 			<trimable>TRUE</trimable>
 
-			<M>1</M>
+			<M>2</M>
 
 			<xwingorig>3.9</xwingorig>
 			<ywingorig>0</ywingorig>
@@ -96,7 +96,7 @@
 
 			<panel>
 				<symmetry>0</symmetry>
-				<N>4</N>
+				<N>2</N>
 				<section>
 					<x>-0.5</x>
 					<y>0</y>
@@ -184,17 +184,16 @@
 				<x>5.9</x>
 			</fsection>
 		</fuselage>
-
 	</vehicle>				
 
 	<vehicle>
-		<x>10</x>
-		<y>15</y>
-		<z>1</z>
+		<x>0</x>
+		<y>0</y>
+		<z>0</z>
 
 		<vinf>1</vinf>
 
-		<alpha>15</alpha>
+		<alpha>7</alpha>
 		<beta>0</beta>
 		<roll>0</roll>
 		<fpa>0</fpa>
@@ -208,7 +207,7 @@
 			<incidence>0</incidence>
 			<trimable>FALSE</trimable>
 
-			<M>3</M>
+			<M>2</M>
 
 			<xwingorig>0</xwingorig>
 			<ywingorig>0</ywingorig>
@@ -259,7 +258,7 @@
 			<incidence>0</incidence>
 			<trimable>TRUE</trimable>
 
-			<M>1</M>
+			<M>2</M>
 
 			<xwingorig>3.9</xwingorig>
 			<ywingorig>0</ywingorig>
@@ -267,7 +266,7 @@
 
 			<panel>
 				<symmetry>0</symmetry>
-				<N>4</N>
+				<N>2</N>
 				<section>
 					<x>-0.5</x>
 					<y>0</y>
@@ -355,7 +354,6 @@
 				<x>5.9</x>
 			</fsection>
 		</fuselage>
-
 	</vehicle>	
 
 </VAP>
