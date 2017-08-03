@@ -18,7 +18,9 @@ Current State:
     - Generate rotor resultant
 	- Solve entire WD-Matrix
 - Incorporate multiple blades
-- Calculate forces - Currently validating
+- Calculate force
+- Relax wake
+- Viscous correction/stall model
 
 Next To-Do:
-- Relax wake
+- Multiple rotors (currently in progress)
