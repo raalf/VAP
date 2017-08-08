@@ -1,5 +1,5 @@
-function [matEIx, matGJt, vecEA, vecCG, vecJT, vecLM, vecLSM, vecLSAC, matAEROCNTR, matSCLST, vecSPANDIST, matSC, vecMAC] = fcnSTRUCTDIST(vecDVEHVSPN, vecDVELE, vecDVETE, vecEIxCOEFF, vecGJtCOEFF,...
-    vecEACOEFF, vecCGCOEFF, vecJTCOEFF, vecLMCOEFF, matNPVLST, matNPDVE, vecDVEPANEL, vecN, vecM, vecDVEWING, vecDVEROLL, vecDVEPITCH, vecDVEYAW)
+function [matEIx, matGJt, vecEA, vecCG, vecJT, vecLM, vecLSM, vecLSAC, matAEROCNTR, matSCLST, vecSPANDIST, matSC, vecMAC, vecLAMBDA] = fcnSTRUCTDIST(vecDVEHVSPN, vecDVELE, vecDVETE, vecEIxCOEFF, vecGJtCOEFF,...
+    vecEACOEFF, vecCGCOEFF, vecJTCOEFF, vecLMCOEFF, matNPVLST, matNPDVE, vecDVEPANEL, vecN, vecM, vecDVEWING, vecDVEROLL, vecDVEPITCH, vecDVEYAW, matCENTER, valSPAN)
 %% Geometric Properties
 
 % Find DVEs on LE and TE of wing
@@ -44,6 +44,7 @@ taper_ratio = (tempDVEEDGECRD(idx2)./tempDVEEDGECRD(idx1))';
 
 vecMAC = (2/3)*tempDVEEDGECRD(idx1,1).*(1 + taper_ratio + taper_ratio.^2)./(1 + taper_ratio); % Vector of mean aerodynamic chord at each spanwise station
 
+vecLAMBDA = sqrt(sum((matCENTER(ledves(2:end),:) - matCENTER(ledves(1:end-1),:)).^2,2))./(valSPAN/2); % Non-dimensional spacing between DVE control points
 
 %% Structural Properties
 
@@ -106,14 +107,6 @@ tempSCLST(temp_rightV,:) = matSC(move_row+1,:);
 matSCLST = tempSCLST;
 
 matSCLST = matSCLST - matNPVLST; % Matrix of vectors between shear center and vertex
-
-% figure(4)
-% clf
-% patch('Faces',matNPDVE,'Vertices',matNPVLST,'FaceColor','r')
-% hold on
-% plot3(matAEROCNTR(:,1), matAEROCNTR(:,2), matAEROCNTR(:,3),'-ok')
-% plot3(matSC(:,1), matSC(:,2), matSC(:,3),'-ob')
-% axis equal
 
 end
 

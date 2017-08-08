@@ -1,158 +1,200 @@
-function [vecDEF, vecTWIST, matDEFGLOB, matTWISTGLOB, matDEF, matTWIST, matSLOPE] = fcnWINGTWISTBEND(vecLIFTDIST, vecMOMDIST, matEIx, vecLM, vecJT, matGJt, vecLSM,...
-    vecN, valSPAN, vecDVEHVSPN, valTIMESTEP, matDEFGLOB, matTWISTGLOB, vecSPANDIST, valSDELTIME, matSLOPE, matDEF, matTWIST)
-% This function computes the spanwise deflection and twist using an
-% explicit finite difference method given a loading and structural
-% distribution.
-%
-% INPUTS:
-%
-% valTIMESTEP - Current timestep number
-%
-% vecLIFTDIST - 1 x n vector with the lift values at each node, where n is
-% the number of spanwise stations
-%
-% vecMOMDIST - 1 x n vector with aerodynamic moment at each node, where n
-% is the number of spanwise stations
-%
-% vecSPANAREA - 1 x n vector containing the structural cross sectional area
-% at each spanwise location, where n is the number of spanwise stations
-%
-% matEIx - n x 3 matrix containing the bending stiffness at each spanwise
-% station, where n is the number of spanwise stations. The first column
-% represents EIx, the second column EIx', and the third column EIx''
-%
-% matGJt - n x 2 matrix containing the torsional stiffness distribution at
-% each spanwise node, where n is the number of spanwise stations. The first
-% row is GJt and the secon GJt'
-%
-% vecTORSIONRIGIDITY - 1 x n vector containing the torsional rigidity (GJ)
-% at each spanwise station, where n is the number of spanwise stations.
-%
-% vecMASS2SHEAR - 1 x n vector containing the distances (in m) between the
-% center of mass and shear center at each spanwise station, where n is the
-% number of spanwise stations
-%
-% valYMODULUS - Young's modulus of the wing structure in Pa
-%
-% valNSELE - Number of spanwise elements
-%
+function [matDEF, matTWIST] = fcnWINGTWISTBEND(valDENSITY,valDELTIME,valSPAN,valAREA,valTIMESTEP,vecDVEHVSPN,vecDVEHVCRD,...
+    vecLEDVES,vecLSAC,vecJT,vecMASS,vecLSM,vecLAMBDA,vecLIFTDIST,vecMOMDIST,valUINF,matEIx,matGJt,matDEF,matTWIST,vecLM)
 
-valDY = sum(2*vecDVEHVSPN,1)/length(vecDVEHVSPN);
+%--- IMPLICT RECURRENCE MATRIX SOLUTION FOR STRUCTURAL DYNAMIC RESPONSE ---%
 
-valNSELE = sum(vecN,1)+1;
+%% Determining coefficients using eqn C8
+num_el = size(vecLEDVES,1);
+vecCRD = 2*vecDVEHVCRD;
+valAR = valSPAN*valSPAN/valAREA;
+vecLAMBDA = [vecLAMBDA(1); vecLAMBDA];
 
-valSTRUCTDELTIME = valSDELTIME;
+valBETA = (valAR/(2+valAR))*pi*valDENSITY*valUINF; % Forward speed and aspect ratio factor for wing
 
-vecDEF = zeros(1,valNSELE+4);
-vecTWIST = zeros(1,valNSELE+4);
-vecSLOPE = zeros(1,valNSELE-1);
+i = 2:num_el; % Spatial index
 
-% Temporary cross sectional area calculation
-C = -0.0333*vecSPANDIST + 0.76*ones(length(vecSPANDIST),1) ;
-tk = 0.02 ;
-Tk = 0.13 ;
-vecSPANAREA = pi*tk*C*(1 + Tk);
+% Pre-allocate coefficients used in H1 matrix eqns
+A = zeros(length(i)+1,1);
+B = zeros(length(i)+1,1);
+C = zeros(length(i)+1,1);
+D = ones(length(i)+1,1);
 
-valSTRUCTTIME = valTIMESTEP;
-% valSTRUCTTIME = tempTIME + 2;
+% Calculate coefficients using moments of inertia at spanwise locations
+A(i,1) = (1/4)*matEIx(1,1)./matEIx(i-1,1) + (1/12)*matEIx(1,1)./matEIx(i,1);
+B(i,1) = (1/3)*matEIx(1,1)./matEIx(i-1,1) + (1/6)*matEIx(1,1)./matEIx(i,1);
+C(i,1) = (1/12)*matEIx(1,1)./matEIx(i-1,1) + (1/12)*matEIx(1,1)./matEIx(i,1);
+D(i,1) = (1/6)*matEIx(1,1)./matEIx(i-1,1) + (1/3)*matEIx(1,1)./matEIx(i,1);
 
-% vecJT = 0.00037078.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST...
-%     - 0.01102270.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST...
-%     + 0.12838255.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST - 0.73708913.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST...
-%     + 2.15067037.*vecSPANDIST.*vecSPANDIST - 2.99312818.*vecSPANDIST + 1.84576176;
+%% Determine H2 matrix elements from eqn C10
 
-%% Beam boundary conditions
+% Bunch of crap to make an upper triangular matrix
+temp1 = sum(triu(repmat(vecLAMBDA(2:length(vecLAMBDA)),1,length(vecLAMBDA)-1)),1);
+temp1 = repmat(temp1,length(vecLAMBDA)-1,1);
+temp2 = zeros(length(vecLAMBDA));
+temp2(2:end,2:end) = triu(repmat(vecLAMBDA(2:length(vecLAMBDA)),1,length(vecLAMBDA)-1));
+temp2(1,:) = [];
+temp2(:,end) = [];
+temp3 = sum(temp2,1);
+temp4 = temp1 - repmat(temp3',1,length(vecLAMBDA)-1);
 
-matDEF(1:valSTRUCTTIME-1,:) = matDEFGLOB(1:valTIMESTEP-1,:);
-% if tempTIME == 1
-% matDEF(1:valSTRUCTTIME-1,:) = matDEFGLOB((valTIMESTEP-2):valTIMESTEP-1,:);
-matTWIST(1:valSTRUCTTIME-1,:) = matTWISTGLOB(1:valTIMESTEP-1,:);
-% matTWIST(1:valSTRUCTTIME-1,:) = matTWISTGLOB((valTIMESTEP-2):valTIMESTEP-1,:);
-% end
+% Final H2 matrix from eqn C10
+H2 = triu(temp4);
 
-vecDEF(3) = 0; % Zero deflection at root BC
-vecTWIST(3) = 0; % Zero twist at root BC
+% Mirror the H2 matrix across the diagonal for use later on
+[n,~]=size(H2);
+temp_sum=H2'+H2;
+temp_sum(1:n+1:end)=diag(H2);
+temp_sum = tril(temp_sum);
 
-% Assemble load matrix
-matLOAD = [vecLIFTDIST' - vecLM.*9.81, vecMOMDIST - vecLM.*vecLSM.*9.81];
-% matLOAD(end,:) = [0,0]; 
+temp_sum_2 = zeros(num_el-1);
+temp_sum_2(2:end,1:end-1) = temp_sum(2:end,2:end);
 
-for yy = 4:(valNSELE+2)
+%% Determine H1 matrix elements from eqn C7
 
-    %% Geometric property assembly
+m = 2:num_el;
 
-    % Assemble mass matrix
-%             matMASS = [vecLM(yy-2), -vecLM(yy-2).*vecLSM(yy-2); -vecLM(yy-2).*vecLSM(yy-2), vecLM(yy-2)*(vecLSM(yy-2)*vecLSM(yy-2) + vecJT(yy-2)/vecSPANAREA(yy-2))];
-    matMASS = [vecLM(yy-2), -vecLM(yy-2).*vecLSM(yy-2); -vecLM(yy-2).*vecLSM(yy-2), vecJT(yy-2)];
+% General eqn to compute elements of H1 matrix
+a = repmat((vecLAMBDA(m-1,1)'.^2.*C(m-1,1)'),num_el-1,1) + repmat(vecLAMBDA(m-1,1)'.*D(m-1,1)',num_el-1,1).*temp_sum +...
+    tril(repmat(vecLAMBDA(m,1)'.^2.*A(m,1)',num_el-1,1)) + repmat(vecLAMBDA(m,1)'.*B(m,1)',num_el-1,1).*temp_sum_2;
 
-    % Assemble stiffness matrices
-    matK_1 = [matEIx(yy-2,3), 0; 0, 0];
-    matK_2 = [matEIx(yy-2,2), 0; 0, -matGJt(yy-2,2)]; 
-    matK_3 = [matEIx(yy-2,1), 0; 0, -matGJt(yy-2,1)];
-    matB = [0 0; 0 100];
+% Create lower triangular matrix with one upper diagonal row of ones. This
+% is used to filter out the unnecessary values from the "a" matrix. The
+% unnecessary elements are multiplied by the zeros while the elements to
+% keep are multiplied by 1.
+xx = tril(ones(num_el-2));
+yy = ones(num_el-1);
+yy(1:end-1,2:end) = xx;
 
-    %% Finite difference relations for partial derivatives
+% Final H1 matrix from eqn C9
+H1 = yy.*a;
 
-    % Finite difference relations for partial derivatives w.r.t
-    % time
-    valUDOT = (matDEF(valSTRUCTTIME-1,yy) - matDEF(valSTRUCTTIME - 2, yy))./valSTRUCTDELTIME;
-    valTDOT = (matTWIST(valSTRUCTTIME-1,yy) - matTWIST(valSTRUCTTIME - 2,yy))./valSTRUCTDELTIME;
+%% Calculate little b matrix from C16
 
-    % Finite difference relations for partial derivative of deflection w.r.t Y
-    valU_yy = (matDEF(valSTRUCTTIME-1,yy+1) - 2*matDEF(valSTRUCTTIME-1,yy) + matDEF(valSTRUCTTIME-1,yy-1))/(valDY)^2;
-    valU_yyy = (matDEF(valSTRUCTTIME-1,yy+2) - 3*matDEF(valSTRUCTTIME-1,yy+1) + 3*matDEF(valSTRUCTTIME-1,yy)- ...
-        matDEF(valSTRUCTTIME-1,yy-1))/(valDY)^3;
-    valU_yyyy = (matDEF(valSTRUCTTIME-1,yy+2) - 4*matDEF(valSTRUCTTIME-1,yy+1) + 6*matDEF(valSTRUCTTIME-1,yy) - ...
-        4*matDEF(valSTRUCTTIME-1,yy-1) + matDEF(valSTRUCTTIME-1,yy-2))/(valDY)^4;
+b_inner = (matEIx(1,1)/(valSPAN/2)^3).*inv(H1*H2); % Inner elements of A matrix
 
-    % Finite difference relations for partial derivative of twist w.r.t Y
-    valTHETA_y = (matTWIST(valSTRUCTTIME-1,yy+1) - matTWIST(valSTRUCTTIME-1,yy-1))/(2*valDY);
-    valTHETA_yy = (matTWIST(valSTRUCTTIME-1,yy+1) - 2*matTWIST(valSTRUCTTIME-1,yy) + matTWIST(valSTRUCTTIME-1,yy-1))/(valDY^2);
+% Calculate outer most row and column to form A matrix
+b_01_0n = -sum(b_inner,1);
+b_00 = -sum(b_01_0n',1);
 
-    %% Solve matrix equation
+% Outer matrix elements defined by C18 and C21
+b_outer = [b_00, b_01_0n];
 
-    % Temp variable with the wing deflection and twist stored as a matrix. The
-    % first row is the deflection, w/ each column as a spanwise station. The
-    % second row is the twist, w/ each column as a spanwise station.
+% Concatenate outer elements to inner matrix elements
+matA = horzcat(b_01_0n',b_inner);
+matA = vertcat(b_outer, matA);
 
-    tempTWISTBEND = 2.*[matDEF(valSTRUCTTIME-1,yy); matTWIST(valSTRUCTTIME-1,yy)] - [matDEF(valSTRUCTTIME-2,yy); matTWIST(valSTRUCTTIME-2,yy)] ...
-        + (valSTRUCTDELTIME^2).*inv(matMASS)*([matLOAD(yy-2,1); matLOAD(yy-2,2)] - matK_1*[valU_yy; 0] - matK_2*[valU_yyy; valTHETA_y] -...
-        matK_3*[valU_yyyy; valTHETA_yy] - matB*[valUDOT; valTDOT]);
+%% Calculating B matrix from C30 for torsion response
 
-    % Output result of deflection and twist to separate vectors
-    vecDEF(yy) = tempTWISTBEND(1,:);
-    vecTWIST(yy) = tempTWISTBEND(2,:);
+j = (2./((valSPAN/2).*vecLAMBDA(i)')).*(1./((1./matGJt(i-1,1)'+1./matGJt(i,1)')));
 
-    % Calculate angle between DVE and horizontal based on
-    % deflection
-    vecSLOPE(yy-3) = asin((vecDEF(yy)-vecDEF(yy-1))/(vecSPANDIST(yy-2)-vecSPANDIST(yy-3)));
+matB = zeros(num_el);
+
+% Lower and upper diagonal elements of the B matrix
+matB_lower = diag(-j,-1);
+matB_upper = diag(-j,1);
+
+% Temp vectors to create diagonal elements
+temp_j1 = [j(1:end),0];
+temp_j2 = [0, j(1:end)];
+
+% Diagonal elements of B matrix
+matB_diag = diag(temp_j1+temp_j2,0);
+
+% Final B matrix from C30
+matB = matB_diag + matB_lower + matB_upper + matB;
+
+% C matrix of eqn 43
+matC = [matA, zeros(num_el); zeros(num_el), matB];
+
+%% Calculating load vectors p and q
+vecMBAR = vecMASS + (pi.*valDENSITY.*(2*vecDVEHVSPN).*vecCRD.^2)./4; % Mass including apparent mass effects
+vecMEBAR = vecMASS.*vecLSM(1:end-1) + ((pi.*valDENSITY.*(2*vecDVEHVSPN).*vecCRD.^3)./4).*(0.5 - (0.25.*vecCRD + vecLSAC(1:end-1))./vecCRD); % Mass moment including apparent mass effects
+vecK2 = -1*(vecJT(1:end-1)./vecLM(1:end-1) - vecLSM(1:end-1).^2); % Radiation of gyration squared
+vecMKBAR = vecMASS.*vecK2 +((pi.*valDENSITY.*(2*vecDVEHVSPN).*vecCRD.^4)./4).*(0.5 - (0.25.*vecCRD + vecLSAC(1:end-1))./vecCRD).^2 ...
+    + (pi*valDENSITY.*(2*vecDVEHVSPN).*vecCRD.^4)./128;
+
+% Eta terms from eqn A7
+eta0 = -2*vecMBAR./(valDELTIME*valDELTIME);
+eta1 = 5*vecMBAR./(valDELTIME*valDELTIME);
+eta2 = -4*vecMBAR./(valDELTIME*valDELTIME);
+eta3 = vecMBAR./(valDELTIME.*valDELTIME);
+
+eta0prime = 2*vecMEBAR./(valDELTIME*valDELTIME) + (11/(24*valDELTIME))*valBETA.*vecCRD.*vecCRD.*(2*vecDVEHVSPN);
+eta1prime = -5*vecMEBAR./(valDELTIME*valDELTIME) - (3/(4*valDELTIME))*valBETA.*vecCRD.*vecCRD.*(2*vecDVEHVSPN);
+eta2prime = 4*vecMEBAR./(valDELTIME*valDELTIME) + (9/(24*valDELTIME))*valBETA.*vecCRD.*vecCRD.*(2*vecDVEHVSPN);
+eta3prime = -vecMEBAR./(valDELTIME*valDELTIME) - (1/(12*valDELTIME))*valBETA.*vecCRD.*vecCRD.*(2*vecDVEHVSPN);
+
+% Form diagonal eta matrices from Appendix A
+matETA0 = diag(eta0,0);
+matETA1 = diag(eta1,0);
+matETA2 = diag(eta2,0);
+matETA3 = diag(eta3,0);
+
+matETA0PRIME = diag(eta0prime,0);
+matETA1PRIME = diag(eta1prime,0);
+matETA2PRIME = diag(eta2prime,0);
+matETA3PRIME = diag(eta3prime,0);
+
+% Nu terms from eqn A4
+nu0 = 2*vecMEBAR./(valDELTIME*valDELTIME);
+nu1 = -5*vecMEBAR./(valDELTIME*valDELTIME);
+nu2 = 4*vecMEBAR./(valDELTIME*valDELTIME);
+nu3 = -vecMEBAR./(valDELTIME*valDELTIME);
+
+nu0prime = 2*vecMKBAR./(valDELTIME*valDELTIME) + (11/(24*valDELTIME))*valBETA.*vecCRD.*vecCRD.*vecCRD.*(2*vecDVEHVSPN).*(0.75 - (0.25.*vecCRD + vecLSAC(1:end-1))./vecCRD);
+nu1prime = -5*vecMKBAR./(valDELTIME*valDELTIME) - (3/(4*valDELTIME))*valBETA.*vecCRD.*vecCRD.*vecCRD.*(2*vecDVEHVSPN).*(0.75 - (0.25.*vecCRD + vecLSAC(1:end-1))./vecCRD);
+nu2prime = 4*vecMKBAR./(valDELTIME*valDELTIME) + (9/(24*valDELTIME))*valBETA.*vecCRD.*vecCRD.*vecCRD.*(2*vecDVEHVSPN).*(0.75 - (0.25.*vecCRD + vecLSAC(1:end-1))./vecCRD);
+nu3prime = -vecMKBAR./(valDELTIME*valDELTIME) - (1/(12*valDELTIME))*valBETA.*vecCRD.*vecCRD.*vecCRD.*(2*vecDVEHVSPN).*(0.75 - (0.25.*vecCRD + vecLSAC(1:end-1))./vecCRD);
+
+% Form diagonal nu matrices from Appendix A
+matNU0 = diag(nu0,0);
+matNU1 = diag(nu1,0);
+matNU2 = diag(nu2,0);
+matNU3 = diag(nu3,0);
+
+matNU0PRIME = diag(nu0prime,0);
+matNU1PRIME = diag(nu1prime,0);
+matNU2PRIME = diag(nu2prime,0);
+matNU3PRIME = diag(nu3prime,0);
+
+% Form Si matrices from eqn 62
+S0 = [matETA0, matETA0PRIME; matNU0, matNU0PRIME];
+S1 = [matETA1, matETA1PRIME; matNU1, matNU1PRIME];
+S2 = [matETA2, matETA2PRIME; matNU2, matNU2PRIME];
+S3 = [matETA3, matETA3PRIME; matNU3, matNU3PRIME];
+
+%% Assemble D matrix and Q vector and solve for deflection and twist according to eqn 65 and 66
+matD = matC - S0;
+
+% Determining initial response at first 3 timesteps
+if valTIMESTEP == 1
+    
+    % Response at n
+    matRES = (matD + S2 + 8*S3)\[vecLIFTDIST(1:end-1)';vecMOMDIST(1:end-1)];
+    matDEF(valTIMESTEP+3,:) = matRES(1:num_el,1);
+    matTWIST(valTIMESTEP+3,:) = matRES(num_el+1:end,1);
+    
+    % Response at n-1
+    matDEF(valTIMESTEP+2,:) = zeros(1,num_el);
+    matTWIST(valTIMESTEP+2,:) = zeros(1,num_el);
+
+    % Response at n-2
+    matDEF(valTIMESTEP+1,:) = -matRES(1:num_el,1);
+    matTWIST(valTIMESTEP+1,:) = -matRES(num_el+1:end,1);    
+    
+    %Response at n-3
+    matDEF(valTIMESTEP,:) = -8*matRES(1:num_el,1);
+    matTWIST(valTIMESTEP,:) = -8*matRES(num_el+1:end,1);
+    
+else
+    
+    vecQ = S1*[matDEF(end-1,:)'; matTWIST(end-1,:)'] + S2*[matDEF(end-2,:)'; matTWIST(end-2,:)'] + S3*[matDEF(end-3,:)'; matTWIST(end-3,:)'] + [vecLIFTDIST(1:end-1)'; vecMOMDIST(1:end-1)];
+
+    matRES = matD\vecQ;
+
+    matDEF(valTIMESTEP+3,:) = matRES(1:num_el,1);
+    matTWIST(valTIMESTEP+3,:) = matRES(num_el+1:end,1);
 
 end
-
-vecDEF(valNSELE+3) = 2*vecDEF(valNSELE+2)...
-    -vecDEF(valNSELE+1); % BC for deflection one element beyond wing (positive span direction)
-
-vecDEF(valNSELE+4) = 3*vecDEF(valNSELE+2)...
-    -2*vecDEF(valNSELE+1); % BC for deflection two elements beyond wing (positive span direction)
-
-vecDEF(2) = vecDEF(4); % BC for deflection one element beyond root (negative span direction)
-
-vecTWIST(valNSELE+3) = vecTWIST(valNSELE+1); % BC for twist one element beyond wing tip (positive span direction)
-
-matDEF(valSTRUCTTIME,:) = vecDEF;
-matTWIST(valSTRUCTTIME,:) = vecTWIST;
-
-% Spanwise deflection and twist wrt structural timestep
-vecDEF = matDEF(end,:);
-vecTWIST = matTWIST(end,:);
-
-vecSLOPE = [0; vecSLOPE'];
-
-% Spanwise deflection and twist wrt to global timestep
-matDEFGLOB(valTIMESTEP,:) = matDEF(valSTRUCTTIME,:);
-matTWISTGLOB(valTIMESTEP,:) = matTWIST(valSTRUCTTIME,:);
-
-matSLOPE(valTIMESTEP,:) = vecSLOPE';
-
 
 end
