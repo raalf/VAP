@@ -27,12 +27,12 @@ Geometry
 	Elastic Axis (X_ea):
 		A Coefficient: vec_EA = 0
 		B Coefficient: vec_EA = 0
-		C Coefficient: vec_EA = 0.5
+		C Coefficient: vec_EA = 0.1875
 
 	Center of Gravity (X_cg):
 		A Coefficient: vec_CG = 0
 		B Coefficient: vec_CG = 0
-		C Coefficient: vec_CG = 0.5
+		C Coefficient: vec_CG = 0.1875
 
 	Torsion Constant (Jt):
 		A Coefficient: vec_Jt = 0

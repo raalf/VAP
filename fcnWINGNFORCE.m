@@ -75,7 +75,7 @@ for i = 1:max(vecDVEWING)
 
 end
 
-[vecLIFTDIST, vecMOMDIST] = fcnFORCEDIST(liftfree, liftind, matSCLST, valDENSITY, valWEIGHT, valCL, vecDVEHVSPN, vecLEDVES, vecN, vecM, vecDVEWING, vecDVEPANEL,...
+[vecLIFTDIST, vecMOMDIST] = fcnIMPFORCEDIST(liftfree, liftind, matSCLST, valDENSITY, valWEIGHT, valCL, vecDVEHVSPN, vecLEDVES, vecN, vecM, vecDVEWING, vecDVEPANEL,...
     matCENTER, vecSPANDIST, matNPVLST, matNPDVE, matSC, matLIFTDIR, vecMAC, valCM, valAREA, vecSPNWSEAREA, valUINF, matAEROCNTR);
 
 valCY = (ntfree(2) + ntind(2))/q;

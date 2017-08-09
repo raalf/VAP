@@ -13,7 +13,7 @@ Min. number of time steps: 		valMINTIME 	= 	0
 Width of each time step (sec):	valDELTIME 	=	0.003
 Convergence delta-span effic.:	valDELTAE 	=	0.000000	(0 if only timestepping)
 
-AOA sequence: 			seqALPHA 	= 	0.0
+AOA sequence: 			seqALPHA 	= 	10.0
 Sideslip angle [deg]:	seqBETA 	=	0.0
 Density:				valDENSITY 	= 	1.225
 Kinematic viscosity:	valKINV		=	1.460000e-05
@@ -25,7 +25,7 @@ Reference area:				valAREA 	=	13.5
 Reference span:				valSPAN 	=	18.00
 Mean aerodynamic chord: 	valCMAC 	=	1
 Aircraft weight (N):		valWEIGHT 	=	3433.5
-Pitching Moment Coeff.:		valCM 		=	-0.0145
+Pitching Moment Coeff.:		valCM 		=	0.0
 
 No. of panels:	valPANELS =	1
 

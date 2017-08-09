@@ -6,12 +6,12 @@ function [valDELTIME, matEIx, matGJt, vecEA, vecCG, vecJT, vecLM, vecLSM, vecLSA
     vecN, vecM, vecDVEWING, vecDVEROLL, vecDVEPITCH, vecDVEYAW, vecLIFTDIST, vecMOMDIST, valSPAN, valTIMESTEP, matDEFGLOB, matTWISTGLOB,...
     matSLOPE, valALPHA, valBETA, matVLST, matCENTER, matDVE, vecCL, valWEIGHT, valAREA, valDENSITY, valUINF,...
     flagSTATIC, valSDELTIME, valDELTIME, matDEF, matTWIST, valSTIFFSTEPS, valGUSTTIME, valGUSTAMP, valGUSTL,...
-    flagGUSTMODE, flagSTEADY, vecDVEHVCRD, vecMASS, vecLEDVES, vecLAMBDA)
+    flagGUSTMODE, flagSTEADY, vecDVEHVCRD, vecLEDVES, vecLAMBDA)
 
 % valDELTIME = valSDELTIME;
 
-[matEIx, matGJt, vecEA, vecCG, vecJT, vecLM, vecLSM, vecLSAC, matAEROCNTR, matSCLST, vecSPANDIST, matSC, vecMAC] = fcnSTRUCTDIST(vecDVEHVSPN, vecDVELE, vecDVETE, vecEIxCOEFF, vecGJtCOEFF,...
-    vecEACOEFF, vecCGCOEFF, vecJTCOEFF, vecLMCOEFF, matNPVLST, matNPDVE, vecDVEPANEL, vecN, vecM, vecDVEWING, vecDVEROLL, vecDVEPITCH, vecDVEYAW, matCENTER, valSPAN);
+[matEIx, matGJt, vecEA, vecCG, vecJT, vecLM, vecLSM, vecLSAC, matAEROCNTR, matSCLST, vecSPANDIST, matSC, vecMAC] = fcnIMPSTRUCTDIST(vecDVEHVSPN, vecDVELE, vecDVETE, vecEIxCOEFF, vecGJtCOEFF,...
+    vecEACOEFF, vecCGCOEFF, vecJTCOEFF, vecLMCOEFF, matNPVLST, matNPDVE, vecDVEPANEL, vecN, vecM, vecDVEWING, vecDVEROLL, vecDVEPITCH, vecDVEYAW, matCENTER, valSPAN, vecDVEHVCRD);
 
 matCENTER_old = matCENTER;
 
@@ -23,7 +23,7 @@ matCENTER_old = matCENTER;
     valDELTIME = valSDELTIME;
     flagSTEADY = 2;
     valSTIMESTEP = 1;
-    valDELTIME = 0.000001;
+    valDELTIME = 0.01;
 
 %     for tempTIME = 1:ceil(valDELTIME/valSDELTIME)
 %         
@@ -32,7 +32,7 @@ matCENTER_old = matCENTER;
 %         
 %     end
     [matDEF, matTWIST] = fcnWINGTWISTBEND(valDENSITY,valDELTIME,valSPAN,valAREA,valSTIMESTEP,vecDVEHVSPN,vecDVEHVCRD,...
-        vecLEDVES,vecLSAC,vecJT,vecMASS,vecLSM,vecLAMBDA,vecLIFTDIST,vecMOMDIST,valUINF,matEIx,matGJt,matDEF,matTWIST,vecLM);
+        vecLEDVES,vecLSAC,vecJT,vecLSM,vecLAMBDA,vecLIFTDIST,vecMOMDIST,valUINF,matEIx,matGJt,matDEF,matTWIST,vecLM);
     
     matDEF_old = matDEF;
     matTWIST_old = matTWIST;

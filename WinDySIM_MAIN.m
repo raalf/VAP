@@ -146,7 +146,6 @@ for ai = 1:length(seqALPHA)
         vecWDVETIP = [];
         vecWDVEWING = [];
         valGUSTTIME = 1;
-        vecMASS = 5*ones(size(vecLEDVES,1),1);
         
         n = 1;
         
@@ -159,8 +158,8 @@ for ai = 1:length(seqALPHA)
         [matCOEFF] = fcnSOLVED(matD, vecR, valNELE);
         
         if flagSTIFFWING == 2
-            [matEIx, matGJt, vecEA, vecCG, vecJT, vecLM, vecLSM, vecLSAC, matAEROCNTR, matSCLST, vecSPANDIST, matSC, vecMAC, vecLAMBDA] = fcnSTRUCTDIST(vecDVEHVSPN, vecDVELE, vecDVETE, vecEIxCOEFF, vecGJtCOEFF,...
-                vecEACOEFF, vecCGCOEFF, vecJTCOEFF, vecLMCOEFF, matNPVLST, matNPDVE, vecDVEPANEL, vecN, vecM, vecDVEWING, vecDVEROLL, vecDVEPITCH, vecDVEYAW, matCENTER, valSPAN);
+            [matEIx, matGJt, vecEA, vecCG, vecJT, vecLM, vecLSM, vecLSAC, matAEROCNTR, matSCLST, vecSPANDIST, matSC, vecMAC, vecLAMBDA] = fcnIMPSTRUCTDIST(vecDVEHVSPN, vecDVELE, vecDVETE, vecEIxCOEFF, vecGJtCOEFF,...
+                vecEACOEFF, vecCGCOEFF, vecJTCOEFF, vecLMCOEFF, matNPVLST, matNPDVE, vecDVEPANEL, vecN, vecM, vecDVEWING, vecDVEROLL, vecDVEPITCH, vecDVEYAW, matCENTER, valSPAN, vecDVEHVCRD);
         end
         
         for valTIMESTEP = 1:valMAXTIME
@@ -188,8 +187,8 @@ for ai = 1:length(seqALPHA)
                 % Only move structure if flex wing case is selected
                 if flagSTIFFWING == 2
                 
-                    [matEIx, matGJt, vecEA, vecCG, vecJT, vecLM, vecLSM, vecLSAC, matAEROCNTR, matSCLST, vecSPANDIST, matSC, vecMAC, vecLAMBDA] = fcnSTRUCTDIST(vecDVEHVSPN, vecDVELE, vecDVETE, vecEIxCOEFF, vecGJtCOEFF,...
-                        vecEACOEFF, vecCGCOEFF, vecJTCOEFF, vecLMCOEFF, matNPVLST, matNPDVE, vecDVEPANEL, vecN, vecM, vecDVEWING, vecDVEROLL, vecDVEPITCH, vecDVEYAW, matCENTER, valSPAN);
+                    [matEIx, matGJt, vecEA, vecCG, vecJT, vecLM, vecLSM, vecLSAC, matAEROCNTR, matSCLST, vecSPANDIST, matSC, vecMAC, vecLAMBDA] = fcnIMPSTRUCTDIST(vecDVEHVSPN, vecDVELE, vecDVETE, vecEIxCOEFF, vecGJtCOEFF,...
+                        vecEACOEFF, vecCGCOEFF, vecJTCOEFF, vecLMCOEFF, matNPVLST, matNPDVE, vecDVEPANEL, vecN, vecM, vecDVEWING, vecDVEROLL, vecDVEPITCH, vecDVEYAW, matCENTER, valSPAN, vecDVEHVCRD);
                     
                 end
                               
@@ -205,7 +204,7 @@ for ai = 1:length(seqALPHA)
                     vecN, vecM, vecDVEWING, vecDVEROLL, vecDVEPITCH, vecDVEYAW, vecLIFTDIST, vecMOMDIST, valSPAN, valTIMESTEP, matDEFGLOB, matTWISTGLOB,...
                     matSLOPE, valALPHA, valBETA, matVLST, matCENTER, matDVE, vecCL, valWEIGHT, valAREA, valDENSITY, valUINF,...
                     flagSTATIC, valSDELTIME, valDELTIME, matDEF, matTWIST, valSTIFFSTEPS, valGUSTTIME, valGUSTAMP, valGUSTL,...
-                    flagGUSTMODE, flagSTEADY, vecDVEHVCRD, vecMASS, vecLEDVES, vecLAMBDA);
+                    flagGUSTMODE, flagSTEADY, vecDVEHVCRD, vecLEDVES, vecLAMBDA);
                 
                 n = n + 1;
                 
