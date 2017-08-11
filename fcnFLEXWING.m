@@ -23,7 +23,7 @@ matCENTER_old = matCENTER;
     valDELTIME = valSDELTIME;
     flagSTEADY = 2;
     valSTIMESTEP = 1;
-    valDELTIME = 0.01;
+    valDELTIME = 0.05;
 
 %     for tempTIME = 1:ceil(valDELTIME/valSDELTIME)
 %         
@@ -32,7 +32,7 @@ matCENTER_old = matCENTER;
 %         
 %     end
     [matDEF, matTWIST] = fcnWINGTWISTBEND(valDENSITY,valDELTIME,valSPAN,valAREA,valSTIMESTEP,vecDVEHVSPN,vecDVEHVCRD,...
-        vecLEDVES,vecLSAC,vecJT,vecLSM,vecLAMBDA,vecLIFTDIST,vecMOMDIST,valUINF,matEIx,matGJt,matDEF,matTWIST,vecLM);
+        vecLEDVES,vecLSAC,vecJT,vecLSM,vecLAMBDA,vecLIFTDIST,vecMOMDIST,valUINF,matEIx,matGJt,matDEF,matTWIST,vecLM,matCENTER);
     
     matDEF_old = matDEF;
     matTWIST_old = matTWIST;

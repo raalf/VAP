@@ -35,7 +35,7 @@ disp(' ');
 %% Reading in geometry
 
 strFILE = 'inputs/WinDySIM_Gust.txt';
-strSTRUCT_INPUT = 'inputs/Struct_Input_AIAA.txt';
+strSTRUCT_INPUT = 'inputs/Struct_Input_SB14.txt';
 strOUTPUTFILE = 'Test.mat';
 
 [flagRELAX, flagSTEADY, flagSTIFFWING, flagGUSTMODE, valAREA, valSPAN,...
