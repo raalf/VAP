@@ -34,6 +34,9 @@ matCENTER_old = matCENTER;
     [matDEF, matTWIST] = fcnWINGTWISTBEND(valDENSITY,valDELTIME,valSPAN,valAREA,valSTIMESTEP,vecDVEHVSPN,vecDVEHVCRD,...
         vecLEDVES,vecLSAC,vecJT,vecLSM,vecLAMBDA,vecLIFTDIST,vecMOMDIST,valUINF,matEIx,matGJt,matDEF,matTWIST,vecLM,matCENTER);
     
+    [matDEFEDGE(valTIMESTEP,:)] = fcnPARABINTERP(matDEF(end,:),matCENTER(vecLEDVES,2),vecSPANDIST(2:end-1));
+    [matTWISTEDGE(valTIMESTEP,:)] = fcnPARABINTERP(matDEF(end,:),matCENTER(vecLEDVES,2),vecSPANDIST(2:end-1));
+    
     matDEF_old = matDEF;
     matTWIST_old = matTWIST;
     
