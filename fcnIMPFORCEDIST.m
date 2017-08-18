@@ -15,8 +15,6 @@ function [vecLIFTDIST, vecMOMDIST] = fcnIMPFORCEDIST(liftfree, liftind, matSCLST
 
 % Calculate qinf required for steady level flight. This will be used for
 % load calculations
-% q_inf = valWEIGHT/(valCL*valAREA);
-% valVINF = sqrt(2*q_inf/valDENSITY);
 q_inf = 0.5*valDENSITY*valUINF*valUINF;
 
 [matROWS] = fcnDVEROW(vecLEDVES, vecDVEPANEL, vecDVEWING, vecM, vecN);
@@ -64,19 +62,16 @@ for i = 1:vecM(1)
     % Lift force in X, Y, Z components to be used in cross product to
     % calculate moment about elastic axis. Each step into the 3rd dimension
     % is the lift distribution at each chordwise station
-    lift_moment(:,:,i) = vecLIFTDIST.*matLIFTDIR(matROWS(:,i),:); 
+    lift_moment(:,:,i) = lift_chord.*matLIFTDIR(matROWS(:,i),:); 
     
 end
 
 matSC = repmat(matSC,1,1,vecM(1));
 
 % Compute moment arm for cross product
-% delX = (row_ledves - matSC);
 delX = matAEROCNTR - matSC;
-% delX = [vecLSAC, zeros(size(vecLSAC,1),2)];
-% force = [zeros(size(vecLIFTDIST,2),2),vecLIFTDIST'];
+
 tempMOMDIST = cross(delX,lift_moment); % M' = delx X lift
-% tempMOMDIST = vecLIFTDIST'.*vecLSAC;
 
 % Compute magnitude of moment at each chordwise location
 for i = 1:vecM(1)
@@ -85,19 +80,9 @@ for i = 1:vecM(1)
     
 end
 
-% vecGAMMA = A(vecLEDVES) + vecDVEHVSPN(vecLEDVES)'.*B(vecLEDVES) + vecDVEHVSPN(vecLEDVES)'.*vecDVEHVSPN(vecLEDVES)'.*C(vecLEDVES);
-% gamma_root = A(vecLEDVES(1)) - vecDVEHVSPN(vecLEDVES(1))'.*B(vecLEDVES(1)) + vecDVEHVSPN(vecLEDVES(1))'.*vecDVEHVSPN(vecLEDVES(1))'.*C(vecLEDVES(1));
-% 
-% vecGAMMA = [gamma_root,vecGAMMA];
-
 vecMOMDIST = sum(matMOMDIST,2);
 vecMOMDIST = vecMOMDIST.*valDENSITY./(2*vecDVEHVSPN(vecLEDVES));
-% M0 = q_inf*valAREA.*vecMAC'.*vecMAC'.*valCM./vecGAMMA(1:(end-1));
 
-% M = [s(vecLEDVES,:).*M0'; zeros(1,3)];
-
-% vecMOMDIST = vecMOMDIST + M(:,2);
-
-vecMOMDIST = vecMOMDIST + [q_inf*vecMAC.*vecMAC.*valCM];
+vecMOMDIST = vecMOMDIST + q_inf*vecMAC.*vecMAC.*valCM;
 
 end

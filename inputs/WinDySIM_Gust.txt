@@ -17,7 +17,7 @@ AOA sequence: 			seqALPHA 	= 	0.0
 Sideslip angle [deg]:	seqBETA 	=	0.0
 Density:				valDENSITY 	= 	1.225
 Kinematic viscosity:	valKINV		=	1.460000e-05
-Freestream velocity:	valUINF		=	30.0
+Freestream velocity:	valUINF		=	60.0
 Gust amplitude:			valGUSTAMP	=	2.0
 Gust length:			valGUSTL	=	1.0
 
@@ -38,8 +38,8 @@ Number of chordwise elements: 	vecM 		= 1.
 Airfoil number: 				vecAIRFOIL 	= 1
 Symmetry edge (0, 1 or 2): 		vecSYM 		= 1;
 xleft		yleft		zleft		chord		epsilon
--0.327200	0.000000	0.0000000	0.740000	5.67800
--0.336800	4.035000	0.1734000	0.711000	5.61600
+-0.327200	0.000000	0.0000000	0.740000	1.45800
+-0.336800	4.035000	0.1734000	0.711000	1.39600
 
 Panel #:2. 
 Number of spanwise elements:	vecN 		= 7. 
@@ -47,8 +47,8 @@ Number of chordwise elements: 	vecM 		= 1.
 Airfoil number: 				vecAIRFOIL 	= 1
 Symmetry edge (0, 1 or 2): 		vecSYM 		= 0;
 xleft		yleft		zleft		chord		epsilon
--0.336800	4.0350000	0.173400	0.711000	5.61600
--0.221800	7.1400000	0.286700	0.479000	5.56800
+-0.336800	4.0350000	0.173400	0.711000	1.39600
+-0.221800	7.1400000	0.286700	0.479000	1.34800
 
 Panel #:3. 
 Number of spanwise elements:	vecN 		= 4. 
@@ -56,8 +56,8 @@ Number of chordwise elements: 	vecM 		= 1.
 Airfoil number: 				vecAIRFOIL 	= 1
 Symmetry edge (0, 1 or 2): 		vecSYM 		= 0;
 xleft		yleft		zleft		chord		epsilon
--0.221800	7.140000	0.286700	0.479000	5.56800
--0.056300	9.000000	0.339000	0.259000	5.53900
+-0.221800	7.140000	0.286700	0.479000	1.34800
+-0.056300	9.000000	0.339000	0.259000	1.31900
 
 %<- special identifier
 Vertical tail information:

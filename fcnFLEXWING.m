@@ -34,6 +34,13 @@ matCENTER_old = matCENTER;
     [matDEF, matTWIST] = fcnWINGTWISTBEND(valDENSITY,valDELTIME,valSPAN,valAREA,valSTIMESTEP,vecDVEHVSPN,vecDVEHVCRD,...
         vecLEDVES,vecLSAC,vecJT,vecLSM,vecLAMBDA,vecLIFTDIST,vecMOMDIST,valUINF,matEIx,matGJt,matDEF,matTWIST,vecLM,matCENTER);
     
+    for valSTIMESTEP = 3:2000
+        [matDEF, matTWIST] = fcnWINGTWISTBEND(valDENSITY,valDELTIME,valSPAN,valAREA,valSTIMESTEP,vecDVEHVSPN,vecDVEHVCRD,...
+        vecLEDVES,vecLSAC,vecJT,vecLSM,vecLAMBDA,vecLIFTDIST,vecMOMDIST,valUINF,matEIx,matGJt,matDEF,matTWIST,vecLM);
+    end
+    
+    % Use parabolic interpolation to determine deflection and twist at DVE
+    % edges rather than control points. This is passed into fcnMOVEFLEXWING
     [matDEFEDGE(valTIMESTEP,:)] = fcnPARABINTERP(matDEF(end,:),matCENTER(vecLEDVES,2),vecSPANDIST(2:end-1));
     [matTWISTEDGE(valTIMESTEP,:)] = fcnPARABINTERP(matDEF(end,:),matCENTER(vecLEDVES,2),vecSPANDIST(2:end-1));
     
