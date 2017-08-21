@@ -17,9 +17,9 @@ function [matDEF, matTWIST] = fcnWINGTWISTBEND(valDENSITY,valDELTIME,valSPAN,val
 num_el = size(vecLEDVES,1);
 vecCRD = 2*vecDVEHVCRD;
 valAR = valSPAN*valSPAN/valAREA;
-vecMASS = (2*vecDVEHVSPN).*vecLM;
+vecMASS = vecLAMBDA.*valSPAN.*vecLM./2;
 
-% vecMASS = -0.0006*matCENTER(vecLEDVES,2).^2 - 0.3184.*matCENTER(vecLEDVES,2) + 3.215;
+vecMASS = -0.0006*matCENTER(vecLEDVES,2).^2 - 0.3184.*matCENTER(vecLEDVES,2) + 3.215;
 
 valBETA = (valAR/(2+valAR))*pi*valDENSITY*valUINF; % Forward speed and aspect ratio factor for wing
 
@@ -90,12 +90,15 @@ b_00 = -sum(b_01_0n,2);
 
 b_00 = 0;
 
+b_01_0n(1) = b_01_0n(1) + 4*matEIx(1,1)/(vecLAMBDA(1)*valSPAN/2)^3;
+b_01_0n(2) = b_01_0n(2) - matEIx(1,1)/(vecLAMBDA(1)*valSPAN/2)^3;
+
 % Outer matrix elements defined by C18 and C21
 b_outer = [b_00, b_01_0n];
 
 % Concatenate outer elements to inner matrix elements
 matA = horzcat(b_01_0n',b_inner);
-matA = vertcat(b_outer, matA);
+matA = vertcat(b_outer, matA); 
 
 %% Calculating B matrix from C30 for torsion response
 
@@ -117,8 +120,8 @@ matB_diag = diag(temp_j1+temp_j2,0);
 % Final B matrix from C30
 matB = matB_diag + matB_lower + matB_upper + matB;
 
-matB(1,1) = 0;
-matB(2,1) = 0;
+matB(1,1) = 1e20;
+matB(2,1) = 1e20;
 
 % matB = diag([0,j],0);
 
@@ -141,16 +144,16 @@ matB(2,1) = 0;
 matC = [matA, zeros(num_el); zeros(num_el), matB];
 
 %% Calculating load vectors p and q
-vecMBAR = vecMASS + (pi.*valDENSITY.*(2*vecDVEHVSPN).*vecCRD.^2)./4; % Mass including apparent mass effects
-vecMEBAR = vecMASS.*vecLSM + ((pi.*valDENSITY.*(2*vecDVEHVSPN).*vecCRD.^3)./4).*(0.5 - (0.25.*vecCRD + vecLSAC)./vecCRD); % Mass moment including apparent mass effects
-vecK2 = (vecJT.*(2*vecDVEHVSPN))./vecMASS; % Radiation of gyration squared
-vecMKBAR = vecMASS.*vecK2 +((pi.*valDENSITY.*(2*vecDVEHVSPN).*vecCRD.^4)./4).*(0.5 - (0.25.*vecCRD + vecLSAC)./vecCRD).^2 ...
-    + (pi*valDENSITY.*(2*vecDVEHVSPN).*vecCRD.^4)./128;
-
-% vecMBAR = vecMASS; % Mass including apparent mass effects
-% vecMEBAR = vecMASS.*vecLSM; % Mass moment including apparent mass effects
+% vecMBAR = vecMASS + (pi.*valDENSITY.*(2*vecDVEHVSPN).*vecCRD.^2)./4; % Mass including apparent mass effects
+% vecMEBAR = vecMASS.*vecLSM + ((pi.*valDENSITY.*(2*vecDVEHVSPN).*vecCRD.^3)./4).*(0.5 - (0.25.*vecCRD + vecLSAC)./vecCRD); % Mass moment including apparent mass effects
 % vecK2 = (vecJT.*(2*vecDVEHVSPN))./vecMASS; % Radiation of gyration squared
-% vecMKBAR = vecMASS.*vecK2;
+% vecMKBAR = vecMASS.*vecK2 +((pi.*valDENSITY.*(2*vecDVEHVSPN).*vecCRD.^4)./4).*(0.5 - (0.25.*vecCRD + vecLSAC)./vecCRD).^2 ...
+%     + (pi*valDENSITY.*(2*vecDVEHVSPN).*vecCRD.^4)./128;
+
+vecMBAR = vecMASS; % Mass including apparent mass effects
+vecMEBAR = vecMASS.*vecLSM; % Mass moment including apparent mass effects
+vecK2 = (vecJT.*(2*vecDVEHVSPN))./vecMASS; % Radiation of gyration squared
+vecMKBAR = vecMASS.*vecK2;
 
 % Eta terms from eqn A7
 eta0 = -2*vecMBAR./(valDELTIME*valDELTIME);
@@ -158,25 +161,15 @@ eta1 = 5*vecMBAR./(valDELTIME*valDELTIME);
 eta2 = -4*vecMBAR./(valDELTIME*valDELTIME);
 eta3 = vecMBAR./(valDELTIME.*valDELTIME);
 
-% eta0(1) = 0;
-% eta1(1) = 0;
-% eta2(1) = 0;
-% eta3(1) = 0;
+% eta0prime = 2*vecMEBAR./(valDELTIME*valDELTIME) + (11/(24*valDELTIME))*valBETA.*vecCRD.*vecCRD.*(2*vecDVEHVSPN);
+% eta1prime = -5*vecMEBAR./(valDELTIME*valDELTIME) - (3/(4*valDELTIME))*valBETA.*vecCRD.*vecCRD.*(2*vecDVEHVSPN);
+% eta2prime = 4*vecMEBAR./(valDELTIME*valDELTIME) + (9/(24*valDELTIME))*valBETA.*vecCRD.*vecCRD.*(2*vecDVEHVSPN);
+% eta3prime = -vecMEBAR./(valDELTIME*valDELTIME) - (1/(12*valDELTIME))*valBETA.*vecCRD.*vecCRD.*(2*vecDVEHVSPN);
 
-eta0prime = 2*vecMEBAR./(valDELTIME*valDELTIME) + (11/(24*valDELTIME))*valBETA.*vecCRD.*vecCRD.*(2*vecDVEHVSPN);
-eta1prime = -5*vecMEBAR./(valDELTIME*valDELTIME) - (3/(4*valDELTIME))*valBETA.*vecCRD.*vecCRD.*(2*vecDVEHVSPN);
-eta2prime = 4*vecMEBAR./(valDELTIME*valDELTIME) + (9/(24*valDELTIME))*valBETA.*vecCRD.*vecCRD.*(2*vecDVEHVSPN);
-eta3prime = -vecMEBAR./(valDELTIME*valDELTIME) - (1/(12*valDELTIME))*valBETA.*vecCRD.*vecCRD.*(2*vecDVEHVSPN);
-
-% eta0prime = 2*vecMEBAR./(valDELTIME*valDELTIME);
-% eta1prime = -5*vecMEBAR./(valDELTIME*valDELTIME);
-% eta2prime = 4*vecMEBAR./(valDELTIME*valDELTIME);
-% eta3prime = -vecMEBAR./(valDELTIME*valDELTIME);
-
-% eta0prime(1) = 1e20;
-% eta1prime(1) = 1e20;
-% eta2prime(1) = 1e20;
-% eta3prime(1) = 1e20;
+eta0prime = 2*vecMEBAR./(valDELTIME*valDELTIME);
+eta1prime = -5*vecMEBAR./(valDELTIME*valDELTIME);
+eta2prime = 4*vecMEBAR./(valDELTIME*valDELTIME);
+eta3prime = -vecMEBAR./(valDELTIME*valDELTIME);
 
 % Form diagonal eta matrices from Appendix A
 matETA0 = diag(eta0,0);
@@ -195,25 +188,15 @@ nu1 = -5*vecMEBAR./(valDELTIME*valDELTIME);
 nu2 = 4*vecMEBAR./(valDELTIME*valDELTIME);
 nu3 = -vecMEBAR./(valDELTIME*valDELTIME);
 
-% nu0(1) = 0;
-% nu1(1) = 0;
-% nu2(1) = 0;
-% nu3(1) = 0;
+% nu0prime = 2*vecMKBAR./(valDELTIME*valDELTIME) + (11/(24*valDELTIME))*valBETA.*vecCRD.*vecCRD.*vecCRD.*(2*vecDVEHVSPN).*(0.75 - (0.25.*vecCRD + vecLSAC)./vecCRD);
+% nu1prime = -5*vecMKBAR./(valDELTIME*valDELTIME) - (3/(4*valDELTIME))*valBETA.*vecCRD.*vecCRD.*vecCRD.*(2*vecDVEHVSPN).*(0.75 - (0.25.*vecCRD + vecLSAC)./vecCRD);
+% nu2prime = 4*vecMKBAR./(valDELTIME*valDELTIME) + (9/(24*valDELTIME))*valBETA.*vecCRD.*vecCRD.*vecCRD.*(2*vecDVEHVSPN).*(0.75 - (0.25.*vecCRD + vecLSAC)./vecCRD);
+% nu3prime = -vecMKBAR./(valDELTIME*valDELTIME) - (1/(12*valDELTIME))*valBETA.*vecCRD.*vecCRD.*vecCRD.*(2*vecDVEHVSPN).*(0.75 - (0.25.*vecCRD + vecLSAC)./vecCRD);
 
-nu0prime = 2*vecMKBAR./(valDELTIME*valDELTIME) + (11/(24*valDELTIME))*valBETA.*vecCRD.*vecCRD.*vecCRD.*(2*vecDVEHVSPN).*(0.75 - (0.25.*vecCRD + vecLSAC)./vecCRD);
-nu1prime = -5*vecMKBAR./(valDELTIME*valDELTIME) - (3/(4*valDELTIME))*valBETA.*vecCRD.*vecCRD.*vecCRD.*(2*vecDVEHVSPN).*(0.75 - (0.25.*vecCRD + vecLSAC)./vecCRD);
-nu2prime = 4*vecMKBAR./(valDELTIME*valDELTIME) + (9/(24*valDELTIME))*valBETA.*vecCRD.*vecCRD.*vecCRD.*(2*vecDVEHVSPN).*(0.75 - (0.25.*vecCRD + vecLSAC)./vecCRD);
-nu3prime = -vecMKBAR./(valDELTIME*valDELTIME) - (1/(12*valDELTIME))*valBETA.*vecCRD.*vecCRD.*vecCRD.*(2*vecDVEHVSPN).*(0.75 - (0.25.*vecCRD + vecLSAC)./vecCRD);
-
-% nu0prime = 2*vecMKBAR./(valDELTIME*valDELTIME);
-% nu1prime = -5*vecMKBAR./(valDELTIME*valDELTIME);
-% nu2prime = 4*vecMKBAR./(valDELTIME*valDELTIME);
-% nu3prime = -vecMKBAR./(valDELTIME*valDELTIME);
-
-% nu0prime(1) = -1e20;
-% nu1prime(1) = -1e20;
-% nu2prime(1) = -1e20;
-% nu3prime(1) = -1e20;
+nu0prime = 2*vecMKBAR./(valDELTIME*valDELTIME);
+nu1prime = -5*vecMKBAR./(valDELTIME*valDELTIME);
+nu2prime = 4*vecMKBAR./(valDELTIME*valDELTIME);
+nu3prime = -vecMKBAR./(valDELTIME*valDELTIME);
 
 % Form diagonal nu matrices from Appendix A
 matNU0 = diag(nu0,0);
@@ -239,7 +222,7 @@ matD = matC - S0;
 if valTIMESTEP == 1
     
     % Response at n
-    matRES = (matD + S2 + 8*S3)\[vecLIFTDIST;vecMOMDIST];
+    matRES = (matD + S2 + 8*S3)\[vecLIFTDIST.*(vecLAMBDA.*valSPAN/2) - vecMASS*9.81; vecMOMDIST.*(vecLAMBDA.*valSPAN/2) - vecMASS*9.81.*vecLSM];
     
     matDEF(valTIMESTEP+3,:) = matRES(1:num_el,1);
     matTWIST(valTIMESTEP+3,:) = matRES(num_el+1:end,1);
@@ -258,7 +241,7 @@ if valTIMESTEP == 1
     
 else
     
-    vecQ = S1*[matDEF(end,:)'; matTWIST(end,:)'] + S2*[matDEF(end-1,:)'; matTWIST(end-1,:)'] + S3*[matDEF(end-2,:)'; matTWIST(end-2,:)'] + [vecLIFTDIST; vecMOMDIST];
+    vecQ = S1*[matDEF(end,:)'; matTWIST(end,:)'] + S2*[matDEF(end-1,:)'; matTWIST(end-1,:)'] + S3*[matDEF(end-2,:)'; matTWIST(end-2,:)'] + [vecLIFTDIST.*(vecLAMBDA.*valSPAN/2) - vecMASS*9.81; vecMOMDIST.*(vecLAMBDA.*valSPAN/2) - vecMASS*9.81.*vecLSM];
 
     matRES = matD\vecQ;
 

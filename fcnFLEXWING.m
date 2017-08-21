@@ -23,7 +23,7 @@ matCENTER_old = matCENTER;
     valDELTIME = valSDELTIME;
     flagSTEADY = 2;
     valSTIMESTEP = 1;
-    valDELTIME = 0.05;
+    valDELTIME = 0.03;
 
 %     for tempTIME = 1:ceil(valDELTIME/valSDELTIME)
 %         
@@ -36,7 +36,7 @@ matCENTER_old = matCENTER;
     
     for valSTIMESTEP = 3:2000
         [matDEF, matTWIST] = fcnWINGTWISTBEND(valDENSITY,valDELTIME,valSPAN,valAREA,valSTIMESTEP,vecDVEHVSPN,vecDVEHVCRD,...
-        vecLEDVES,vecLSAC,vecJT,vecLSM,vecLAMBDA,vecLIFTDIST,vecMOMDIST,valUINF,matEIx,matGJt,matDEF,matTWIST,vecLM);
+        vecLEDVES,vecLSAC,vecJT,vecLSM,vecLAMBDA,vecLIFTDIST,vecMOMDIST,valUINF,matEIx,matGJt,matDEF,matTWIST,vecLM,matCENTER);
     end
     
     % Use parabolic interpolation to determine deflection and twist at DVE

@@ -46,4 +46,4 @@ Mass Distribution
 	Linear Mass (mu):
 		A Coefficient: vec_LM = 0
 		B Coefficient: vec_LM = 0
-		C Coefficient: vec_LM = 0.375
+		C Coefficient: vec_LM = 0.75
