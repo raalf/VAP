@@ -114,10 +114,10 @@ for ai = 1:length(seqALPHA)
         matNPWAKEGEOM = [];
         matDEFGLOB = [];
         matTWISTGLOB = [];
-%         matDEF = zeros(2,valNELE+5); % <-------------- FIX THIS TO WORK WITH m > 1
-%         matTWIST = zeros(2,valNELE+5); % <-------------- FIX THIS TO WORK WITH m > 1
-        matDEF = [];
-        matTWIST = [];
+        matDEF = zeros(2,valNELE); % <-------------- FIX THIS TO WORK WITH m > 1
+        matTWIST = zeros(2,valNELE); % <-------------- FIX THIS TO WORK WITH m > 1
+%         matDEF = [];
+%         matTWIST = [];
         matCENTER_old = zeros(size(matCENTER,1),size(matCENTER,2));
         matSLOPE = [];
         vecLIFTSTATIC = [];
@@ -158,8 +158,8 @@ for ai = 1:length(seqALPHA)
         [matCOEFF] = fcnSOLVED(matD, vecR, valNELE);
         
         if flagSTIFFWING == 2
-            [matEIx, matGJt, vecEA, vecCG, vecJT, vecLM, vecLSM, vecLSAC, matAEROCNTR, matSCLST, vecSPANDIST, matSC, vecMAC, vecLAMBDA] = fcnIMPSTRUCTDIST(vecDVEHVSPN, vecDVELE, vecDVETE, vecEIxCOEFF, vecGJtCOEFF,...
-                vecEACOEFF, vecCGCOEFF, vecJTCOEFF, vecLMCOEFF, matNPVLST, matNPDVE, vecDVEPANEL, vecN, vecM, vecDVEWING, vecDVEROLL, vecDVEPITCH, vecDVEYAW, matCENTER, valSPAN, vecDVEHVCRD);
+            [matEIx, matGJt, vecEA, vecCG, vecJT, vecLM, vecLSM, vecLSAC, matAEROCNTR, matSCLST, vecSPANDIST, matSC, vecMAC, vecLAMBDA] = fcnSTRUCTDIST(vecDVEHVSPN, vecDVELE, vecDVETE, vecEIxCOEFF, vecGJtCOEFF,...
+                vecEACOEFF, vecCGCOEFF, vecJTCOEFF, vecLMCOEFF, matNPVLST, matNPDVE, vecDVEPANEL, vecN, vecM, vecDVEWING, vecDVEROLL, vecDVEPITCH, vecDVEYAW, matCENTER, valSPAN);
         end
         
         for valTIMESTEP = 1:valMAXTIME
@@ -187,8 +187,8 @@ for ai = 1:length(seqALPHA)
                 % Only move structure if flex wing case is selected
                 if flagSTIFFWING == 2
                 
-                    [matEIx, matGJt, vecEA, vecCG, vecJT, vecLM, vecLSM, vecLSAC, matAEROCNTR, matSCLST, vecSPANDIST, matSC, vecMAC, vecLAMBDA] = fcnIMPSTRUCTDIST(vecDVEHVSPN, vecDVELE, vecDVETE, vecEIxCOEFF, vecGJtCOEFF,...
-                        vecEACOEFF, vecCGCOEFF, vecJTCOEFF, vecLMCOEFF, matNPVLST, matNPDVE, vecDVEPANEL, vecN, vecM, vecDVEWING, vecDVEROLL, vecDVEPITCH, vecDVEYAW, matCENTER, valSPAN, vecDVEHVCRD);
+                    [matEIx, matGJt, vecEA, vecCG, vecJT, vecLM, vecLSM, vecLSAC, matAEROCNTR, matSCLST, vecSPANDIST, matSC, vecMAC, vecLAMBDA] = fcnSTRUCTDIST(vecDVEHVSPN, vecDVELE, vecDVETE, vecEIxCOEFF, vecGJtCOEFF,...
+                        vecEACOEFF, vecCGCOEFF, vecJTCOEFF, vecLMCOEFF, matNPVLST, matNPDVE, vecDVEPANEL, vecN, vecM, vecDVEWING, vecDVEROLL, vecDVEPITCH, vecDVEYAW, matCENTER, valSPAN);
                     
                 end
                               

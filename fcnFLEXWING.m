@@ -10,8 +10,8 @@ function [valDELTIME, matEIx, matGJt, vecEA, vecCG, vecJT, vecLM, vecLSM, vecLSA
 
 % valDELTIME = valSDELTIME;
 
-[matEIx, matGJt, vecEA, vecCG, vecJT, vecLM, vecLSM, vecLSAC, matAEROCNTR, matSCLST, vecSPANDIST, matSC, vecMAC] = fcnIMPSTRUCTDIST(vecDVEHVSPN, vecDVELE, vecDVETE, vecEIxCOEFF, vecGJtCOEFF,...
-    vecEACOEFF, vecCGCOEFF, vecJTCOEFF, vecLMCOEFF, matNPVLST, matNPDVE, vecDVEPANEL, vecN, vecM, vecDVEWING, vecDVEROLL, vecDVEPITCH, vecDVEYAW, matCENTER, valSPAN, vecDVEHVCRD);
+[matEIx, matGJt, vecEA, vecCG, vecJT, vecLM, vecLSM, vecLSAC, matAEROCNTR, matSCLST, vecSPANDIST, matSC, vecMAC] = fcnSTRUCTDIST(vecDVEHVSPN, vecDVELE, vecDVETE, vecEIxCOEFF, vecGJtCOEFF,...
+    vecEACOEFF, vecCGCOEFF, vecJTCOEFF, vecLMCOEFF, matNPVLST, matNPDVE, vecDVEPANEL, vecN, vecM, vecDVEWING, vecDVEROLL, vecDVEPITCH, vecDVEYAW, matCENTER, valSPAN);
 
 matCENTER_old = matCENTER;
 
@@ -19,11 +19,10 @@ matCENTER_old = matCENTER;
 % Michael A. D. Melville, Denver, CO, 80218
 % if valGUSTTIME > 1
     
-
     valDELTIME = valSDELTIME;
     flagSTEADY = 2;
     valSTIMESTEP = 1;
-    valDELTIME = 0.03;
+    valDELTIME = 0.2;
 
 %     for tempTIME = 1:ceil(valDELTIME/valSDELTIME)
 %         
@@ -31,6 +30,26 @@ matCENTER_old = matCENTER;
 %             vecLSM, vecN, valSPAN, vecDVEHVSPN, valTIMESTEP, matDEFGLOB, matTWISTGLOB, vecSPANDIST, valSDELTIME, matSLOPE, valDELTIME, tempTIME, matDEF, matTWIST);
 %         
 %     end
+%     for valTIMESTEP = 3:4
+%         [vecDEF, vecTWIST, matDEFGLOB, matTWISTGLOB, matDEF, matTWIST, matSLOPE] = fcnWINGTWISTBEND(vecLIFTDIST, vecMOMDIST, matEIx, vecLM, vecJT, matGJt, vecLSM,...
+%             vecN, valSPAN, vecDVEHVSPN, valTIMESTEP, matDEFGLOB, matTWISTGLOB, vecSPANDIST, valSDELTIME, matSLOPE, matDEF, matTWIST);
+%     end
+% 
+%     matDEF = matDEF(:,4:end-2);
+%     matTWIST = matTWIST(:,4:end-2);
+%     
+    for valTIMESTEP = 4:50000
+    [matDEF, matTWIST] = fcnIMPLICIT(matEIx, matGJt, matDEF, matTWIST, vecJT, valDELTIME, vecDVEHVSPN, vecLSM, vecLM, vecLIFTDIST,...
+        vecMOMDIST, vecSPANDIST, valTIMESTEP);
+    if valDELTIME > 0.01
+        valDELTIME = valDELTIME - 0.00001;
+    else
+        valDELTIME = 0.01;
+    end
+    
+    end
+    
+    
     [matDEF, matTWIST] = fcnWINGTWISTBEND(valDENSITY,valDELTIME,valSPAN,valAREA,valSTIMESTEP,vecDVEHVSPN,vecDVEHVCRD,...
         vecLEDVES,vecLSAC,vecJT,vecLSM,vecLAMBDA,vecLIFTDIST,vecMOMDIST,valUINF,matEIx,matGJt,matDEF,matTWIST,vecLM,matCENTER);
     
