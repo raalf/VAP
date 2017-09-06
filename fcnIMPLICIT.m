@@ -5,8 +5,6 @@ function [matDEF, matTWIST] = fcnIMPLICIT(matEIx, matGJt, matDEF, matTWIST, vecJ
 
 nele = size(vecLM,1)-1;
 
-matDAMP = [0*ones(size(vecLM,1),1), 0*ones(size(vecLM,1),1)];
-
 vecJT = 0.00037078.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST...
     - 0.01102270.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST...
     + 0.12838255.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST - 0.73708913.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST...
@@ -59,10 +57,10 @@ matB = B0 + B1 + B2;
 
 %% Set diagonal matrices for acceleration terms
 
-S0 = [diag(-2*vecLM(2:end)./(valDELTIME^2) + 11*matDAMP(2:end,1)./(6*valDELTIME),0), diag(2*vecLM(2:end).*vecLSM(2:end)./(valDELTIME^2),0); diag(2*vecLM(2:end).*vecLSM(2:end)./(valDELTIME^2),0), diag(-2*vecJT(2:end)./(valDELTIME^2) + 11*matDAMP(2:end,2)./(6*valDELTIME),0)];
-S1 = [diag(5*vecLM(2:end)./(valDELTIME^2),0) - 18*matDAMP(2:end,1)./(6*valDELTIME), diag(-5*vecLM(2:end).*vecLSM(2:end)./(valDELTIME^2),0); diag(-5*vecLM(2:end).*vecLSM(2:end)./(valDELTIME^2),0), diag(5*vecJT(2:end)./(valDELTIME^2) - 18*matDAMP(2:end,2)./(6*valDELTIME),0)];
-S2 = [diag(-4*vecLM(2:end)./(valDELTIME^2),0) + 9*matDAMP(2:end,1)./(6*valDELTIME), diag(4*vecLM(2:end).*vecLSM(2:end)./(valDELTIME^2),0); diag(4*vecLM(2:end).*vecLSM(2:end)./(valDELTIME^2),0), diag(4*vecJT(2:end)./(valDELTIME^2) + 9*matDAMP(2:end,2)./(6*valDELTIME),0)];
-S3 = [diag(vecLM(2:end)./(valDELTIME^2),0) - 2*matDAMP(2:end,1)./(6*valDELTIME), diag(-vecLM(2:end).*vecLSM(2:end)./(valDELTIME^2),0); diag(-vecLM(2:end).*vecLSM(2:end)./(valDELTIME^2),0), diag(-vecJT(2:end)./(valDELTIME^2) - 2*matDAMP(2:end,2)./(6*valDELTIME),0)];
+S0 = [diag(-2*vecLM(2:end)./(valDELTIME^2),0), diag(2*vecLM(2:end).*vecLSM(2:end)./(valDELTIME^2),0); diag(2*vecLM(2:end).*vecLSM(2:end)./(valDELTIME^2),0), diag(-2*vecJT(2:end)./(valDELTIME^2),0)];
+S1 = [diag(5*vecLM(2:end)./(valDELTIME^2),0), diag(-5*vecLM(2:end).*vecLSM(2:end)./(valDELTIME^2),0); diag(-5*vecLM(2:end).*vecLSM(2:end)./(valDELTIME^2),0), diag(5*vecJT(2:end)./(valDELTIME^2),0)];
+S2 = [diag(-4*vecLM(2:end)./(valDELTIME^2),0), diag(4*vecLM(2:end).*vecLSM(2:end)./(valDELTIME^2),0); diag(4*vecLM(2:end).*vecLSM(2:end)./(valDELTIME^2),0), diag(4*vecJT(2:end)./(valDELTIME^2),0)];
+S3 = [diag(vecLM(2:end)./(valDELTIME^2),0), diag(-vecLM(2:end).*vecLSM(2:end)./(valDELTIME^2),0); diag(-vecLM(2:end).*vecLSM(2:end)./(valDELTIME^2),0), diag(-vecJT(2:end)./(valDELTIME^2),0)];
 
 
 % Assemble global matrix to solve for displacements
@@ -101,7 +99,7 @@ if valTIMESTEP == 4
 
 else
 
-    vecR = S1*[matDEF(end,:)'; matTWIST(end,:)'] + S2*[matDEF(end-1,:)'; matTWIST(end-1,:)'] + S3*[matDEF(end-2,:)'; matTWIST(end-2,:)'] +...
+    vecR = S1*[matDEF(valTIMESTEP-1,:)'; matTWIST(valTIMESTEP-1,:)'] + S2*[matDEF(valTIMESTEP-2,:)'; matTWIST(valTIMESTEP-2,:)'] + S3*[matDEF(valTIMESTEP-3,:)'; matTWIST(valTIMESTEP-3,:)'] +...
         [vecLIFTDIST(2:end)' - vecLM(2:end).*9.81; vecMOMDIST(2:end) - vecLM(2:end).*vecLSM(2:end).*9.81];
 
     % Solve structural dynamics matrix. Resulting vector will have deflection

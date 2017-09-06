@@ -23,63 +23,25 @@ matCENTER_old = matCENTER;
     flagSTEADY = 2;
     valSTIMESTEP = 1;
     valDELTIME = 0.2;
-
-%     for tempTIME = 1:ceil(valDELTIME/valSDELTIME)
-%         
-%         [vecDEF, vecTWIST, matDEFGLOB, matTWISTGLOB, matDEF, matTWIST, matSLOPE] = fcnWINGTWISTBEND_STAGGER(vecLIFTDIST, vecMOMDIST, matEIx, vecLM, vecJT, matGJt,...
-%             vecLSM, vecN, valSPAN, vecDVEHVSPN, valTIMESTEP, matDEFGLOB, matTWISTGLOB, vecSPANDIST, valSDELTIME, matSLOPE, valDELTIME, tempTIME, matDEF, matTWIST);
-%         
-%     end
-%     for valTIMESTEP = 3:4
-%         [vecDEF, vecTWIST, matDEFGLOB, matTWISTGLOB, matDEF, matTWIST, matSLOPE] = fcnWINGTWISTBEND(vecLIFTDIST, vecMOMDIST, matEIx, vecLM, vecJT, matGJt, vecLSM,...
-%             vecN, valSPAN, vecDVEHVSPN, valTIMESTEP, matDEFGLOB, matTWISTGLOB, vecSPANDIST, valSDELTIME, matSLOPE, matDEF, matTWIST);
-%     end
-% 
-%     matDEF = matDEF(:,4:end-2);
-%     matTWIST = matTWIST(:,4:end-2);
-%     
-    for valTIMESTEP = 4:50000
+    valMAXTIME = 1000000;
+    
+    matDEF = zeros(valMAXTIME,size(vecLM,1)-1);
+    matTWIST = zeros(valMAXTIME,size(vecLM,1)-1);
+    
+    for valTIMESTEP = 4:valMAXTIME
     [matDEF, matTWIST] = fcnIMPLICIT(matEIx, matGJt, matDEF, matTWIST, vecJT, valDELTIME, vecDVEHVSPN, vecLSM, vecLM, vecLIFTDIST,...
         vecMOMDIST, vecSPANDIST, valTIMESTEP);
-    if valDELTIME > 0.01
-        valDELTIME = valDELTIME - 0.00001;
-    else
-        valDELTIME = 0.01;
-    end
+%     if valDELTIME > 0.01
+%         valDELTIME = valDELTIME - 0.00001;
+%     else
+%         valDELTIME = 0.01;
+%     end
     
-    end
-    
-    
-    [matDEF, matTWIST] = fcnWINGTWISTBEND(valDENSITY,valDELTIME,valSPAN,valAREA,valSTIMESTEP,vecDVEHVSPN,vecDVEHVCRD,...
-        vecLEDVES,vecLSAC,vecJT,vecLSM,vecLAMBDA,vecLIFTDIST,vecMOMDIST,valUINF,matEIx,matGJt,matDEF,matTWIST,vecLM,matCENTER);
-    
-    for valSTIMESTEP = 3:2000
-        [matDEF, matTWIST] = fcnWINGTWISTBEND(valDENSITY,valDELTIME,valSPAN,valAREA,valSTIMESTEP,vecDVEHVSPN,vecDVEHVCRD,...
-        vecLEDVES,vecLSAC,vecJT,vecLSM,vecLAMBDA,vecLIFTDIST,vecMOMDIST,valUINF,matEIx,matGJt,matDEF,matTWIST,vecLM,matCENTER);
-    end
-    
-    % Use parabolic interpolation to determine deflection and twist at DVE
-    % edges rather than control points. This is passed into fcnMOVEFLEXWING
-    [matDEFEDGE(valTIMESTEP,:)] = fcnPARABINTERP(matDEF(end,:),matCENTER(vecLEDVES,2),vecSPANDIST(2:end-1));
-    [matTWISTEDGE(valTIMESTEP,:)] = fcnPARABINTERP(matDEF(end,:),matCENTER(vecLEDVES,2),vecSPANDIST(2:end-1));
+    end       
     
     matDEF_old = matDEF;
     matTWIST_old = matTWIST;
     
-% Runs structure code until static aeroleastic convergence
-% else
-    
-%     for tempTIME = 1:20000
-%         
-%         [vecDEF, vecTWIST, matDEFGLOB, matTWISTGLOB, matDEF, matTWIST, matSLOPE] = fcnWINGTWISTBEND_STAGGER(vecLIFTDIST, vecMOMDIST, matEIx, vecLM, vecJT, matGJt,...
-%             vecLSM, vecN, valSPAN, vecDVEHVSPN, valTIMESTEP, matDEFGLOB, matTWISTGLOB, vecSPANDIST, valSDELTIME, matSLOPE, valDELTIME, tempTIME, matDEF, matTWIST);
-%     end
-%     matDEF_old = matDEF;
-%     matTWIST_old = matTWIST;
-%     matDEFGLOB(valTIMESTEP,:) = matDEF(end,:);
-%     matTWISTGLOB(valTIMESTEP,:) = matTWIST(end,:);
-% end
-
 [matNPVLST, matNPNEWWAKE, matNEWWAKE, valUINF] = fcnMOVEFLEXWING(valALPHA, valBETA, valDELTIME, matVLST, matCENTER, matDVE, vecDVETE, vecDVEHVSPN, vecDVELE, matNPVLST, matDEFGLOB,...
     matTWISTGLOB, matSLOPE, valTIMESTEP, vecN, vecM, vecDVEWING, vecDVEPANEL, matSCLST, vecDVEPITCH, matNPDVE, vecSPANDIST, vecCL, valWEIGHT, valAREA, valDENSITY,valUINF);
 
