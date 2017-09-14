@@ -1,6 +1,6 @@
 function [inddrag]=fcnDVEINDDRAG(matCOEFF,matDVE,matVLST,matUINF,vecDVEHVSPN,vecDVEHVCRD, vecDVETE,...
     valWNELE, matWDVE, matWVLST, matWCOEFF, vecWK, vecWDVEHVSPN,vecWDVEHVCRD, vecWDVEROLL, vecWDVEPITCH, vecWDVEYAW, vecWDVELESWP, vecWDVETESWP, ...
-    valWSIZE, valTIMESTEP,vecSYM,vecDVEWING,vecWDVEWING )
+    valWSIZE, valTIMESTEP,vecSYM,vecDVEWING,vecWDVEWING, temp )
 % Induced dve drag. Function finds induced drag values on each te element. Outputs are not
 % non-dimensionalized to q.
 
@@ -94,10 +94,10 @@ newtepoint(diffw) = tepoints(diffw);
 %we have now accounted for all the current timestep of wake elements, now repmat to
 %account for remaining wake rows
 %fpg is all points to go into DVEVEL
-fpg = repmat(newtepoint,[valTIMESTEP,1,1]);
-dvenum = repmat(dvenum,[valTIMESTEP,1,1]); %incorrect inducers index
+fpg = repmat(newtepoint,[valTIMESTEP-temp,1,1]);
+dvenum = repmat(dvenum,[valTIMESTEP-temp,1,1]); %incorrect inducers index
 
-mult = [1:valTIMESTEP]'; %need to renumber old timestep rows
+mult = [1:valTIMESTEP-temp]'; %need to renumber old timestep rows
 multnew = repmat(mult,[valWSIZE*valWSIZE,1,1]);
 multnew = sort(multnew);
 dvenum = dvenum - repmat(valWSIZE,size(dvenum,1),1).*(multnew-1);

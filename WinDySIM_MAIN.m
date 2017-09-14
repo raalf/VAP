@@ -35,8 +35,8 @@ disp(' ');
 %% Reading in geometry
 
 strFILE = 'inputs/WinDySIM_Gust.txt';
-strSTRUCT_INPUT = 'inputs/Struct_Input_AIAA.txt';
-strOUTPUTFILE = 'Test.mat';
+strSTRUCT_INPUT = 'inputs/Struct_Input_SB14.txt';
+strOUTPUTFILE = 'Solar_Plane_Loading.mat';
 
 [flagRELAX, flagSTEADY, flagSTIFFWING, flagGUSTMODE, valAREA, valSPAN,...
     valCMAC, valWEIGHT, valCM, seqALPHA, seqBETA, valKINV, valUINF, valGUSTAMP,...
@@ -66,6 +66,8 @@ flagPRINT   = 1;
 flagPLOT    = 1;
 flagPLOTWAKEVEL = 0;
 flagVERBOSE = 0;
+
+valGUSTSTART = 30;
 
 %% Discretize geometry into DVEs
 
@@ -187,8 +189,9 @@ for ai = 1:length(seqALPHA)
             % First "valSTIFFSTEPS" timesteps do not deflect the wing
             if valTIMESTEP <= valSTIFFSTEPS || flagSTIFFWING == 1
 
-                [matVLST, matCENTER, matNEWWAKE, matNPNEWWAKE, matNTVLST, matNPVLST, matDEFGLOB, matTWISTGLOB, valUINF] = fcnSTIFFWING(valALPHA, valBETA, valDELTIME, matVLST, matCENTER, matDVE, vecDVETE,...
-                    matNTVLST, matNPVLST, vecN, valTIMESTEP, vecCL, valWEIGHT, valAREA, valDENSITY, valUINF);
+                [matVLST, matCENTER, matNEWWAKE, matNPNEWWAKE, matNTVLST, matNPVLST, matDEFGLOB, matTWISTGLOB, valUINF, valGUSTTIME, matUINF, flagSTEADY] = fcnSTIFFWING(valALPHA,...
+                    valBETA, valDELTIME, matVLST, matCENTER, matDVE, vecDVETE, matNTVLST, matNPVLST, vecN, valTIMESTEP, vecCL, valWEIGHT, valAREA, valDENSITY,...
+                    valUINF, valGUSTTIME, valGUSTL, valGUSTAMP, flagGUSTMODE, valGUSTSTART, flagSTEADY, matUINF);
                 
                 % Only move structure if flex wing case is selected
                 if flagSTIFFWING == 2
@@ -231,10 +234,63 @@ for ai = 1:length(seqALPHA)
                 vecWDVEMCSWP, vecWDVETESWP, vecWDVEAREA, matWDVENORM, matWVLST, matWDVE, valWNELE, matWCENTER, matWCOEFF, vecWK, matCOEFF, vecDVETE, matWADJE, matNPVLST, vecDVEPANEL, ...
                 vecWDVEPANEL, vecSYM, valLENWADJE, vecWKGAM, vecWDVESYM, vecWDVETIP, vecK, vecDVEWING, vecWDVEWING, flagSTEADY, valWSIZE);
             
+            if valDELTIME*valTIMESTEP*valUINF >= 1*(valSPAN/2)
+                wake_chop = valWNELE/valWSIZE - 1;
+            else
+                wake_chop = 10;
+            end
+
+            if valWNELE/valWSIZE >= (wake_chop+1)
+                
+                dve_cut = ((valWSIZE)*(wake_chop+1)-valWSIZE+1):valWSIZE*(wake_chop+1);
+                
+                matWAKEGEOM(1:valWSIZE,:,:) = [];
+                matNPWAKEGEOM(1:valWSIZE,:,:) = [];
+                vecWDVEHVSPN(1:valWSIZE) = [];
+                vecWDVEHVCRD(1:valWSIZE) = [];
+                vecWDVEROLL(1:valWSIZE) = [];
+                vecWDVEPITCH(1:valWSIZE) = [];
+                vecWDVEYAW(1:valWSIZE) = [];
+                vecWDVELESWP(1:valWSIZE) = [];
+                vecWDVEMCSWP(1:valWSIZE) = [];
+                vecWDVETESWP(1:valWSIZE) = [];
+                vecWDVEAREA(1:valWSIZE) = [];
+                matWDVENORM(1:valWSIZE,:) = [];
+                matWVLST(matWDVE(1:valWSIZE,:),:) = [];
+                matWDVE(1:valWSIZE,:) = [];
+                valWNELE = wake_chop*valWSIZE;
+                matWCENTER(1:valWSIZE,:) = [];
+                matWCOEFF(1:valWSIZE,:) = [];
+                vecWK(1:valWSIZE) = [];
+                vecWDVEPANEL(1:valWSIZE) = [];
+                vecWDVESYM(1:valWSIZE) = [];
+                vecWDVETIP(1:valWSIZE) = [];
+                vecWKGAM(1:valWSIZE) = [];
+                vecWDVEWING(1:valWSIZE) = [];
+                
+                [temp1,~,~] = find(matWADJE(:,1) == dve_cut);
+                [temp2,~,~] = find(matWADJE(:,3) == dve_cut);
+                
+                temp3 = unique([temp1; temp2]);
+                
+                matWADJE(temp3,:) = [];
+                
+%                 matWADJE = matWADJE - valWSIZE;
+                
+                matWDVE = matWDVE - 4*valWSIZE;
+                
+                wake_cut = wake_cut + 1;
+                
+            else
+                
+                wake_cut = 1;
+                
+            end
+            
             %% Creating and solving WD-Matrix for latest row of wake elements
             % We need to grab from matWADJE only the values we need for this latest row of wake DVEs
             idx = sparse(sum(ismember(matWADJE,[((valWNELE - valWSIZE) + 1):valWNELE]'),2)>0 & (matWADJE(:,2) == 4 | matWADJE(:,2) == 2));
-            temp_WADJE = [matWADJE(idx,1) - (valTIMESTEP-1)*valWSIZE matWADJE(idx,2) matWADJE(idx,3) - (valTIMESTEP-1)*valWSIZE];
+            temp_WADJE = [matWADJE(idx,1) - (valTIMESTEP-wake_cut)*valWSIZE matWADJE(idx,2) matWADJE(idx,3) - (valTIMESTEP-wake_cut)*valWSIZE];
             
             [matWD, vecWR] = fcnWDWAKE([1:valWSIZE]', temp_WADJE, vecWDVEHVSPN(end-valWSIZE+1:end), vecWDVESYM(end-valWSIZE+1:end), vecWDVETIP(end-valWSIZE+1:end), vecWKGAM(end-valWSIZE+1:end));
             [matWCOEFF(end-valWSIZE+1:end,:)] = fcnSOLVEWD(matWD, vecWR, valWSIZE, vecWKGAM(end-valWSIZE+1:end), vecWDVEHVSPN(end-valWSIZE+1:end));
@@ -271,6 +327,12 @@ for ai = 1:length(seqALPHA)
             
             %% Forces
             
+            if wake_cut > 1
+                temp = temp + 1;
+            else
+                temp = 0;
+            end
+            
             [vecCL(valTIMESTEP,ai), vecCLF(valTIMESTEP,ai),vecCLI(valTIMESTEP,ai),vecCDI(valTIMESTEP,ai), vecE(valTIMESTEP,ai), vecDVENFREE, vecDVENIND, ...
                 vecDVELFREE, vecDVELIND, vecDVESFREE, vecDVESIND, vecLIFTDIST, vecMOMDIST, vecCLDIST] = ...
                 fcnFORCES(matCOEFF, vecK, matDVE, valNELE, matCENTER, matVLST, matUINF, vecDVELESWP,...
@@ -278,7 +340,7 @@ for ai = 1:length(seqALPHA)
                 valWNELE, matWDVE, matWVLST, matWCOEFF, vecWK, vecWDVEHVSPN, vecWDVEHVCRD,vecWDVEROLL, vecWDVEPITCH, vecWDVEYAW, ...
                 vecWDVELESWP, vecWDVETESWP, valWSIZE, valTIMESTEP, vecSYM, vecDVETESWP, valAREA, valSPAN, valBETA, ...
                 vecDVEWING, vecWDVEWING, vecN, vecM, vecDVEPANEL, vecDVEAREA, vecSPNWSECRD, vecSPNWSEAREA, matQTRCRD, valDENSITY, valWEIGHT,...
-                vecLEDVES, vecUINF, matSCLST, vecSPANDIST, matNPVLST, matNPDVE, matSC, vecMAC, valCM, valUINF, matAEROCNTR, flagSTIFFWING);
+                vecLEDVES, vecUINF, matSCLST, vecSPANDIST, matNPVLST, matNPDVE, matSC, vecMAC, valCM, valUINF, matAEROCNTR, flagSTIFFWING,temp);
             
             if flagPRINT == 1 && valTIMESTEP == 1
                 fprintf(' TIMESTEP    CL          CDI          Tip Def.       Twist (deg)\n'); %header
