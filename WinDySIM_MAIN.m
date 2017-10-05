@@ -34,8 +34,8 @@ disp(' ');
 
 %% Reading in geometry
 
-strFILE = 'inputs/WinDySIM_Gust.txt';
-strSTRUCT_INPUT = 'inputs/Struct_Input_SB14.txt';
+strFILE = 'inputs/WinDySIM_Gust_Goland.txt';
+strSTRUCT_INPUT = 'inputs/Struct_Input_Goland.txt';
 strOUTPUTFILE = 'Solar_Plane_Loading.mat';
 
 [flagRELAX, flagSTEADY, flagSTIFFWING, flagGUSTMODE, valAREA, valSPAN,...
@@ -67,7 +67,7 @@ flagPLOT    = 1;
 flagPLOTWAKEVEL = 0;
 flagVERBOSE = 0;
 
-valGUSTSTART = 30;
+valGUSTSTART = 20;
 
 %% Discretize geometry into DVEs
 
@@ -155,6 +155,10 @@ for ai = 1:length(seqALPHA)
         vecWDVEWING = [];
         valGUSTTIME = 1;
         
+       gamma_old = [];
+       dGammadt = [];
+       test = [];
+        
         n = 1;
         
         % Building wing resultant
@@ -189,9 +193,9 @@ for ai = 1:length(seqALPHA)
             % First "valSTIFFSTEPS" timesteps do not deflect the wing
             if valTIMESTEP <= valSTIFFSTEPS || flagSTIFFWING == 1
 
-                [matVLST, matCENTER, matNEWWAKE, matNPNEWWAKE, matNTVLST, matNPVLST, matDEFGLOB, matTWISTGLOB, valUINF, valGUSTTIME, matUINF, flagSTEADY] = fcnSTIFFWING(valALPHA,...
+                [matVLST, matCENTER, matNEWWAKE, matNPNEWWAKE, matNTVLST, matNPVLST, matDEFGLOB, matTWISTGLOB, valUINF, valGUSTTIME, matUINF, flagSTEADY,test] = fcnSTIFFWING(valALPHA,...
                     valBETA, valDELTIME, matVLST, matCENTER, matDVE, vecDVETE, matNTVLST, matNPVLST, vecN, valTIMESTEP, vecCL, valWEIGHT, valAREA, valDENSITY,...
-                    valUINF, valGUSTTIME, valGUSTL, valGUSTAMP, flagGUSTMODE, valGUSTSTART, flagSTEADY, matUINF);
+                    valUINF, valGUSTTIME, valGUSTL, valGUSTAMP, flagGUSTMODE, valGUSTSTART, flagSTEADY, matUINF, vecDVEHVSPN,test);
                 
                 % Only move structure if flex wing case is selected
                 if flagSTIFFWING == 2
@@ -234,11 +238,11 @@ for ai = 1:length(seqALPHA)
                 vecWDVEMCSWP, vecWDVETESWP, vecWDVEAREA, matWDVENORM, matWVLST, matWDVE, valWNELE, matWCENTER, matWCOEFF, vecWK, matCOEFF, vecDVETE, matWADJE, matNPVLST, vecDVEPANEL, ...
                 vecWDVEPANEL, vecSYM, valLENWADJE, vecWKGAM, vecWDVESYM, vecWDVETIP, vecK, vecDVEWING, vecWDVEWING, flagSTEADY, valWSIZE);
             
-            if valDELTIME*valTIMESTEP*valUINF >= 1*(valSPAN/2)
-                wake_chop = valWNELE/valWSIZE - 1;
-            else
-                wake_chop = 10;
-            end
+%             if valDELTIME*valTIMESTEP*valUINF >= 1*(valSPAN/2)
+%                 wake_chop = valWNELE/valWSIZE - 1;
+%             else
+                wake_chop = valMAXTIME;
+%             end
 
             if valWNELE/valWSIZE >= (wake_chop+1)
                 
@@ -274,8 +278,6 @@ for ai = 1:length(seqALPHA)
                 temp3 = unique([temp1; temp2]);
                 
                 matWADJE(temp3,:) = [];
-                
-%                 matWADJE = matWADJE - valWSIZE;
                 
                 matWDVE = matWDVE - 4*valWSIZE;
                 
@@ -334,13 +336,14 @@ for ai = 1:length(seqALPHA)
             end
             
             [vecCL(valTIMESTEP,ai), vecCLF(valTIMESTEP,ai),vecCLI(valTIMESTEP,ai),vecCDI(valTIMESTEP,ai), vecE(valTIMESTEP,ai), vecDVENFREE, vecDVENIND, ...
-                vecDVELFREE, vecDVELIND, vecDVESFREE, vecDVESIND, vecLIFTDIST, vecMOMDIST, vecCLDIST] = ...
+                vecDVELFREE, vecDVELIND, vecDVESFREE, vecDVESIND, vecLIFTDIST, vecMOMDIST, vecCLDIST, gamma_old, dGammadt] = ...
                 fcnFORCES(matCOEFF, vecK, matDVE, valNELE, matCENTER, matVLST, matUINF, vecDVELESWP,...
                 vecDVEMCSWP, vecDVEHVSPN, vecDVEHVCRD,vecDVEROLL, vecDVEPITCH, vecDVEYAW, vecDVELE, vecDVETE, matADJE,...
                 valWNELE, matWDVE, matWVLST, matWCOEFF, vecWK, vecWDVEHVSPN, vecWDVEHVCRD,vecWDVEROLL, vecWDVEPITCH, vecWDVEYAW, ...
                 vecWDVELESWP, vecWDVETESWP, valWSIZE, valTIMESTEP, vecSYM, vecDVETESWP, valAREA, valSPAN, valBETA, ...
                 vecDVEWING, vecWDVEWING, vecN, vecM, vecDVEPANEL, vecDVEAREA, vecSPNWSECRD, vecSPNWSEAREA, matQTRCRD, valDENSITY, valWEIGHT,...
-                vecLEDVES, vecUINF, matSCLST, vecSPANDIST, matNPVLST, matNPDVE, matSC, vecMAC, valCM, valUINF, matAEROCNTR, flagSTIFFWING,temp);
+                vecLEDVES, vecUINF, matSCLST, vecSPANDIST, matNPVLST, matNPDVE, matSC, vecMAC, valCM, valUINF, matAEROCNTR, flagSTIFFWING, temp,...
+                flagSTEADY, gamma_old, dGammadt, valDELTIME);
             
             if flagPRINT == 1 && valTIMESTEP == 1
                 fprintf(' TIMESTEP    CL          CDI          Tip Def.       Twist (deg)\n'); %header
@@ -361,11 +364,11 @@ for ai = 1:length(seqALPHA)
         
         %% Viscous wrapper
         
-        [vecCLv(1,ai), vecCD(1,ai), vecPREQ(1,ai), valVINF(1,ai), valLD(1,ai)] = fcnVISCOUS(vecCL(end,ai), vecCDI(end,ai), ...
-            valWEIGHT, valAREA, valDENSITY, valKINV, vecDVENFREE, vecDVENIND, ...
-            vecDVELFREE, vecDVELIND, vecDVESFREE, vecDVESIND, vecDVEPANEL, vecDVELE, vecDVEWING, vecN, vecM, vecDVEAREA, ...
-            matCENTER, vecDVEHVCRD, vecAIRFOIL, flagVERBOSE, vecSYM, valVSPANELS, matVSGEOM, valFPANELS, matFGEOM, valFTURB, ...
-            valFPWIDTH, valINTERF, vecDVEROLL);
+%         [vecCLv(1,ai), vecCD(1,ai), vecPREQ(1,ai), valVINF(1,ai), valLD(1,ai)] = fcnVISCOUS(vecCL(end,ai), vecCDI(end,ai), ...
+%             valWEIGHT, valAREA, valDENSITY, valKINV, vecDVENFREE, vecDVENIND, ...
+%             vecDVELFREE, vecDVELIND, vecDVESFREE, vecDVESIND, vecDVEPANEL, vecDVELE, vecDVEWING, vecN, vecM, vecDVEAREA, ...
+%             matCENTER, vecDVEHVCRD, vecAIRFOIL, flagVERBOSE, vecSYM, valVSPANELS, matVSGEOM, valFPANELS, matFGEOM, valFTURB, ...
+%             valFPWIDTH, valINTERF, vecDVEROLL);
                 
     end
 end

@@ -31,7 +31,7 @@ if valGUSTTIME > 1
 % Runs structure code until static aeroleastic convergence
 else
     
-    for tempTIME = 1:20000
+    for tempTIME = 1:2000
         
         [vecDEF, vecTWIST, matDEFGLOB, matTWISTGLOB, matDEF, matTWIST, matSLOPE] = fcnWINGTWISTBEND_STAGGER(vecLIFTDIST, vecMOMDIST, matEIx, vecLM, vecJT, matGJt,...
             vecLSM, vecN, valSPAN, vecDVEHVSPN, valTIMESTEP, matDEFGLOB, matTWISTGLOB, vecSPANDIST, valSDELTIME, matSLOPE, valDELTIME, tempTIME, matDEF, matTWIST);
@@ -53,13 +53,13 @@ end
 [matUINF] = fcnFLEXUINF(matCENTER_old, matCENTER, valDELTIME, valTIMESTEP);
 
 % Determine % relative change between aeroelastic timesteps
-tol_def = (100*abs(matDEFGLOB(valTIMESTEP,end-2)-matDEFGLOB(valTIMESTEP-valSTIFFSTEPS,end-2))/matDEFGLOB(valTIMESTEP-valSTIFFSTEPS,end-2));
-tol_twist = (100*abs(matTWISTGLOB(valTIMESTEP,end-2)-matTWISTGLOB(valTIMESTEP-valSTIFFSTEPS,end-2))/matTWISTGLOB(valTIMESTEP-valSTIFFSTEPS,end-2));
-
-% Add in gust velocities to matUINF if convergence tolerance is met
-if (tol_def < 0.05 && tol_twist < 0.05) || valGUSTTIME > 1
-    [matUINF] = fcnGUSTWING(matUINF,valGUSTAMP,valGUSTL,flagGUSTMODE,valDELTIME,valGUSTTIME,valUINF);
+% tol_def = (100*abs(matDEFGLOB(valTIMESTEP,end-2)-matDEFGLOB(valTIMESTEP-valSTIFFSTEPS,end-2))/matDEFGLOB(valTIMESTEP-valSTIFFSTEPS,end-2));
+% tol_twist = (100*abs(matTWISTGLOB(valTIMESTEP,end-2)-matTWISTGLOB(valTIMESTEP-valSTIFFSTEPS,end-2))/matTWISTGLOB(valTIMESTEP-valSTIFFSTEPS,end-2));
+% 
+% % Add in gust velocities to matUINF if convergence tolerance is met
+% if (tol_def < 0.05 && tol_twist < 0.05) || valGUSTTIME > 1
+    [matUINF] = fcnGUSTWING(matUINF,valGUSTAMP,valGUSTL,flagGUSTMODE,valDELTIME,valGUSTTIME,valUINF,valALPHA,valBETA);
     valGUSTTIME = valGUSTTIME + 1;
-end
+% end
 
 end

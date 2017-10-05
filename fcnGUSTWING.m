@@ -1,4 +1,4 @@
-function [matUINF] = fcnGUSTWING(matUINF,valGUSTAMP,valGUSTL,flagGUSTMODE,valDELTIME,valGUSTTIME,valUINF,valALPHA,valBETA)
+function [matUINF,test] = fcnGUSTWING(matUINF,valGUSTAMP,valGUSTL,flagGUSTMODE,valDELTIME,valGUSTTIME,valUINF,valALPHA,valBETA,valGUSTSTART,matDVE,matCENTER,vecDVEHVSPN,test)
 
 % This function modifies matUINF to model a sinusoidal gust.
 
@@ -6,6 +6,17 @@ function [matUINF] = fcnGUSTWING(matUINF,valGUSTAMP,valGUSTL,flagGUSTMODE,valDEL
 
 % Gust period
 valPER = valGUSTL/valUINF;
+x0 = valGUSTTIME*valDELTIME*valUINF;
+x = 0;
+
+start_loc = repmat([-valGUSTSTART*valDELTIME*valUINF,0,0],size(matCENTER,1),1); % Location (in meters) in global frame where gust starts
+
+delx = start_loc - matCENTER; % Distance between DVE points and gust starting point
+
+idx1 = delx(:,1) >= 0 & delx(:,1) <= valGUSTL;
+idx2 = find(idx1 > 0);
+
+tau = delx(idx2,1)./valUINF;
 
 matUINF = repmat([valUINF*cos(valALPHA)*cos(valBETA) valUINF*sin(valBETA) valUINF*sin(valALPHA)*cos(valBETA)],size(matUINF,1),1);
 
@@ -15,33 +26,28 @@ if flagGUSTMODE == 1
     if valPER >=  valGUSTTIME*valDELTIME
         valGUSTVEL = valGUSTAMP*sin((2*pi/valPER)*valDELTIME*valGUSTTIME);
     else
-        valGUSTVEL= 0;
+        valGUSTVEL = 0;
     end
 
 % Create gust velocity for 1-cosine gust
 elseif flagGUSTMODE == 2
     
-    if valPER >= valGUSTTIME*valDELTIME
-        valGUSTVEL = 0.5*valGUSTAMP*(1 - cos((2*pi*valUINF*valDELTIME*valGUSTTIME)/valGUSTL));
-    else
-        valGUSTVEL = 0;
+    if any(idx1) > 0
+        matUINF(idx2,3) = matUINF(idx2,3) + 0.5*valGUSTAMP*(1 - cos((2*pi*tau/(valGUSTL/valUINF))));
+        test(valGUSTTIME,:) = matUINF(4,3);
     end
     
 % Create gust velocity for sharp edge gust
 elseif flagGUSTMODE == 3
     
-    if valPER >= valGUSTTIME*valDELTIME
-        valGUSTVEL = valGUSTAMP;
-    else
-        valGUSTVEL = 0;
+    if any(idx1) > 0
+        matUINF(idx2,3) = matUINF(idx2,3) + valGUSTAMP;
     end
     
 else
     
-    valGUSTVEL = 0;
+    disp('No gust mode exists for entered value');
     
 end
 
-% Add gust velocity to matUINF
-matUINF = matUINF + repmat([0,0,valGUSTVEL],size(matUINF,1),1);
-
+end
