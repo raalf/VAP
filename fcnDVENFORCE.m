@@ -101,7 +101,7 @@ C(idx1 ==0) = (matCOEFF(idx1==0,3)-matCOEFF(idxf,3));
 nfree = ((A .*2 .* vecDVEHVSPN'+  C./3.*2.*vecDVEHVSPN'.*vecDVEHVSPN'.*vecDVEHVSPN') .*uxs')';
 
 % Unsteady lift term with apparent mass
-lambda = 0.5; % Relaxation factor for dGammadt term
+lambda = 1; % Relaxation factor for dGammadt term
 
 GammaInt = (A .*2 .* vecDVEHVSPN'+  C./3.*2.*vecDVEHVSPN'.*vecDVEHVSPN'.*vecDVEHVSPN'); % Integrated circulation across DVE
 
