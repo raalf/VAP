@@ -24,6 +24,7 @@ disp(' ');
 strFILE = 'inputs/TMotor.txt';
 %strFILE = 'inputs/standard_cirrus.txt';
 %strFILE = 'inputs/TMotorQuad.txt';
+%strFILE = 'inputs/TenzinHover.txt';
 
 [flagRELAX, flagSTEADY, valMAXTIME, valMINTIME, valAZNUM, valDELTAE, ...
     seqALPHAR, seqJ, valRPM, valDENSITY, valKINV, valAREA, valDIA, ...
@@ -31,20 +32,21 @@ strFILE = 'inputs/TMotor.txt';
     vecSYM, valINTERF] = fcnVAPTORREAD(strFILE);
 
 % [flagRELAX, flagSTEADY, valMAXTIME, valMINTIME, valAZNUM, ...
-%     valDELTAE, seqALPHAR, valJ, valRPM, valDENSITY, valKINV, valAREA, valDIA,...
+%     valDELTAE, seqALPHAR, seqJ, valRPM, valDENSITY, valKINV, valAREA, valDIA,...
 %     valNUMB, valNUMRO, matROTAX, vecRODIR, valPANELS, vecROTAXLOC, matGEOM, vecAIRFOIL, vecN, vecM, vecSYM, ...
 %     valINTERF] = fcnVAPTORREADMULTI(strFILE);
 
+flagVISCOUS = 1;
 flagPRINT   = 0;
-flagPLOT    = 1;
+flagPLOT    = 0;
 flagPLOTWAKEVEL = 0;
 flagVERBOSE = 0;
-flagSAVE = 0;
+flagSAVE = 1;
 flagPROGRESS = 0;
-filename = 'ZeroAlphaSweepJune29'; % Save workspace name
+filename = 'TMotorSweepViscousApparentMass'; % Save workspace name
 
-% %% Apply multiple rotors
-% [valPANELS, vecN, vecM, vecAIRFOIL, matGEOM ] = fcnGEOMMULTIROTOR(valNUMRO, valPANELS, vecRODIR, vecROTAXLOC, vecN, vecM, vecAIRFOIL, matGEOM, matROTAX);
+%% Apply multiple rotors
+%[valPANELS, vecN, vecM, vecAIRFOIL, matGEOM ] = fcnGEOMMULTIROTOR(valNUMRO, valPANELS, vecRODIR, vecROTAXLOC, vecN, vecM, vecAIRFOIL, matGEOM, matROTAX);
 
 %% Discretize geometry into DVEs
 [matCENTER0, vecDVEHVSPN0, vecDVEHVCRD, vecDVELESWP, vecDVEMCSWP, ...
@@ -64,6 +66,12 @@ filename = 'ZeroAlphaSweepJune29'; % Save workspace name
     vecDVEHVSPN0, vecDVEAREA, vecDVESYM, vecDVELE, vecDVETE, vecSYM, ...
     vecROTAX0, vecAIRFOIL, matNPVLST0, matDVE, matADJE, matVLST0, ...
     matCENTER0, matDVENORM0);
+
+% [valNELE, matNEWNPVLST, vecAIRFOIL, vecDVELE, vecDVETE, ...
+%     vecDVEYAW, vecDVEPANEL, vecDVETIP, vecDVEWING, vecDVESYM, vecM, vecN, ...
+%     vecDVEROLL, vecDVEAREA, vecDVEPITCH, vecDVEMCSWP, vecDVETESWP, vecDVELESWP, ...
+%     vecDVEHVCRD, vecDVEHVSPN, vecSYM, vecQARM, matADJE, matNEWCENTER, matNEWVLST, matDVE, matNEWDVENORM, matVLST] = fcnDVEMULTIROTORNEW(valNUMRO, valNELE, valNUMB, vecDVETIP, vecDVETESWP, vecDVEPITCH, vecDVEWING, vecDVEMCSWP, vecM, vecN, vecDVEPANEL, vecDVEROLL, vecDVELESWP, vecDVEYAW, vecDVEHVCRD, vecDVEHVSPN, vecDVEAREA, vecDVESYM, vecDVELE, vecDVETE, vecSYM, matROTAX, vecAIRFOIL, matNPVLST, matDVE, matADJE, matVLST, matCENTER, matDVENORM)
+
 
 valWSIZE = length(nonzeros(vecDVETE)); % Amount of wake DVEs shed each timestep
 %% Add boundary conditions to D-Matrix
@@ -89,14 +97,21 @@ matSWPDISNORM = zeros(valNELE,valAZNUM,length(seqJ),length(seqALPHAR));
 matSWPDISTHRUST = zeros(valNELE,valAZNUM,length(seqJ),length(seqALPHAR));
 matSWPDISAXIAL = zeros(valNELE,valAZNUM,length(seqJ),length(seqALPHAR));
 matSWPDISSIDE = zeros(valNELE,valAZNUM,length(seqJ),length(seqALPHAR));
-convCT = zeros(valMAXTIME,1);
-convCP = zeros(valMAXTIME,1);
+convCT = zeros(valMAXTIME,length(seqJ),length(seqALPHAR));
+convCP = zeros(valMAXTIME,length(seqJ),length(seqALPHAR));
 matthrustind = zeros(valNELE,valMAXTIME,length(seqJ));
 matthrustfree = zeros(valNELE,valMAXTIME,length(seqJ));
 matthrustCFfree = zeros(valNELE,valMAXTIME,length(seqJ));
 mattempTi = zeros(valNELE,valMAXTIME,length(seqJ));
 matPthrust = zeros(valNELE,valMAXTIME,length(seqJ));
 matdifthrustP = zeros(valNELE,valMAXTIME,length(seqJ));
+matINDUCED_VEL = zeros(valNELE,3,valAZNUM);
+matCDPDIST = zeros(valNELE,length(seqJ));
+matCLPDIST = zeros(valNELE,length(seqJ));
+induced_vel1 = zeros(625,3,valAZNUM);
+b = 0;
+
+
 if flagPROGRESS == 1 % Apply progress bar
     progressbar('Angle of Attack','Advance Ratio')
 end
@@ -105,12 +120,22 @@ for ai = 1:length(seqALPHAR)
     if flagPROGRESS == 1
         progressbar([],0)
     end
-    for ji= 1:length(seqJ)
+    parfor ji= 1:length(seqJ)
     if flagPROGRESS == 1
         progressbar([],ji/length(seqJ))
     end
     valALPHAR = deg2rad(seqALPHAR(ai));
     valJ = seqJ(ji);
+    
+    if valJ == 0
+        flagHOVER = 1;
+        hoverSCALING = 0.00008;
+        valJ = -(1)*valRPM/(valAZNUM)*(hoverSCALING) + (valMAXTIME-valAZNUM)*valRPM/(valAZNUM)*(hoverSCALING);
+        valALPHAR = deg2rad(90);
+    else
+        flagHOVER = 0;
+    end
+    
     % This is done for when we are using a parfor loop
     matCENTER = matCENTER0;
     matVLST = matVLST0;
@@ -131,7 +156,7 @@ for ai = 1:length(seqALPHAR)
         fcnUINFROT(matCENTER, vecROTAX, 0, valRPM, valALPHAR, ...
         valAZNUM, valDIA, valJ, valNUMB,vecDVEHVSPN, vecDVETE, matVLST, ...
         matDVE);
-    
+
     % Initializing wake parameters
 	matWAKEGEOM = [];
 	matNPWAKEGEOM = [];
@@ -158,7 +183,7 @@ for ai = 1:length(seqALPHAR)
 	vecWDVESYM = [];
     vecWDVETIP = [];
     vecWDVEWING = [];
-    vecCTCONV = [];
+    vecCTCONV = 0;
     vecCFyCONV = [];
     vecCFxCONV = [];
     vecCPCONV = [];
@@ -169,6 +194,10 @@ for ai = 1:length(seqALPHAR)
     matDISTHRUST = [];
     matDISAXIAL = [];
     matDISSIDE = [];
+    vecCDPDIST = [];
+    vecCLPDIST = [];
+    gamma_old = [];
+    dGammadt = [];
     
     % Building rotor resultant
     [vecR] = fcnRESROTOR(valNELE, 0, matCENTER, matDVENORM, matUINF, ...
@@ -200,15 +229,24 @@ for ai = 1:length(seqALPHAR)
         %   Calculate force and moment coefficents
         %   Calculate viscous effects
             
+        if flagHOVER == 1 && valJ ~= 0
+            valJ = -(valTIMESTEP)*valRPM/(valAZNUM)*(hoverSCALING) + (valMAXTIME-valAZNUM)*valRPM/(valAZNUM)*(hoverSCALING);
+        end
         
         %% Moving the rotor
-        [matVLST, matCENTER, vecROTAX, matNEWWAKE, matNPNEWWAKE, ... 
-            vecDVEHVSPN, vecDVEHVCRD, vecDVEROLL, vecDVEPITCH, ...
-            vecDVEYAW, vecDVELESWP, vecDVEMCSWP, vecDVETESWP, ...
-            vecDVEAREA, matDVENORM] = fcnMOVEROTOR(vecROTAX, matVLST, ...
-            matCENTER, matNPVLST, vecDVETE, matDVE, valAZNUM, valJ, ...
-            valDIA, valALPHAR);
-        
+%         [matVLST, matCENTER, vecROTAX, matNEWWAKE, matNPNEWWAKE, ... 
+%             vecDVEHVSPN, vecDVEHVCRD, vecDVEROLL, vecDVEPITCH, ...
+%             vecDVEYAW, vecDVELESWP, vecDVEMCSWP, vecDVETESWP, ...
+%             vecDVEAREA, matDVENORM] = fcnMOVEROTOR(vecROTAX, matVLST, ...
+%             matCENTER, matNPVLST, vecDVETE, matDVE, valAZNUM, valJ, ...
+%             valDIA, valALPHAR);
+[matVLST, matCENTER, vecROTAX, matNEWWAKE, matNPNEWWAKE, vecDVEHVSPN, ...
+    vecDVEHVCRD, vecDVEROLL, vecDVEPITCH, vecDVEYAW, ...
+    vecDVELESWP, vecDVEMCSWP, vecDVETESWP, vecDVEAREA, matDVENORM] = ...
+    fcnMOVEROTOR(valDENSITY, valRPM, vecROTAX, vecCTCONV, matUINF, matVLST, matCENTER, matNPVLST, ...
+    vecDVETE, matDVE, valAZNUM, valJ, valDIA, valALPHAR);        
+
+
        % Generate new wake elements
         [matWAKEGEOM, matNPWAKEGEOM, vecWDVEHVSPN, vecWDVEHVCRD, ...
             vecWDVEROLL, vecWDVEPITCH, vecWDVEYAW, vecWDVELESWP, ...
@@ -224,7 +262,12 @@ for ai = 1:length(seqALPHAR)
             matWADJE, matNPVLST, vecDVEPANEL, vecWDVEPANEL, vecSYM, ...
             valLENWADJE, vecWKGAM, vecWDVESYM, vecWDVETIP, vecK, ...
             vecDVEWING, vecWDVEWING, flagSTEADY, valWSIZE);       
-        
+
+%         if flagPLOT == 1
+%     [hFig2] = fcnPLOTBODY(flagVERBOSE, valNELE, matDVE, matVLST, matCENTER);
+%     [hLogo] = fcnPLOTLOGO(0.97,0.03,14,'k','none');
+%     [hFig2] = fcnPLOTWAKE(flagVERBOSE, hFig2, valWNELE, matWDVE, matWVLST, matWCENTER);
+% end
         %% Creating and solving WD-Matrix for latest row of wake elements
         % We need to grab from matWADJE only the values we need for this latest row of wake DVEs
         idx = sparse(sum(ismember(matWADJE,[((valWNELE - valWSIZE) + 1)...
@@ -287,28 +330,32 @@ for ai = 1:length(seqALPHAR)
 %         [hFig2] = fcnPLOTWAKE(flagVERBOSE, hFig2, valWNELE, matWDVE, matWVLST, matWCENTER);
 
         %% Calculate Forces
-        [thrustind, thrustfree, thrustCFfree, tempTi, Pthrust, difthrustP, valCT, valFy, valFx, valCQ, valCP, valCMy, valCMx, vecCTCONV, ...
-            vecCFyCONV, vecCFxCONV, vecCQCONV, vecCPCONV, vecCMyCONV, ...
-            vecCMxCONV, vecDISTHRUST, vecDISNORM, vecDISAXIAL, ...
-            vecDISSIDE, matDISNORM, matDISTHRUST, matDISAXIAL, ...
-            matDISSIDE, matWUINF] = fcnRFORCES(flagVERBOSE,valKINV, valMAXTIME, valAZNUM, valDIA, valRPM, valWSIZE,...
-            valTIMESTEP, valNELE, valWNELE, seqALPHAR, vecDVEAREA, vecAIRFOIL,  vecN, vecM, vecDVEPANEL, vecQARM,...
-            vecDVEPITCH, vecDVETE, vecDVEWING, vecWDVEWING, vecK, vecWK,...
-            vecWDVEYAW, vecWDVELESWP, vecWDVETESWP, vecDVEYAW, ...
-            vecDVEMCSWP, vecWDVEHVSPN, vecWDVEHVCRD, vecWDVEROLL,...
-            vecDVEROLL,  vecDVEHVCRD, vecDVELE, vecDVEHVSPN, ...
-            vecWDVEPITCH, vecDVELESWP, vecDVETESWP, vecSYM, vecTHETA, ...
-            vecCTCONV, vecCFxCONV, vecCFyCONV, vecCPCONV, vecCMxCONV, ...
-            vecCMyCONV, vecCQCONV, matVLST, matDVE, matUINF, matCOEFF, ...
-            matADJE, matWDVE, matWVLST, matCENTER, matWCOEFF, matTEPTS,...
-            matUINFTE, matDISNORM, matDISTHRUST, matDISAXIAL, matDISSIDE);
-        
 
-        temp = valTIMESTEP - (floor((valTIMESTEP-1)/valAZNUM))*(valAZNUM);
+        [vecCLPDIST, vecCDPDIST, thrustind, thrustfree, thrustCFfree, ...
+            tempTi, Pthrust, difthrustP, valCT, valFy, valFx, valCQ, ...
+            valCP, valCMy, valCMx, vecCTCONV, vecCFyCONV, vecCFxCONV, ...
+            vecCQCONV, vecCPCONV, vecCMyCONV, vecCMxCONV, vecDISTHRUST, ...
+            vecDISNORM, vecDISAXIAL, vecDISSIDE, matDISNORM, ...
+            matDISTHRUST, matDISAXIAL, matDISSIDE, matWUINF, gamma_old,...
+            dGammadt] = fcnRFORCES(flagVERBOSE, valKINV, valMAXTIME, ...
+            valAZNUM, valDIA, valRPM, valWSIZE, valTIMESTEP, valNELE, ...
+            valWNELE, seqALPHAR, vecDVEAREA, vecAIRFOIL, vecN, vecM, ...
+            vecDVEPANEL, vecQARM,vecDVEPITCH, vecDVETE, vecDVEWING, ...
+            vecWDVEWING, vecK, vecWK, vecWDVEYAW, vecWDVELESWP, ...
+            vecWDVETESWP, vecDVEYAW, vecDVEMCSWP, vecWDVEHVSPN, ...
+            vecWDVEHVCRD, vecWDVEROLL, vecDVEROLL,  vecDVEHVCRD, ...
+            vecDVELE, vecDVEHVSPN, vecWDVEPITCH, vecDVELESWP, ...
+            vecDVETESWP, vecSYM, vecTHETA, vecCTCONV, vecCFxCONV, ...
+            vecCFyCONV, vecCPCONV, vecCMxCONV, vecCMyCONV, vecCQCONV, ...
+            matVLST, matDVE, matUINF, matCOEFF, matADJE, matWDVE, ...
+            matWVLST, matCENTER, matWCOEFF, matTEPTS, matUINFTE, ...
+            matDISNORM, matDISTHRUST, matDISAXIAL, matDISSIDE, ...
+            flagSTEADY, gamma_old, dGammadt, flagVISCOUS);
         
+        temp = valTIMESTEP - (floor((valTIMESTEP-1)/valAZNUM))*(valAZNUM);
         %% Parfor Data saving
-         %convCT(valTIMESTEP) = mean(vecCTCONV);
-         %convCP(valTIMESTEP) = mean(vecCPCONV);
+         convCT(valTIMESTEP,ji,ai) = mean(vecCTCONV);
+         convCP(valTIMESTEP,ji,ai) = mean(vecCPCONV);
          matthrustind(:,valTIMESTEP,ji) = thrustind;
          matthrustfree(:,valTIMESTEP,ji) = thrustfree;
          matthrustCFfree(:,valTIMESTEP,ji) = thrustCFfree;
@@ -328,21 +375,90 @@ for ai = 1:length(seqALPHAR)
 %             matSWPDISAXIAL(:,:,ji,ai) = matDISAXIAL;
 %             matSWPDISSIDE(:,:,ji,ai) = matDISSIDE;
 %          end
-           fprintf('      %.0f      CT = %0.3f      CP = %0.3f\n',valTIMESTEP, mean(vecCTCONV),  mean(vecCPCONV));       
-    end
-    fprintf('Completed Advance Ratio: %.1f\n\n',seqJ(ji))    
+        if flagPRINT == 1   
+            fprintf('      %.0f      CT = %0.3f      CP = %0.3f\n',valTIMESTEP, mean(vecCTCONV),  mean(vecCPCONV));
+        end
+%     if valTIMESTEP > valMAXTIME - valAZNUM
+%         b = b+1;
+%         x_offset = vecROTAX(1);
+%         z_offset = vecROTAX(3);
+%         x = -0.6:0.01:0.6;
+%         x = x + x_offset;
+%         fpg1 = zeros(size(x,2),3);
+%         fpg1(:,1) = x';
+%         fpg1(:,3) = (fpg1(:,3)+1)*z_offset;
+% 
+%         % Along y line when z=x=0
+%         y = -0.6:0.01:0.6;
+% 
+%         fpg2 = zeros(size(y,2),3);
+%         fpg2(:,2) = y';
+%         fpg2(:,1) = (fpg2(:,1)+1)*x_offset;
+%         fpg2(:,3) = (fpg2(:,3)+1)*z_offset;
+% 
+%         % Calculate induced velocities
+%         induced_vel1(:,:,b) = fcnINDVEL(fpg1,valNELE, matDVE, matVLST, matCOEFF, vecK, ...
+%         vecDVEHVSPN, vecDVEHVCRD, vecDVEROLL, vecDVEPITCH, vecDVEYAW, ...
+%         vecDVELESWP, vecDVETESWP, vecSYM, valWNELE, matWDVE, matWVLST, ...
+%         matWCOEFF,vecWDVEPITCH , vecWDVEHVSPN,vecWDVEHVCRD,vecWDVEROLL, ...
+%         vecWK, vecWDVEYAW, vecWDVELESWP, vecWDVETESWP, valWSIZE, valTIMESTEP);
+% 
+%         induced_vel2(:,:,b) = fcnINDVEL(fpg2,valNELE, matDVE, matVLST, matCOEFF, vecK, ...
+%         vecDVEHVSPN, vecDVEHVCRD, vecDVEROLL, vecDVEPITCH, vecDVEYAW, ...
+%         vecDVELESWP, vecDVETESWP, vecSYM, valWNELE, matWDVE, matWVLST, ...
+%         matWCOEFF,vecWDVEPITCH , vecWDVEHVSPN,vecWDVEHVCRD,vecWDVEROLL, ...
+%         vecWK, vecWDVEYAW, vecWDVELESWP, vecWDVETESWP, valWSIZE, valTIMESTEP);
+% %     end
+%     if valTIMESTEP > valMAXTIME - valAZNUM
+%         b = b+1;
+%         x_offset = vecROTAX(1);
+%         z_offset = vecROTAX(3);
+% %         x = -0.6:0.01:0.6;
+% %         x = x + x_offset;
+%         [x,y] = meshgrid(-0.6:0.05:0.6, -0.6:0.05:0.6);
+%         x = reshape(x,1,numel(x))' + x_offset;
+%         y = reshape(y,1,numel(y))';
+%         fpg = zeros(size(x,1),3);
+%         fpg(:,1) = x;
+%         fpg(:,2) = y;
+%         fpg(:,3) = (fpg(:,3)+1)*z_offset;
+% 
+% %         % Along y line when z=x=0
+% %         y = -0.6:0.01:0.6;
+% % 
+% %         fpg2 = zeros(size(y,2),3);
+% %         fpg2(:,2) = y';
+% %         fpg2(:,1) = (fpg2(:,1)+1)*x_offset;
+% %         fpg2(:,3) = (fpg2(:,3)+1)*z_offset;
+% 
+%         % Calculate induced velocities
+%         induced_vel1(:,:,b) = fcnINDVEL(fpg,valNELE, matDVE, matVLST, matCOEFF, vecK, ...
+%         vecDVEHVSPN, vecDVEHVCRD, vecDVEROLL, vecDVEPITCH, vecDVEYAW, ...
+%         vecDVELESWP, vecDVETESWP, vecSYM, valWNELE, matWDVE, matWVLST, ...
+%         matWCOEFF,vecWDVEPITCH , vecWDVEHVSPN,vecWDVEHVCRD,vecWDVEROLL, ...
+%         vecWK, vecWDVEYAW, vecWDVELESWP, vecWDVETESWP, valWSIZE, valTIMESTEP);
+% 
+% %         induced_vel2(:,:,b) = fcnINDVEL(fpg2,valNELE, matDVE, matVLST, matCOEFF, vecK, ...
+% %         vecDVEHVSPN, vecDVEHVCRD, vecDVEROLL, vecDVEPITCH, vecDVEYAW, ...
+% %         vecDVELESWP, vecDVETESWP, vecSYM, valWNELE, matWDVE, matWVLST, ...
+% %         matWCOEFF,vecWDVEPITCH , vecWDVEHVSPN,vecWDVEHVCRD,vecWDVEROLL, ...
+% %         vecWK, vecWDVEYAW, vecWDVELESWP, vecWDVETESWP, valWSIZE, valTIMESTEP);
+%     end
+   
+    %fprintf('Completed Advance Ratio: %.1f\n\n',seqJ(ji))    
     end
     if flagPROGRESS == 1
-        progressbar(ai/length(seqALPHAR))
+        progressbar(ai/length(seqALPHAR));
+    end
     end
 end
-% if flagSAVE ==1
-%     save(filename)
-% end
+if flagSAVE ==1
+    save(filename)
+end
 fprintf('\nDONE\n');
 % save(filename)
-if flagPLOT == 1
-    [hFig2] = fcnPLOTBODY(flagVERBOSE, valNELE, matDVE, matVLST, matCENTER);
-    [hLogo] = fcnPLOTLOGO(0.97,0.03,14,'k','none');
-    [hFig2] = fcnPLOTWAKE(flagVERBOSE, hFig2, valWNELE, matWDVE, matWVLST, matWCENTER);
-end
+% if flagPLOT == 1
+%     [hFig2] = fcnPLOTBODY(flagVERBOSE, valNELE, matDVE, matVLST, matCENTER);
+%     [hLogo] = fcnPLOTLOGO(0.97,0.03,14,'k','none');
+%     [hFig2] = fcnPLOTWAKE(flagVERBOSE, hFig2, valWNELE, matWDVE, matWVLST, matWCENTER);
+% end

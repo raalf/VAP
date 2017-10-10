@@ -26,7 +26,7 @@ thrust = sum(thrustind)+sum(thrustfree)+sum(thrustCFfree) + sum(thrustinddrag) +
 Fy = sum(vecDISSIDE.*sin(vecTHETA) + vecDISAXIAL.*sin(pi - vecTHETA));
 Fx = sum(vecDISSIDE.*cos(vecTHETA) + vecDISAXIAL.*cos(pi - vecTHETA)); % ADD viscous
 
-torque = sum(axialind.*vecQARM)+sum(axialfree.*vecQARM)+sum(inddrag.*vecQARM(vecDVETE==3)) + sum(axialCFfree.*vecQARM) + sum(Ptorque) + sum(diffaxialP.*vecQARM);
+torque = sum(axialind.*vecQARM)+sum(axialfree.*vecQARM)+sum(inddrag.*vecQARM(vecDVETE==3)) + sum(axialCFfree.*vecQARM) + sum(Ptorque) + sum(diffaxialP.*vecQARM); %sum(diffaxialP);
 power = torque*2.*pi.*(valRPM./60);
 Mx = sum(vecDISTHRUST.*(vecQARM.*sin(vecTHETA)));
 My = sum(vecDISTHRUST.*(vecQARM.*cos(vecTHETA)));

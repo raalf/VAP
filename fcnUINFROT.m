@@ -40,6 +40,11 @@ vecCPRADI = sqrt(tempCENTER(:,1).^2+tempCENTER(:,2).^2+tempCENTER(:,3).^2);
 matUROT = tempRADPS*[vecCPRADI.*cos(vecTHETA) vecCPRADI.*sin(vecTHETA) zeros(tempTOTDVE(1),1)];
 vecUTRANS = (valJ*valDIA*valRPM/60)*[-cos(valALPHAR) 0 sin(valALPHAR)];
 
+if valJ == 0
+    %vecUTRANS = ones(size(matCENTER,1)
+end
+
+
 % Velocity matrix for each control point
 matUINF = matUROT - vecUTRANS;
 

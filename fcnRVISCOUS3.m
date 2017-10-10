@@ -1,5 +1,5 @@
-function [vecCLPDIST, vecCDPDIST, THRUSTDIST, TORQUEDIST, difthrustP, diffsideP, diffaxialP] = fcnRVISCOUS(en, es, ea, flagVERBOSE, ...
-    valRPM, valDIA, valKINV, vecQARM, vecDVEHVCRD, vecN, vecM, ...
+function [vecCLPDIST, vecCDPDIST, THRUSTDIST, TORQUEDIST] = fcnRVISCOUS3(flagVERBOSE, ...
+    valRPM,  valKINV, vecQARM, vecDVEHVCRD, vecN, vecM, ...
     vecDVELE, vecDVEPANEL, vecAIRFOIL, vecTHETA, vecDISNORM, vecDVEAREA,...
     matUINF, matVLST, matDVE, matWUINF)
 % This function applies a viscous correction using look up tables.
@@ -26,7 +26,7 @@ vecV = dot(matUINF + matWUINF, matCRDLINE,2);
 tempUINF = matUINF + matWUINF;
 tempVELMAG = sqrt(tempUINF(:,1).^2 + tempUINF(:,2).^2 + tempUINF(:,3).^2);
 tempCRDMAG = sqrt(matCRDLINE(:,1).^2 + matCRDLINE(:,2).^2 + matCRDLINE(:,3).^2);
-vecALPHAEFF = acos(dot(tempUINF, matCRDLINE,2)./(tempVELMAG.*tempCRDMAG));
+%vecALPHAEFF = acos(dot(tempUINF, matCRDLINE,2)./(tempVELMAG.*tempCRDMAG));
 
 [ledves, ~, ~] = find(vecDVELE > 0);
 lepanels = vecDVEPANEL(ledves);
@@ -51,6 +51,7 @@ vecV = sum(vecV(rows),2)/(size(rows,2));
 
 % CN = 2*(N/rho)/(V^2*S)
 vecCNDIST = (sum(vecDISNORM(rows),2).*2)./(sum(vecDVEAREA(rows),2).*(vecV.^2));
+vecALPHAEFF = vecCNDIST/(2*pi);
 vecREDIST = vecV.*2.*sum(vecDVEHVCRD(rows),2)./valKINV;
 
 % Different temp
@@ -65,39 +66,39 @@ for j = 1:length(idxpanel)
     HiRe = airfoil(end,4);
     LoRe = airfoil(1,4);
 
-    cl = vecCNDIST(len + j);
+    alpha = vecALPHAEFF(len + j);
 
     if vecREDIST(len + j) > HiRe
         if flagVERBOSE == 1
             fprintf('\nRe higher than airfoil Re data')
         end
         Re2 = airfoil(end,4);
-        temp_var = airfoil(airfoil(:,4) == Re2, 2);
-        cl_max = temp_var(end);
+        temp_var = airfoil(airfoil(:,4) == Re2, 1);
+        cl_max_alpha = temp_var(end);
     elseif vecREDIST(len + j) < LoRe
         if flagVERBOSE == 1
             fprintf('\nRe lower than airfoil Re data');
         end
         Re2 = airfoil(1,4);
-        temp_var = airfoil(airfoil(:,4) == Re2, 2);
-        cl_max = temp_var(end);
+        temp_var = airfoil(airfoil(:,4) == Re2, 1);
+        cl_max_alpha = temp_var(end);
     else
         re1 = airfoil(airfoil(:,4) < vecREDIST(len + j), 4);
         re1 = re1(end);
-        cl_max1 = airfoil(airfoil(:,4) < vecREDIST(len + j), 2);
-        cl_max1 = cl_max1(end);
+        cl_max_alpha1 = airfoil(airfoil(:,4) < vecREDIST(len + j), 1);
+        cl_max_alpha1 = cl_max_alpha1(end);
 
         temp_var = airfoil(airfoil(:,4) > vecREDIST(len + j),4);
         re2 = temp_var(1);
-        temp_var = airfoil(airfoil(:,4) == (temp_var(1)), 2);
-        cl_max2 = temp_var(end);
+        temp_var = airfoil(airfoil(:,4) == (temp_var(1)), 1);
+        cl_max_alpha2 = temp_var(end);
 
-        cl_max = interp1([re1 re2],[cl_max1 cl_max2], vecREDIST(len + j));
+        cl_max_alpha = interp1([re1 re2],[cl_max_alpha1, cl_max_alpha2], vecREDIST(len + j));
     end
     % correcting the section cl if we are above cl_max
-    if cl > cl_max
+    if radtodeg(alpha) > cl_max_alpha
         if flagVERBOSE == 1
-            fprintf('\nBlade Stall on Section %d, cl = %f Re = %0.0f', j, cl, vecREDIST(len + j))
+            fprintf('\nBlade Stall on Section %d, alpha = %f Re = %0.0f', j, radtodeg(alpha), vecREDIST(len + j))
         end
         %vecCNDIST0(len+j) = 0.825*cl_max; % setting the stalled 2d cl     
         
@@ -120,17 +121,17 @@ for j = 1:length(idxpanel)
         vecCLPDIST(len + j) = cn*cos(abs(vecALPHAEFF(len+j))) - ct*sin(abs(vecALPHAEFF(len+j)));
     else
         warning off
-        F = scatteredInterpolant(airfoil(:,4), airfoil(:,2), airfoil(:,3),'nearest');
-        vecCDPDIST(len + j, 1) = F(vecREDIST(len + j), cl);
+        F = scatteredInterpolant(airfoil(:,4), airfoil(:,1), airfoil(:,3),'nearest');
+        vecCDPDIST(len + j, 1) = F(vecREDIST(len + j), radtodeg(alpha));
     end
 end
 % Calculate viscous drag distribution
 vecDPDIST = 0.5*(vecCDPDIST.*((vecV).^2).*(sum(vecDVEAREA(rows),2)));
 
 % Apply an appropriate directions
-tempUINFX = matUINF(:,1);
-tempUINFY = matUINF(:,2);
-tempUINFZ = matUINF(:,3);
+tempUINFX = matUINF(:,1) + matWUINF(:,1);
+tempUINFY = matUINF(:,2) + matWUINF(:,2);
+tempUINFZ = matUINF(:,3) + matWUINF(:,3);
 matUINFAVG = [sum(tempUINFX(rows),2)/(size(rows,2)) sum(tempUINFY(rows),2)/(size(rows,2)) sum(tempUINFZ(rows),2)/(size(rows,2))];
 tempDIR = [matUINFAVG(:,1).*cos(vecTHETA(rows(:,1))) matUINFAVG(:,2).*sin(vecTHETA(rows(:,1))) matUINFAVG(:,3)];
 tempDIR = tempDIR./(sqrt(sum(tempDIR.^2,2)));
@@ -141,11 +142,11 @@ THRUSTDIST = matDPDIST(:,3);
 TORQUEDIST = (dot(matDPDIST,[abs(cos(vecTHETA(rows(:,1)))) abs(sin(vecTHETA(rows(:,1)))) zeros(size(matDPDIST,1),1)],2)).*vecQARM(vecDVELE==1);
 POWERDIST = TORQUEDIST*2.*pi.*(valRPM./60);
 
-vecCNDISTDIF = vecCNDIST0 - vecCNDIST;
-vecDELNORMDISTP = 0.5*vecCNDISTDIF.*vecV.^2.*sum(vecDVEAREA(rows),2);
-difthrustP = vecDELNORMDISTP.*(en(:,3));
-diffsideP = vecDELNORMDISTP.*(dot(es,en,2));
-diffaxialP = vecDELNORMDISTP.*(dot(ea,en,2));
+% vecCNDISTDIF = vecCNDIST0 - vecCNDIST;
+% vecDELNORMDISTP = 0.5*vecCNDISTDIF.*vecV.^2.*sum(vecDVEAREA(rows),2);
+% difthrustP = vecDELNORMDISTP.*(en(:,3));
+% diffsideP = vecDELNORMDISTP.*(dot(es,en,2));
+% diffaxialP = vecDELNORMDISTP.*(dot(ea,en,2));
 % Calculate coefficient
 % valCTP = (sum(THRUSTDIST))/(((valRPM/60)^2)*((valDIA)^4));
 % valCQP = (sum(TORQUEDIST))/(((valRPM/60)^2)*((valDIA)^5));
