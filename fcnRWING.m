@@ -14,7 +14,7 @@ if valTIMESTEP < 1
     vecR(end-(len-1):end) = (4*pi).*dot(matUINF, matDVENORM,2);    
 else
     [w_wake] = fcnWDVEVEL(matCENTER, valWNELE, matWDVE, matWVLST, matWCOEFF, vecWK, vecWDVEHVSPN, vecWDVEHVCRD,vecWDVEROLL, ...
-        vecWDVEPITCH, vecWDVEYAW, vecWDVELESWP, vecWDVETESWP, vecSYM, valWSIZE, valTIMESTEP);
+        vecWDVEPITCH, vecWDVEYAW, vecWDVELESWP, vecWDVETESWP, vecSYM, valWSIZE, valTIMESTEP, flagSTEADY);
     
     % Including the wake-induced velocities,
     vecR(end-(len-1):end) = (4*pi).*dot(matUINF+w_wake, matDVENORM,2);  

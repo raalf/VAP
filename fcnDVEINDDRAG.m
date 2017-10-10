@@ -1,6 +1,6 @@
 function [inddrag]=fcnDVEINDDRAG(matCOEFF,matDVE,matVLST,matUINF,vecDVEHVSPN,vecDVEHVCRD, vecDVETE,...
     valWNELE, matWDVE, matWVLST, matWCOEFF, vecWK, vecWDVEHVSPN,vecWDVEHVCRD, vecWDVEROLL, vecWDVEPITCH, vecWDVEYAW, vecWDVELESWP, vecWDVETESWP, ...
-    valWSIZE, valTIMESTEP,vecSYM,vecDVEWING,vecWDVEWING, flagSTEADY)
+    valWSIZE, valTIMESTEP,vecSYM,vecDVEWING,vecWDVEWING,temp,flagSTEADY)
 % Induced dve drag. Function finds induced drag values on each te element. Outputs are not
 % non-dimensionalized to q.
 
@@ -81,8 +81,8 @@ delx  = tepoints-repmat(xte(repmat(1:numte,numte,1),:),[1 1 3]);
 % temps = dot(delx,repmat(vecUINF,[size(delx,1) 1 3]),2);
 % tempb = repmat(temps,1,3,1).* repmat(vecUINF,[size(delx,1) 1 3]); %should this be normalized Uinf?
 
-temps = dot(delx,repmat(matUINF./sqrt(sum(matUINF.^2,2)),[size(matUINF,1) 1 3]),2);
-tempb = repmat(temps,1,3,1).* repmat(matUINF./sqrt(sum(matUINF.^2,2)),[size(matUINF,1) 1 3]); %should this be normalized Uinf?
+temps = dot(delx,repmat(matUINF(idte,:)./sqrt(sum(matUINF(idte,:).^2,2)),[numte 1 3]),2);
+tempb = repmat(temps,1,3,1).* repmat(matUINF(idte,:)./sqrt(sum(matUINF(idte,:).^2,2)),[numte 1 3]); %should this be normalized Uinf?
 
 % original te point - tempb should be new te point
 newtepoint = tepoints - tempb;
@@ -203,6 +203,6 @@ R(:,:) = R(:,:)+((7.*tempr(:,:,1)-8.*tempr(:,:,2)+7.*tempr(:,:,3)).*repmat(vecDV
 % R(:,3) = R(:,3)+((7.*R1(:,3)-8.*Ro(:,3)+7.*R2(:,3)).*(vecDVEHVSPN(idte)-eta8)./3); %//Rz
 %% FORCES
 % inddrag(:,1) = dot(R,repmat(vecUINF,size(R,1),1),2);
-inddrag(:,1) = dot(R,matUINF./sqrt(sum(matUINF.^2,2)),2);
+inddrag(:,1) = dot(R,matUINF(idte,:)./sqrt(sum(matUINF(idte,:).^2,2)),2);
 
 end %end function

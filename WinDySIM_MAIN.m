@@ -300,7 +300,7 @@ for ai = 1:length(seqALPHA)
             %% Rebuilding and solving wing resultant
             [vecR] = fcnRWING(valNELE, valTIMESTEP, matCENTER, matDVENORM, matUINF, valWNELE, matWDVE, ...
                 matWVLST, matWCOEFF, vecWK, vecWDVEHVSPN, vecWDVEHVCRD,vecWDVEROLL, vecWDVEPITCH, vecWDVEYAW, vecWDVELESWP, ...
-                vecWDVETESWP, vecSYM, valWSIZE);
+                vecWDVETESWP, vecSYM, valWSIZE, flagSTEADY);
             
             [matCOEFF] = fcnSOLVED(matD, vecR, valNELE);
             
