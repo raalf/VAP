@@ -1,6 +1,6 @@
 function [inddrag, thrustinddrag, sideinddrag]=fcnRDVEINDDRAG(matCOEFF,matDVE,matVLST,matUINFTE,vecDVEHVSPN,vecDVETE,...
     valWNELE, matWDVE, matWVLST, matWCOEFF, vecWK, vecWDVEHVSPN,vecWDVEHVCRD, vecWDVEROLL, vecWDVEPITCH, vecWDVEYAW, vecWDVELESWP, vecWDVETESWP, ...
-    valWSIZE, valTIMESTEP,vecSYM,vecDVEWING,vecWDVEWING, vecTHETA, matTEPTS)
+    valWSIZE, valTIMESTEP,vecSYM,vecDVEWING,vecWDVEWING, vecTHETA, matTEPTS, flagSTEADY)
 % This function is a modification to the original fcnDVEINDDRAG but with
 % modifications specific to rotor analysis. 
 %
@@ -96,22 +96,45 @@ dvenum = repmat(dvenum,[1 1 3]);%correct inducers index
 fpg = reshape(permute(fpg,[1 3 2]),[],3);
 dvenum = reshape(permute(dvenum,[1 3 2]),[],1);
 
-%dve type
-dvetype = ones(length(dvenum),1);
+if flagSTEADY == 1
+    %dve type
+    dvetype = ones(length(dvenum),1);
 
-dvetype(ismember(dvenum, newest_row)) = 1;%FW has this as type 1, but should be 2?
+    dvetype(ismember(dvenum, newest_row)) = 1;%we calculate vels at LE of wake, no need to include the filament there. 
 
-%setting singfct for post-trailing edge row to 0
-tempwk = vecWK(dvenum);
-tempwk(ismember(dvenum, newest_row)) = 0;
+    %setting singfct for post-trailing edge row to 0
+    tempwk = vecWK(dvenum);
+    tempwk(ismember(dvenum, newest_row)) = 0;
 
-% Oldest row of wake DVEs are semi-infinite
-oldest_row = [1:valWSIZE]';
+    % Oldest row of wake DVEs are semi-infinite
+    oldest_row = [1:valWSIZE]';
 
-if valTIMESTEP == 1
-    dvetype(ismember(dvenum, oldest_row)) = 1;
+    if valTIMESTEP == 1
+        dvetype(ismember(dvenum, oldest_row)) = 3;
+    else
+        dvetype(ismember(dvenum, oldest_row)) = 3;
+    end
+elseif flagSTEADY == 2
+    
+    % POST-TE ROW IS DVETYPE -2 (FILAMENT AT TE OF DVE ONLY)
+    %dve type
+    dvetype = zeros(length(dvenum),1);
+    dvetype(ismember(dvenum, newest_row)) = -2; %we calculate vels at LE of wake, no need to include the filament there. 
+
+    %setting singfct for post-trailing edge row to 0
+    tempwk = vecWK(dvenum);
+    tempwk(ismember(dvenum, newest_row)) = 0;
+
+     % Oldest row of wake DVEs are semi-infinite
+    oldest_row = [1:valWSIZE]';
+
+    if valTIMESTEP == 1
+        dvetype(ismember(dvenum, oldest_row)) = 3; %WHY??????????????????????????
+    else
+        dvetype(ismember(dvenum, oldest_row)) = -3; % Oldest row of wake DVEs are semi-infinite w/ filament  
+    end   
 else
-    dvetype(ismember(dvenum, oldest_row)) = 3;
+    disp('flagSTEADY must be 1 or 2');
 end
 
 %get all velocities %need to set singfct = 0 for le row of elements!!!

@@ -8,7 +8,7 @@ function [vecCLPDIST, vecCDPDIST, thrustind, thrustfree, thrustCFfree, tempTi, P
 [nfreecs,thrustCFfree, axialCFfree, sideCFfree] = fcnRCROSSFLOWFORCE(valNELE, vecTHETA, vecDVETESWP,vecDVELESWP,vecDVEHVSPN,vecDVEHVCRD,matDVE,matUINF,matVLST,B,C);
 
 %% Calculate induced drag on the rotor
-[inddrag, thrustinddrag, sideinddrag] = fcnRDVEINDDRAG(matCOEFF,matDVE,matVLST,matUINFTE,vecDVEHVSPN,vecDVETE, valWNELE, matWDVE, matWVLST, matWCOEFF, vecWK, vecWDVEHVSPN,vecWDVEHVCRD, vecWDVEROLL, vecWDVEPITCH, vecWDVEYAW, vecWDVELESWP, vecWDVETESWP, valWSIZE, valTIMESTEP,vecSYM,vecDVEWING,vecWDVEWING, vecTHETA, matTEPTS);
+[inddrag, thrustinddrag, sideinddrag] = fcnRDVEINDDRAG(matCOEFF,matDVE,matVLST,matUINFTE,vecDVEHVSPN,vecDVETE, valWNELE, matWDVE, matWVLST, matWCOEFF, vecWK, vecWDVEHVSPN,vecWDVEHVCRD, vecWDVEROLL, vecWDVEPITCH, vecWDVEYAW, vecWDVELESWP, vecWDVETESWP, valWSIZE, valTIMESTEP,vecSYM,vecDVEWING,vecWDVEWING, vecTHETA, matTEPTS, flagSTEADY);
 
 %% Apply viscous effects
 if valTIMESTEP > valMAXTIME - valAZNUM && flagVISCOUS == 1% Only run for last rotation
@@ -17,7 +17,7 @@ if valTIMESTEP > valMAXTIME - valAZNUM && flagVISCOUS == 1% Only run for last ro
     vecDVEHVSPN, vecDVEHVCRD, vecDVEROLL, vecDVEPITCH, vecDVEYAW, ...
     vecDVELESWP, vecDVETESWP, vecSYM, valWNELE, matWDVE, matWVLST, ...
     matWCOEFF,vecWDVEPITCH , vecWDVEHVSPN,vecWDVEHVCRD,vecWDVEROLL, ...
-    vecWK, vecWDVEYAW, vecWDVELESWP, vecWDVETESWP, valWSIZE, valTIMESTEP);
+    vecWK, vecWDVEYAW, vecWDVELESWP, vecWDVETESWP, valWSIZE, valTIMESTEP, flagSTEADY);
     
     [vecCLPDIST, vecCDPDIST, Pthrust, Ptorque] = fcnRVISCOUS3(flagVERBOSE, ...
     valRPM,  valKINV, vecQARM, vecDVEHVCRD, vecN, vecM, ...

@@ -37,7 +37,7 @@ strFILE = 'inputs/TMotor.txt';
 %     valINTERF] = fcnVAPTORREADMULTI(strFILE);
 
 flagVISCOUS = 1;
-flagPRINT   = 0;
+flagPRINT   = 1;
 flagPLOT    = 0;
 flagPLOTWAKEVEL = 0;
 flagVERBOSE = 0;
@@ -120,16 +120,16 @@ for ai = 1:length(seqALPHAR)
     if flagPROGRESS == 1
         progressbar([],0)
     end
-    parfor ji= 1:length(seqJ)
+    for ji= 1:length(seqJ)
     if flagPROGRESS == 1
         progressbar([],ji/length(seqJ))
     end
     valALPHAR = deg2rad(seqALPHAR(ai));
     valJ = seqJ(ji);
     
-    if valJ == 0
+    if valJ == 10000
         flagHOVER = 1;
-        hoverSCALING = 0.00008;
+        hoverSCALING = 0.001;
         valJ = -(1)*valRPM/(valAZNUM)*(hoverSCALING) + (valMAXTIME-valAZNUM)*valRPM/(valAZNUM)*(hoverSCALING);
         valALPHAR = deg2rad(90);
     else
@@ -294,7 +294,7 @@ for ai = 1:length(seqALPHAR)
         [vecR] = fcnRESROTOR(valNELE, valTIMESTEP, matCENTER, ...
             matDVENORM, matUINF, valWNELE, matWDVE, matWVLST, matWCOEFF,...
             vecWK, vecWDVEHVSPN, vecWDVEHVCRD,vecWDVEROLL, vecWDVEPITCH,...
-            vecWDVEYAW, vecWDVELESWP, vecWDVETESWP, vecSYM, valWSIZE);
+            vecWDVEYAW, vecWDVELESWP, vecWDVETESWP, vecSYM, valWSIZE, flagSTEADY);
             
         [matCOEFF] = fcnSOLVED(matD, vecR, valNELE);
         
@@ -318,7 +318,7 @@ for ai = 1:length(seqALPHAR)
                 vecDVEROLL, vecDVETESWP, vecDVEYAW, vecK, vecSYM, ...
                 vecWDVEHVSPN, vecWDVEHVCRD, vecWDVELESWP, vecWDVEPITCH, ...
                 vecWDVEROLL, vecWDVESYM, vecWDVETESWP, vecWDVETIP, ...
-                vecWDVEYAW, vecWK, vecWDVEWING);   
+                vecWDVEYAW, vecWK, vecWDVEWING, flagSTEADY);   
             % Creating and solving WD-Matrix
             [matWD, vecWR] = fcnWDWAKE([1:valWNELE]', matWADJE, ...
                 vecWDVEHVSPN, vecWDVESYM, vecWDVETIP, vecWKGAM);

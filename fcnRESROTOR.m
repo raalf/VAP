@@ -1,6 +1,6 @@
 function [vecR] = fcnRESROTOR(valNELE, valTIMESTEP, matCENTER, matDVENORM, matUINF, valWNELE, matWDVE, ...
     matWVLST, matWCOEFF, vecWK, vecWDVEHVSPN, vecWDVEHVCRD,vecWDVEROLL, vecWDVEPITCH, vecWDVEYAW, vecWDVELESWP, ...
-    vecWDVETESWP, vecSYM, valWSIZE)
+    vecWDVETESWP, vecSYM, valWSIZE, flagSTEADY)
 % Rotor resultant
 % Kinematic resultant is the time specific freestream (and wake-induced 
 % velocities summed) dotted with the norm of the point we are influencing
@@ -17,7 +17,7 @@ else
     [w_wake] = fcnWDVEVEL(matCENTER, valWNELE, matWDVE, matWVLST, ...
         matWCOEFF, vecWK, vecWDVEHVSPN, vecWDVEHVCRD,vecWDVEROLL, ...
         vecWDVEPITCH, vecWDVEYAW, vecWDVELESWP, vecWDVETESWP, vecSYM, ...
-        valWSIZE, valTIMESTEP);
+        valWSIZE, valTIMESTEP, flagSTEADY);
 
     % Including the wake-induced velocities,
     vecR(end-(len-1):end) = (4*pi).*dot(matUINF+w_wake, matDVENORM,2);  
