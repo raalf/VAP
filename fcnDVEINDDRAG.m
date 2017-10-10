@@ -120,7 +120,7 @@ if flagSTEADY == 1
     oldest_row = [1:valWSIZE]';
 
     if valTIMESTEP == 1
-        dvetype(ismember(dvenum, oldest_row)) = 1;
+        dvetype(ismember(dvenum, oldest_row)) = 3;
     else
         dvetype(ismember(dvenum, oldest_row)) = 3;
     end
@@ -138,7 +138,7 @@ elseif flagSTEADY == 2
     oldest_row = [1:valWSIZE]';
 
     if valTIMESTEP == 1
-        dvetype(ismember(dvenum, oldest_row)) = 1; %WHY??????????????????????????
+        dvetype(ismember(dvenum, oldest_row)) = 3; %WHY??????????????????????????
     else
         dvetype(ismember(dvenum, oldest_row)) = -3;  % Oldest row of wake DVEs are semi-infinite w/ filament
     end   
