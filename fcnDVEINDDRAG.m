@@ -110,7 +110,7 @@ if flagSTEADY == 1
     %dve type
     dvetype = ones(length(dvenum),1);
 
-    dvetype(ismember(dvenum, newest_row)) = 1;%FW has this as type 1, but should be 2?
+    dvetype(ismember(dvenum, newest_row)) = 1;%we calculate vels at LE of wake, no need to include the filament there. 
 
     %setting singfct for post-trailing edge row to 0
     tempwk = vecWK(dvenum);
@@ -120,15 +120,15 @@ if flagSTEADY == 1
     oldest_row = [1:valWSIZE]';
 
     if valTIMESTEP == 1
-        dvetype(ismember(dvenum, oldest_row)) = 1;
+        dvetype(ismember(dvenum, oldest_row)) = 3;
     else
         dvetype(ismember(dvenum, oldest_row)) = 3;
     end
 elseif flagSTEADY == 2
-    % IT SEEMS WE CANT HAVE A FILAMENT AT THE WING TE, SO POST-TE ROW IS DVETYPE -2 (FILAMENT AT TE OF DVE ONLY)
+    % POST-TE ROW IS DVETYPE -2 (FILAMENT AT TE OF DVE ONLY)
     %dve type
     dvetype = zeros(length(dvenum),1);
-    dvetype(ismember(dvenum, newest_row)) = -2; %WHY??????????????????????????
+    dvetype(ismember(dvenum, newest_row)) = -2; %we calculate vels at LE of wake, no need to include the filament there. 
 
     %setting singfct for post-trailing edge row to 0
     tempwk = vecWK(dvenum);
@@ -138,9 +138,9 @@ elseif flagSTEADY == 2
     oldest_row = [1:valWSIZE]';
 
     if valTIMESTEP == 1
-        dvetype(ismember(dvenum, oldest_row)) = 1; %WHY??????????????????????????
+        dvetype(ismember(dvenum, oldest_row)) = 3; %WHY??????????????????????????
     else
-        dvetype(ismember(dvenum, oldest_row)) = 3;  
+        dvetype(ismember(dvenum, oldest_row)) = -3;  % Oldest row of wake DVEs are semi-infinite w/ filament
     end   
    
 else
