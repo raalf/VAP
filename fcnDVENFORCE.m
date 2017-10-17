@@ -102,13 +102,13 @@ C(idx1 ==0) = (matCOEFF(idx1==0,3)-matCOEFF(idxf,3));
 nfree = ((A .*2 .* vecDVEHVSPN'+  C./3.*2.*vecDVEHVSPN'.*vecDVEHVSPN'.*vecDVEHVSPN') .*uxs')';
 
 % Unsteady lift term with apparent mass
-lambda = 0.5; % Relaxation factor for dGammadt term
+lambda = 1; % Relaxation factor for dGammadt term
 
-GammaInt = (A .*2 .* vecDVEHVSPN'+  C./3.*2.*vecDVEHVSPN'.*vecDVEHVSPN'.*vecDVEHVSPN'); % Integrated circulation across DVE
+GammaInt = (matCOEFF(:,1).*2.*vecDVEHVSPN + matCOEFF(:,3)./3.*2.*vecDVEHVSPN.*vecDVEHVSPN.*vecDVEHVSPN); % Integrated circulation across DVE
 
 if valTIMESTEP > 2 && flagSTEADY == 2
     
-    dGammadt = lambda.*(GammaInt' - gamma_old')./valDELTIME + (1-lambda).*dGammadt; % Time rate of change of circulation
+    dGammadt = lambda.*(GammaInt - gamma_old)./valDELTIME + (1-lambda).*dGammadt; % Time rate of change of circulation
     
 else
     
@@ -122,7 +122,7 @@ if valTIMESTEP > 1 && flagSTEADY == 2
     
 end
 
-gamma_old = (A .*2 .* vecDVEHVSPN'+  C./3.*2.*vecDVEHVSPN'.*vecDVEHVSPN'.*vecDVEHVSPN'); % Store integrated circulation for current timestep to use on next timestep calc
+gamma_old = GammaInt; % Store integrated circulation for current timestep to use on next timestep calc
 
 %% induced force
 
