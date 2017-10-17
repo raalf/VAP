@@ -1,5 +1,5 @@
-function [matVLST, matCENTER, matNEWWAKE, matNPNEWWAKE, matNTVLST, matNPVLST, matDEFGLOB, matTWISTGLOB, valUINF, valGUSTTIME, matUINF, flagSTEADY,test] = fcnSTIFFWING(valALPHA, valBETA, valDELTIME, matVLST,...
-    matCENTER, matDVE, vecDVETE, matNTVLST, matNPVLST, vecN, valTIMESTEP, vecCL, valWEIGHT, valAREA, valDENSITY, valUINF, valGUSTTIME, valGUSTL, valGUSTAMP, flagGUSTMODE, valGUSTSTART, flagSTEADY, matUINF,vecDVEHVSPN,test)
+function [matVLST, matCENTER, matNEWWAKE, matNPNEWWAKE, matNTVLST, matNPVLST, matDEFGLOB, matTWISTGLOB, valUINF, valGUSTTIME, matUINF, flagSTEADY, gust_vel_old] = fcnSTIFFWING(valALPHA, valBETA, valDELTIME, matVLST,...
+    matCENTER, matDVE, vecDVETE, matNTVLST, matNPVLST, vecN, valTIMESTEP, vecCL, valWEIGHT, valAREA, valDENSITY, valUINF, valGUSTTIME, valGUSTL, valGUSTAMP, flagGUSTMODE, valGUSTSTART, flagSTEADY, matUINF, gust_vel_old)
 
 % This function moves the wing in the freestream direction and calculates
 % the new wake elements, asssuming no bending of the wing.
@@ -14,7 +14,7 @@ if valGUSTTIME > 1 || valTIMESTEP == valGUSTSTART
     
     flagSTEADY = 2;
     
-    [matUINF,test] = fcnGUSTWING(matUINF,valGUSTAMP,valGUSTL,flagGUSTMODE,valDELTIME,valGUSTTIME,valUINF,valALPHA,valBETA,valGUSTSTART,matDVE,matCENTER,vecDVEHVSPN,test);
+    [matUINF, gust_vel_old] = fcnGUSTWING(matUINF,valGUSTAMP,valGUSTL,flagGUSTMODE,valDELTIME,valGUSTTIME,valUINF,valGUSTSTART,matCENTER,gust_vel_old);
     valGUSTTIME = valGUSTTIME + 1;
     
 end

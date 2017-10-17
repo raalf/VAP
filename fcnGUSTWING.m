@@ -1,4 +1,4 @@
-function [matUINF,test] = fcnGUSTWING(matUINF,valGUSTAMP,valGUSTL,flagGUSTMODE,valDELTIME,valGUSTTIME,valUINF,valALPHA,valBETA,valGUSTSTART,matDVE,matCENTER,vecDVEHVSPN,test)
+function [matUINF, gust_vel_old] = fcnGUSTWING(matUINF,valGUSTAMP,valGUSTL,flagGUSTMODE,valDELTIME,valGUSTTIME,valUINF,valGUSTSTART,matCENTER,gust_vel_old)
 
 % This function modifies matUINF to model a sinusoidal gust.
 
@@ -6,8 +6,6 @@ function [matUINF,test] = fcnGUSTWING(matUINF,valGUSTAMP,valGUSTL,flagGUSTMODE,v
 
 % Gust period
 valPER = valGUSTL/valUINF;
-x0 = valGUSTTIME*valDELTIME*valUINF;
-x = 0;
 
 start_loc = repmat([-valGUSTSTART*valDELTIME*valUINF,0,0],size(matCENTER,1),1); % Location (in meters) in global frame where gust starts
 
@@ -18,7 +16,7 @@ idx2 = find(idx1 > 0);
 
 tau = delx(idx2,1)./valUINF;
 
-matUINF = repmat([valUINF*cos(valALPHA)*cos(valBETA) valUINF*sin(valBETA) valUINF*sin(valALPHA)*cos(valBETA)],size(matUINF,1),1);
+% matUINF = repmat([valUINF*cos(valALPHA)*cos(valBETA) valUINF*sin(valBETA) valUINF*sin(valALPHA)*cos(valBETA)],size(matUINF,1),1);
 
 % Create gust velocity for sine wave gust
 if flagGUSTMODE == 1
@@ -33,15 +31,18 @@ if flagGUSTMODE == 1
 elseif flagGUSTMODE == 2
     
     if any(idx1) > 0
-        matUINF(idx2,3) = matUINF(idx2,3) + 0.5*valGUSTAMP*(1 - cos((2*pi*tau/(valGUSTL/valUINF))));
-        test(valGUSTTIME,:) = matUINF(4,3);
+        gust_vel = 0.5*valGUSTAMP*(1 - cos((2*pi*tau/(valGUSTL/valUINF))));
+        matUINF(idx2,3) = matUINF(idx2,3) + (gust_vel - gust_vel_old(idx2,1));
+        gust_vel_old = matUINF(:,3);
     end
     
 % Create gust velocity for sharp edge gust
 elseif flagGUSTMODE == 3
     
     if any(idx1) > 0
-        matUINF(idx2,3) = matUINF(idx2,3) + valGUSTAMP;
+        gust_vel = valGUSTAMP;
+        matUINF(idx2,3) = matUINF(idx2,3) + (gust_vel - gust_vel_old(idx2,1));
+        gust_vel_old = matUINF(:,3);
     end
     
 else

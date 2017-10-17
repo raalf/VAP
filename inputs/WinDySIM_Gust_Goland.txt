@@ -4,13 +4,13 @@ NO TRIM
 Please note that the program uses equal, number and : signs as special recognizers!
 
 Relaxed wake (yes 1, no 0):		flagRELAX =		0
-Steady (1) or unsteady (2):		flagSTEADY =	1
+Steady (1) or unsteady (2):		flagSTEADY =	2
 Stiff (1) or Flexible (2) Wing:	flagSTIFFWING = 1
 Gust Type (0, 1, 2 or 3):		flagGUSTMODE =	3
 
-Max. number of time steps:		valMAXTIME 	=	110
+Max. number of time steps:		valMAXTIME 	=	50
 Min. number of time steps: 		valMINTIME 	= 	0
-Width of each time step (sec):	valDELTIME 	=	0.06096
+Width of each time step (sec):	valDELTIME 	=	0.06
 Convergence delta-span effic.:	valDELTAE 	=	0.000000	(0 if only timestepping)
 
 AOA sequence: 			seqALPHA 	= 	0.01
@@ -19,7 +19,7 @@ Density:				valDENSITY 	= 	1.025
 Kinematic viscosity:	valKINV		=	1.460000e-05
 Freestream velocity:	valUINF		=	1.0
 Gust amplitude:			valGUSTAMP	=	0.05
-Gust length:			valGUSTL	=	6.0
+Gust length:			valGUSTL	=	7.3152
 
 Reference area:				valAREA 	=	1.1148
 Reference span:				valSPAN 	=	6.096

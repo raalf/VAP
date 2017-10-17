@@ -89,7 +89,7 @@ for yy = 4:(valNSELE+2)
     matK_1 = [matEIx(yy-2,3), 0; 0, 0];
     matK_2 = [matEIx(yy-2,2), 0; 0, -matGJt(yy-2,2)]; 
     matK_3 = [matEIx(yy-2,1), 0; 0, -matGJt(yy-2,1)];
-    matB = [0 0; 0 100];
+    matB = [0 0; 0 0];
 
     %% Finite difference relations for partial derivatives
 
