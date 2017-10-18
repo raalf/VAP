@@ -67,7 +67,7 @@ flagPLOT    = 1;
 flagPLOTWAKEVEL = 0;
 flagVERBOSE = 0;
 
-valGUSTSTART = 8;
+valGUSTSTART = valSTIFFSTEPS;
 
 %% Discretize geometry into DVEs
 
@@ -195,9 +195,9 @@ for ai = 1:length(seqALPHA)
             if valTIMESTEP <= valSTIFFSTEPS || flagSTIFFWING == 1
 
                 [matVLST, matCENTER, matNEWWAKE, matNPNEWWAKE, matNTVLST, matNPVLST, matDEFGLOB, matTWISTGLOB, valUINF, valGUSTTIME, matUINF, flagSTEADY,...
-                    gust_vel_old] = fcnSTIFFWING(valALPHA, valBETA, valDELTIME, matVLST, matCENTER, matDVE, vecDVETE, matNTVLST, matNPVLST, vecN,...
+                    gust_vel_old,test] = fcnSTIFFWING(valALPHA, valBETA, valDELTIME, matVLST, matCENTER, matDVE, vecDVETE, matNTVLST, matNPVLST, vecN,...
                     valTIMESTEP, vecCL, valWEIGHT, valAREA, valDENSITY, valUINF, valGUSTTIME, valGUSTL, valGUSTAMP, flagGUSTMODE, valGUSTSTART,...
-                    flagSTEADY, matUINF, gust_vel_old);
+                    flagSTEADY, matUINF, gust_vel_old,test);
                 
                 % Only move structure if flex wing case is selected
                 if flagSTIFFWING == 2

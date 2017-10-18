@@ -1,4 +1,4 @@
-function [matUINF, gust_vel_old] = fcnGUSTWING(matUINF,valGUSTAMP,valGUSTL,flagGUSTMODE,valDELTIME,valGUSTTIME,valUINF,valGUSTSTART,matCENTER,gust_vel_old)
+function [matUINF, gust_vel_old,test] = fcnGUSTWING(matUINF,valGUSTAMP,valGUSTL,flagGUSTMODE,valDELTIME,valGUSTTIME,valUINF,valGUSTSTART,matCENTER,gust_vel_old,test)
 
 % This function modifies matUINF to model a sinusoidal gust.
 
@@ -50,5 +50,7 @@ else
     disp('No gust mode exists for entered value');
     
 end
+
+test(valGUSTTIME,1) = matUINF(1,3);
 
 end
