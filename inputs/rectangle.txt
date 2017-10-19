@@ -1,0 +1,41 @@
+Input file for VAP
+Input file in m/N/sec
+NO TRIM
+Please note that the program uses equal, number and : signs as special recognizers!
+
+Relaxed wake (yes 1, no 0):		flagRELAX 	=	0
+Steady (1) or unsteady (2):		flagSTEADY 	=	1
+
+Max. number of time steps:		valMAXTIME 	=	40
+Min. number of time steps: 		valMINTIME 	= 	0
+Number of azmith locations		valAZNUM 	=	20
+Convergence delta-span effic.:	valDELTAE 	=	0.000000	(0 if only timestepping)
+
+AOA sequence: 			seqALPHAR 	= 	90
+Advance ratio 			valJ		= 	0.5
+Rotor RPM				valRPM		=	3000 
+Density:				valDENSITY 	= 	1.2250
+Kinematic viscosity:	valKINV		=	1.460000e-05
+
+Reference area:				valAREA 	=	300
+Reference diameter:			valDIA		=	4
+Number of blades			valNUMB		=	2
+Rotation axis x y z 	 	vecROTAX	= 	0.25 0 0
+
+No. of panels:	valPANELS =	1
+
+Defines leading edge of wing, all measured in metres:
+Keep vecM the same for all panels on a wing!
+
+Panel #:1.
+Number of spanwise elements:	vecN 		= 4
+Number of chordwise elements: 	vecM 		= 3.
+Airfoil number: 				vecAIRFOIL 	= 6
+Symmetry edge (0, 1 or 2): 		vecSYM 		= 0;
+xleft		yleft		zleft		chord		epsilon
+0	1	0.000000	0.5	0
+1	2	0.000000	0.5	0
+
+
+Interference drag 	valINTERF 	= 0.0 %
+##############

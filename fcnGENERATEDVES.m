@@ -13,11 +13,6 @@ function [matCENTER, vecDVEHVSPN, vecDVEHVCRD, vecDVELESWP, vecDVEMCSWP, vecDVET
 %      - Comptue LE Sweep
 %      - Project TE to DVE, Rotate adn Comptue TE Sweep
 %   V3 - Function overhaul for VAP2.0
-%  3.5 - Modify non-planer VLST (Jan 6, 2017)
-%        old matNPVLST will be not called matNTVLST to specify it holds dve
-%        infomation of non-twisted wing
-%      - new matNPVLST will now hold non-planer dve coordinates of
-%        non-modified wing geometry specified in input file
 %
 % Fixed how DVEs matrix is converted from 2D grid to 1D array. 16/01/2016 (Alton)
 
@@ -59,6 +54,7 @@ valNELE = sum(vecM.*vecN);
 vecDVEPANEL   = nan(valNELE,1);
 
 P1          = nan(valNELE,3);
+% P12         = nan(valNELE,3);
 P2          = nan(valNELE,3);
 P3          = nan(valNELE,3);
 P4          = nan(valNELE,3);
@@ -121,8 +117,6 @@ for i = 1:valPANELS
     idxStart = vecEnd(i)-count+1;
     idxEnd = vecEnd(i);
     
-    
-
     vecDVEPANEL(idxStart:idxEnd,:) = repmat(i,count,1);
     
     % Write DVE WING Index
@@ -133,6 +127,7 @@ for i = 1:valPANELS
 
     % Write non-planer DVE coordinates
     P1(idxStart:idxEnd,:) = reshape(permute(LE_Left, [2 1 3]),count,3);
+%     P12(idxStart:idxEnd,:) = reshape(permute(LE_Mid, [2 1 3]),count,3);
     P2(idxStart:idxEnd,:) = reshape(permute(LE_Right, [2 1 3]),count,3);
     P3(idxStart:idxEnd,:) = reshape(permute(TE_Right, [2 1 3]),count,3);
     P4(idxStart:idxEnd,:) = reshape(permute(TE_Left, [2 1 3]),count,3);
@@ -149,6 +144,7 @@ for i = 1:valPANELS
 end
 
 
+
 %% fcnDVECORNER2PARAM takes the corner and center points of each DVEs,
 % computes the parameters and compiles the matVLST and matDVE
 
@@ -157,11 +153,6 @@ end
     vecDVELESWP, vecDVEMCSWP, vecDVETESWP, ...
     vecDVEAREA, matDVENORM, ...
     matVLST, matDVE, ~, idxVLST] = fcnDVECORNER2PARAM( matCENTER, P1, P2, P3, P4 );
-
-
-%% Create nonplaner VLST
-nonplanerVLST = [P1;P2;P3;P4];
-matNPVLST = nonplanerVLST(idxVLST,:);
 
 
 
@@ -174,8 +165,8 @@ matNTVLST = notwistnonplanerVLST(idxVLST,:);
 [ matADJE, vecDVESYM, vecDVETIP, vecDVELE, vecDVETE ] = fcnDVEADJT( imP1, imP2, imP3, imP4, valNELE, vecDVEPANEL, vecSYM );
 
 
+%% Account for Multiple Blades
 
-end
 
 
 

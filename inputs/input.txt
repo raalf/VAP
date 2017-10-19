@@ -9,7 +9,7 @@ Steady (1) or unsteady (2):		aerodynamics =	1
 Symmetrical geometry (yes 1, no 0):	sym =		1
 Longitudinal trim (yes 1, no 0):	trim =		0	(yes means m has to be 1)
 
-Max. number of time steps:	maxtime =	67
+Max. number of time steps:	maxtime =	20
 Width of each time step (sec):	deltime =	0.250000
 Convergence delta-span effic.:	deltae =	0.000000	(0 if onlytimestepping)
 
@@ -28,7 +28,7 @@ CMo of wing:			CMo =	-0.100000000
 
 No. of wings (max. 5):		wings =		1
 No. of panels:			panels =	1
-No. of chordwise lifting lines: m =		1
+No. of chordwise lifting lines: m =		2
 No. of airfoils (max. 15):	airfoils =	9
 
 Panel boundary conditions:

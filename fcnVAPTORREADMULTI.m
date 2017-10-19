@@ -1,8 +1,7 @@
-function [flagRELAX, flagSTEADY, valAREA, valSPAN, valCMAC, valWEIGHT, ...
-    seqALPHA, seqBETA, valKINV, valDENSITY, valPANELS, matGEOM, vecSYM, ...
-    vecAIRFOIL, vecN, vecM, valVSPANELS, matVSGEOM, valFPANELS, matFGEOM, ...
-    valFTURB, valFPWIDTH, valDELTAE, valAZnum, valMAXTIME, valMINTIME, ...
-    valINTERF] = fcnVAPREAD(strFILE)
+function [flagRELAX, flagSTEADY, valMAXTIME, valMINTIME, valAZNUM, ...
+    valDELTAE, seqALPHAR, valJ, valRPM, valDENSITY, valKINV, valAREA, valDIA,...
+    valNUMB, valNUMRO, matROTAX, vecRODIR, valPANELS, vecROTAXLOC, matGEOM, vecAIRFOIL, vecN, vecM, vecSYM, ...
+    valINTERF] = fcnVAPTORREADMULTI(strFILE)
 
 % INPUT:
 %   strFILE - file name of input text file in the local directory (or if not, with the appropriate path in the name)
@@ -10,15 +9,21 @@ function [flagRELAX, flagSTEADY, valAREA, valSPAN, valCMAC, valWEIGHT, ...
 %   flagRELAX - 0 if fixed wake, 1 if relaxed
 %   flagSTEADY - 0 if unsteady, 1 if steady
 
-%   valAREA - projected wing area (m^2)
-%   valSPAN - tip-to-tip span (m)
-%   valCMAC - mean aerodynamic chord
-%   valWEIGHT - aircraft weight (N)
+%   valMAXTIME - maximum number of timesteps
+%   valMINTIME - minimum number of timestep
+%   valAZNUM  - number of azimuth locations
+%   valDELTAE - convergence criteria of change in span efficiency between timesteps
 
-%   seqALPHA - sequence of alphas to analyze
-%   seqBETA - sequence of betas to analyze
-%   valKINV - kinematic viscosity (1.46e-05 as standard)
+%   seqALPHAR - sequence of rotor plane angle of attacks
+%   valJ - Advance ratio
+%   valRPM - Rotor rpm
 %   valDENSITY - fluid density, kg/m^3
+%   valKINV - kinematic viscosity (1.46e-05 as standard)
+
+%   valAREA - projected wing area (m^2)
+%   valDIA - propeller diameter (m)
+%   valNUMB - numbers of blades per rotor
+%   vecROTAX - rotation axis [x y z] (m)
 
 %   valPANELS - number of wing panels
 %   matGEOM - 2 x 5 x valPANELS matrix, with (x,y,z) coords of edge points, and chord and twist at each edge
@@ -28,23 +33,9 @@ function [flagRELAX, flagSTEADY, valAREA, valSPAN, valCMAC, valWEIGHT, ...
 %   vecN - valPANELS x 1 vector of spanwise elements per DVE
 %   vecM - valPANELS x 1 vector of chordwise elements per DVE
 
-%   valVSPANELS - number of vertical stabilizer panels
-%   matVSGEOM - matrix with vertical tail geometry, if used
-
-%   valFPANELS - number of fuselage panels
-%   matFGEOM - matrix of fuselage geometry, if used
-%   valFTURB - fuselage panel number where turbulence occurs
-%   valFPWIDTH - width of fuselage panels
-
-%   valDELTAE - convergence criteria of change in span efficiency between timesteps
-%   valDELTIME - size of timestep (m)
-%   valMAXTIME - maximum number of timesteps
-%   valMINTIME - minimum number of timesteps
-
 %   valINTERF - interference drag value (%)
 
 fp = fopen(strFILE);
-
 %% Reading header flags
 % Reading relaxed wake flag
 ch = fscanf(fp,'%c',1);
@@ -75,12 +66,12 @@ while(ch~='=');
 end
 valMINTIME = fscanf(fp,'%d');
 
-% Reading time step width
+% Reading number of azmith locations
 ch = fscanf(fp,'%c',1);
 while(ch~='=');
     ch = fscanf(fp,'%c',1);
 end
-valDELTIME = fscanf(fp,'%lf');
+valAZNUM = fscanf(fp,'%lf');
 
 % Reading deltae
 ch = fscanf(fp,'%c',1);
@@ -91,19 +82,27 @@ valDELTAE = fscanf(fp,'%lf');
 
 %% Reading flow conditions
 
-% Reading sequence of alphas to analyze
+% Reading sequence of rotor alphas to analyze
 ch = fscanf(fp,'%c',1);
 while(ch~='=');
     ch = fscanf(fp,'%c',1);
 end
-seqALPHA = fscanf(fp,'%lf');
+seqALPHAR = fscanf(fp,'%lf');
 
-% Reading sequence of sideslip angles to be analyzed
+% Reading advanced ratio to be considered
 ch = fscanf(fp,'%c',1);
 while(ch~='=');
     ch = fscanf(fp,'%c',1);
 end
-seqBETA = fscanf(fp,'%lf');
+valJ = fscanf(fp,'%lf');
+
+% Reading rotor rpm
+% Reading advanced ratio to be considered
+ch = fscanf(fp,'%c',1);
+while(ch~='=');
+    ch = fscanf(fp,'%c',1);
+end
+valRPM = fscanf(fp,'%lf');
 
 % Reading density
 ch = fscanf(fp,'%c',1);
@@ -112,42 +111,64 @@ while(ch~='=');
 end
 valDENSITY = fscanf(fp,'%lf');
 
-% Reading density
+% Reading viscosity
 ch = fscanf(fp,'%c',1);
 while(ch~='=');
     ch = fscanf(fp,'%c',1);
 end
 valKINV = fscanf(fp,'%lf');
-%% Reading Aircraft Reference Values
-% Reading wing area
+%% Reading Rotor Reference Values
+% Reading reference area
 ch = fscanf(fp,'%c',1);
 while(ch~='=');
     ch = fscanf(fp,'%c',1);
 end
 valAREA = fscanf(fp,'%lf');
 
-% Reading wing span
+% Reading rotor diameter
 ch = fscanf(fp,'%c',1);
 while(ch~='=');
     ch = fscanf(fp,'%c',1);
 end
-valSPAN = fscanf(fp,'%lf');
+valDIA = fscanf(fp,'%lf');
 
-% Reading mean aerodynamic chord
+% Reading number of blades per rotor
 ch = fscanf(fp,'%c',1);
 while(ch~='=');
     ch = fscanf(fp,'%c',1);
 end
-valCMAC = fscanf(fp,'%lf');
+valNUMB = fscanf(fp,'%lf');
 
-% Reading aircraft weight
+% Reading rotational axis
+% ch = fscanf(fp,'%c',1);
+% while(ch~='=');
+%     ch = fscanf(fp,'%c',1);
+% end
+% vecROTAX = fscanf(fp,'%lf');
+% vecROTAX = vecROTAX';
+
 ch = fscanf(fp,'%c',1);
 while(ch~='=');
     ch = fscanf(fp,'%c',1);
 end
-valWEIGHT = fscanf(fp,'%lf');
+valNUMRO = fscanf(fp,'%lf');
 
-%% Reading panel/wing/lifting line information
+for i = 1:valNUMRO
+    ch = fscanf(fp,'%c',1);
+    while(ch~='=');
+        ch = fscanf(fp,'%c',1);
+    end
+    tempROTAX = fscanf(fp,'%lf');
+    matROTAX(i,:) = tempROTAX';
+    
+    ch = fscanf(fp,'%c',1);
+    while(ch~='=');
+        ch = fscanf(fp,'%c',1);
+    end
+    vecRODIR(i,1) = fscanf(fp,'%lf');
+end
+    
+%% Reading panel/rotor/lifting line information
 % Reading No. of panels
 ch = fscanf(fp,'%c',1);
 while(ch~='=');
@@ -155,6 +176,13 @@ while(ch~='=');
 end
 valPANELS = fscanf(fp,'%lf');
 
+% Reading rotational axis
+ch = fscanf(fp,'%c',1);
+while(ch~='=');
+    ch = fscanf(fp,'%c',1);
+end
+vecROTAXLOC = fscanf(fp,'%lf');
+vecROTAXLOC = vecROTAXLOC';
 %% Reading panel information and geometry
 
 vecN = zeros(valPANELS,1);
@@ -217,74 +245,6 @@ for i = 1:valPANELS
     
 end
 
-%% Reading vertical tail information
-% Reading number of panels
-ch = fscanf(fp,'%c',1);
-while(ch~='=');
-    ch = fscanf(fp,'%c',1);
-end
-valVSPANELS = fscanf(fp,'%lf',1);
-
-% Skipping vtail geometry column headers
-fgets(fp);
-fgets(fp);
-
-matVSGEOM = zeros(valVSPANELS,4);
-
-% Reading v-stab geometry
-% Explanation below:
-%{
-    info_vgeometry(x,y)
-        x is the panel number
-        y is for the values
-            1 panel number
-            2 panel chord
-            3 panel area
-            4 panel airfoil
-%}
-
-for j = 1:valVSPANELS
-    matVSGEOM(j,:) = fscanf(fp,'%lf');
-end
-
-%% Reading fuselage information
-% Reading number of sections
-ch = fscanf(fp,'%c',1);
-while(ch~='=');
-    ch = fscanf(fp,'%c',1);
-end
-valFPANELS = fscanf(fp,'%lf',1);
-
-% Reading width of sections
-ch = fscanf(fp,'%c',1);
-while(ch~='=');
-    ch = fscanf(fp,'%c',1);
-end
-valFPWIDTH = fscanf(fp,'%lf',1);
-
-% Reading turbulence transition point
-ch = fscanf(fp,'%c',1);
-while(ch~='=');
-    ch = fscanf(fp,'%c',1);
-end
-valFTURB = fscanf(fp,'%lf',1);
-
-% Skipping fuselage geometry column headers (I don't know why I need 3)
-fgetl(fp);
-fgetl(fp);
-% fgets(fp);
-
-matFGEOM = zeros(valFPANELS,2);
-
-for j = 1:valFPANELS
-    matFGEOM(j,:) = fscanf(fp,'%lf',2);
-    % I have no idea why I need these:
-    %     fgetl(fp);
-    %     fgetl(fp);
-    % Without them, fscanf returns an extra section number which isn't in
-    % the text file
-end
-
 % Reading intereference drag
 ch = fscanf(fp,'%c',1);
 while(ch~='=');
@@ -296,6 +256,7 @@ valINTERF = fscanf(fp,'%lf',1);
 fclose(fp);
 
 clear ans ch i j fp idx1
+
 
 
 
