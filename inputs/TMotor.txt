@@ -11,8 +11,8 @@ Min. number of time steps: 		valMINTIME 	= 	1
 Number of azmith locations		valAZNUM 	=	20
 Convergence delta-span effic.:	valDELTAE 	=	0.00000	(0 if only timestepping)
 
-AOA sequence: 			seqALPHAR 	= 	-90
-Advance ratio 			seqJ		= 	0.2 0.4 0.6 0.8
+AOA sequence: 			seqALPHAR 	= 	90
+Advance ratio 			seqJ		= 	0.4
 Rotor RPM				valRPM		=	3000
 Density:				valDENSITY 	= 	1.225
 Kinematic viscosity:	valKINV		=	1.460000e-05
