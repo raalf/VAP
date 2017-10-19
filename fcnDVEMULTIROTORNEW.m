@@ -63,10 +63,10 @@ tempROTATE2D = (reshape(permute(tempROTATE,[2,1,3]),[3 (valNUMB-1)*3]))';
 % Make Each point relative to rotation axis
 % tempCENTER = matCENTER - vecROTAX;
 %matNEWVLST = matVLST;
-vecNEWAIRFOIL = vecAIRFOIL;
-vecNEWSYM = vecSYM;
-vecNEWN = vecN;
-vecNEWM = vecM;
+% vecNEWAIRFOIL = vecAIRFOIL;
+% vecNEWSYM = vecSYM;
+% vecNEWN = vecN;
+% vecNEWM = vecM;
 vecNEWDVEHVSPN = vecDVEHVSPN;
 vecNEWDVEHVCRD = vecDVEHVCRD;
 vecNEWDVELESWP = vecDVELESWP;
@@ -147,9 +147,9 @@ matNEWNPVLST = [matNEWNPVLST; tempNEWNPVLST+vecROTAX];
 % vecNEWDVEMCSWP = [vecNEWDVEMCSWP; repmat(vecDVEMCSWP(idxDVEBLADE),[valNUMB-1,1])];
 % vecNEWDVETESWP = [vecNEWDVETESWP; repmat(vecDVETESWP(idxDVEBLADE),[valNUMB-1,1])];
 
-vecNEWAIRFOIL = [vecNEWAIRFOIL;vecAIRFOIL(idxDVEBLADE)];
-vecNEWN = [vecNEWN; vecN(idxDVEBLADE)];
-vecNEWM = [vecNEWM; vecM(idxDVEBLADE)];
+% vecNEWAIRFOIL = [vecNEWAIRFOIL;vecAIRFOIL(idxDVEBLADE)];
+% vecNEWN = [vecNEWN; vecN(idxDVEBLADE)];
+% vecNEWM = [vecNEWM; vecM(idxDVEBLADE)];
 vecNEWDVEHVSPN =[vecNEWDVEHVSPN; vecDVEHVSPN(idxDVEBLADE)];
 vecNEWDVEHVCRD =[vecNEWDVEHVCRD; vecDVEHVCRD(idxDVEBLADE)]; 
 vecNEWDVELESWP = [vecNEWDVELESWP; vecDVELESWP(idxDVEBLADE)]; 
@@ -190,6 +190,10 @@ vecNEWDVETE = [vecNEWDVETE; vecDVETE(idxDVEBLADE)];
 end
 matNEWDVE = [matNEWDVE; matNEWDVE0+max(matNEWDVE(:))];
 end
+
+vecNEWAIRFOIL = repmat(vecAIRFOIL,valNUMB,1);
+vecNEWM = repmat(vecM, valNUMB,1);
+vecNEWN = repmat(vecN, valNUMB,1);
 
 % Define which DVE is on which rotor
 vecDVEROTOR = repmat(vecDVEWING,valNUMB,1);
