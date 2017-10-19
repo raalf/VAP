@@ -6,7 +6,7 @@ function [valPANELS, vecN, vecM, vecAIRFOIL, matGEOMNULTI ] = fcnGEOMMULTIROTOR(
 % Create a local matGEOM wrt the local rotation axis for each rotor
 matGEOMLOC = matGEOM(:,1:3,:)-vecROTAXLOC;
 matGEOMLOC = repmat(matGEOMLOC, 1, 1, valNUMRO);
-tempRODIR = -2*repmat(reshape(repmat(vecRODIR,1,valPANELS)',1,1,valPANELS*valNUMRO),2,1,1)+1;
+tempRODIR = -2*repmat(reshape(repmat((-0.5*(vecRODIR-1)),1,valPANELS)',1,1,valPANELS*valNUMRO),2,1,1)+1;
 
 matGEOMLOC = [matGEOMLOC(:,1,:), tempRODIR.*matGEOMLOC(:,2,:), matGEOMLOC(:,3,:)];
 

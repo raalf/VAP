@@ -1,5 +1,5 @@
 function [flagRELAX, flagSTEADY, valMAXTIME, valMINTIME, valAZNUM, ...
-    valDELTAE, seqALPHAR, valJ, valRPM, valDENSITY, valKINV, valAREA, valDIA,...
+    valDELTAE, seqALPHAR, valJ, vecRPM, valDENSITY, valKINV, valAREA, valDIA,...
     valNUMB, valNUMRO, matROTAX, vecRODIR, valPANELS, vecROTAXLOC, matGEOM, vecAIRFOIL, vecN, vecM, vecSYM, ...
     valINTERF] = fcnVAPTORREADMULTI(strFILE)
 
@@ -96,14 +96,6 @@ while(ch~='=');
 end
 valJ = fscanf(fp,'%lf');
 
-% Reading rotor rpm
-% Reading advanced ratio to be considered
-ch = fscanf(fp,'%c',1);
-while(ch~='=');
-    ch = fscanf(fp,'%c',1);
-end
-valRPM = fscanf(fp,'%lf');
-
 % Reading density
 ch = fscanf(fp,'%c',1);
 while(ch~='=');
@@ -166,6 +158,14 @@ for i = 1:valNUMRO
         ch = fscanf(fp,'%c',1);
     end
     vecRODIR(i,1) = fscanf(fp,'%lf');
+    
+    % Reading rotor rpm
+    % Reading advanced ratio to be considered
+    ch = fscanf(fp,'%c',1);
+    while(ch~='=');
+        ch = fscanf(fp,'%c',1);
+    end
+    vecRPM(i,1) = fscanf(fp,'%lf');
 end
     
 %% Reading panel/rotor/lifting line information

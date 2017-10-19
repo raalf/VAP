@@ -1,7 +1,7 @@
-function [valNELE, matNEWNPVLST, vecAIRFOIL, vecDVELE, vecDVETE, ...
-    vecDVEYAW, vecDVEPANEL, vecDVETIP, vecDVEWING, vecDVESYM, vecM, vecN, ...
-    vecDVEROLL, vecDVEAREA, vecDVEPITCH, vecDVEMCSWP, vecDVETESWP, vecDVELESWP, ...
-    vecDVEHVCRD, vecDVEHVSPN, vecSYM, vecQARM, matADJE, matNEWCENTER, matNEWVLST, matDVE, matNEWDVENORM, matVLST] = fcnDVEMULTIROTORNEW(valNUMRO, valNELE, valNUMB, vecDVETIP, vecDVETESWP, vecDVEPITCH, vecDVEWING, vecDVEMCSWP, vecM, vecN, vecDVEPANEL, vecDVEROLL, vecDVELESWP, vecDVEYAW, vecDVEHVCRD, vecDVEHVSPN, vecDVEAREA, vecDVESYM, vecDVELE, vecDVETE, vecSYM, matROTAX, vecAIRFOIL, matNPVLST, matDVE, matADJE, matVLST, matCENTER, matDVENORM)
+function [vecDVEVLSTROTOR, vecDVEROTOR, valNEWNELE, matNEWNPVLST, vecNEWAIRFOIL, vecNEWDVELE, vecNEWDVETE, ...
+    vecNEWDVEYAW, vecNEWDVEPANEL, vecNEWDVETIP, vecNEWDVEWING, vecDVESYM, vecNEWM, vecNEWN, ...
+    vecNEWDVEROLL, vecNEWDVEAREA, vecNEWDVEPITCH, vecNEWDVEMCSWP, vecNEWDVETESWP, vecNEWDVELESWP, ...
+    vecNEWDVEHVCRD, vecNEWDVEHVSPN, vecSYM, vecQARM, matNEWADJE, matNEWCENTER, matNEWVLST, matNEWDVE, matNEWDVENORM] = fcnDVEMULTIROTORNEW(valNUMRO, valNELE, valNUMB, vecDVETIP, vecDVETESWP, vecDVEWING, vecDVEMCSWP, vecM, vecN, vecDVEPANEL, vecDVELESWP, vecDVEHVCRD, vecDVEHVSPN, vecDVEAREA, vecDVESYM, vecDVELE, vecDVETE, vecSYM, matROTAX, vecAIRFOIL, matNPVLST, matDVE, matADJE, matVLST)
 % This function modifies the created DVEs and all required input values
 %	for multiple rotor blades.
 %
@@ -62,8 +62,7 @@ tempROTATE2D = (reshape(permute(tempROTATE,[2,1,3]),[3 (valNUMB-1)*3]))';
 %% Parameters the must Rotate
 % Make Each point relative to rotation axis
 % tempCENTER = matCENTER - vecROTAX;
-matNEWVLST = matVLST;
-matNEWNPVLST = matNPVLST;
+%matNEWVLST = matVLST;
 vecNEWAIRFOIL = vecAIRFOIL;
 vecNEWSYM = vecSYM;
 vecNEWN = vecN;
@@ -77,21 +76,45 @@ vecNEWDVEAREA = vecDVEAREA;
 vecNEWDVETIP = vecDVETIP;
 vecNEWDVELE = vecDVELE;
 vecNEWDVETE = vecDVETE; 
-matNEWDVE = matDVE;
+matNEWVLST0 = [];
+matNEWNPVLST0 = [];
+vecDVEROTOR = [];
+m = [1 0 0; 0 1 0; 0 0 1; 0 0 0];
+for i = 1:valNUMRO
+	idxDVEBLADE = vecDVEWING==i;
+    matDVEBLADE = matDVE(idxDVEBLADE,:);
+    [idxVLSTBLADE,A,B] = unique(matDVEBLADE); % This line is critical thanks to T.D.K.
+    
+    matNEWVLST0 = [matNEWVLST0;matVLST(idxVLSTBLADE,:)];
+    matNEWNPVLST0 = [matNEWNPVLST0;matNPVLST(idxVLSTBLADE,:)];
+end
 
+for i = 1:size(matDVE,1)
+    for j = 1:size(matDVE,2)
+        tempVLST = matVLST(matDVE(i,j),:);
+        idx = (sum(tempVLST(1,:) == matNEWVLST0(:,:),2) == 3);
+        matNEWDVE0(i,j) = find(idx == 1);
+    end
+end
+matNEWVLST = matNEWVLST0;
+matNEWNPVLST = matNEWNPVLST0;
+matNEWDVE = matNEWDVE0;
+
+% clf
+for j = 1:(valNUMB-1)
 for i = 1:valNUMRO
     idxDVEBLADE = vecDVEWING==i;
-    matDVEBLADE = matDVE(idxDVEBLADE,:);
-    [idxVLSTBLADE,~,c] = unique(matDVEBLADE); % This line is critical thanks to T.D.K.
+    matDVEBLADE = matNEWDVE0(idxDVEBLADE,:);
+    [idxVLSTBLADE,~,~] = unique(matDVEBLADE); % This line is critical thanks to T.D.K.
     vecROTAX = matROTAX(i,:);
     
-    tempVLST = matVLST(idxVLSTBLADE,:) - vecROTAX;
-    tempNPVLST = matNPVLST(idxVLSTBLADE,:) - vecROTAX;
+    tempVLST = matNEWVLST0(idxVLSTBLADE,:) - vecROTAX;
+    tempNPVLST = matNEWNPVLST0(idxVLSTBLADE,:) - vecROTAX;
     
 % Rotate values
 % tempNEWCENTER =(tempROTATE2D*tempCENTER')';
-tempNEWVLST = (tempROTATE2D*tempVLST')';
-tempNEWNPVLST = (tempROTATE2D*tempNPVLST')';
+tempNEWVLST = (tempROTATE(:,:,j)*tempVLST')';
+tempNEWNPVLST = (tempROTATE(:,:,j)*tempNPVLST')';
 % tempDVENORM = (tempROTATE2D*matDVENORM')';
 
 % Calculated below using fcnDVECORNER2PARAM now
@@ -99,33 +122,87 @@ tempNEWNPVLST = (tempROTATE2D*tempNPVLST')';
 % temp = reshape(tempNEWCENTER,[numel(tempCENTER)/3,3,valNUMB]);
 % matNEWCENTER = reshape(permute(temp,[2,1,3]),[3,valNUMB*(numel(tempCENTER)/3)])' + vecROTAX;
 
-temp = reshape(tempNEWVLST,[numel(tempVLST)/3,3,valNUMB-1]);
-tempVLSTADD = reshape(permute(temp,[2,1,3]),[3,(valNUMB-1)*(numel(tempVLST)/3)])' + vecROTAX;
-matNEWVLST = [matNEWVLST; tempVLSTADD];
-temp = reshape(tempNEWNPVLST,[numel(tempNPVLST)/3,3,(valNUMB-1)]);
-tempVLSTADD = reshape(permute(temp,[2,1,3]),[3,(valNUMB-1)*(numel(tempNPVLST)/3)])' + vecROTAX;
-matNEWNPVLST = [matNEWNPVLST; tempVLSTADD];
+% temp = reshape(tempNEWVLST,[numel(tempVLST)/3,3,valNUMB-1]);
+% tempVLSTADD = reshape(permute(temp,[2,1,3]),[3,(valNUMB-1)*(numel(tempVLST)/3)])' + vecROTAX;
+% matNEWVLST = [matNEWVLST; tempVLSTADD];
+matNEWVLST = [matNEWVLST; tempNEWVLST+vecROTAX];
+% d = tempNEWVLST+vecROTAX;
+% d2 = matNEWVLST0(idxVLSTBLADE,:);
+% hold on
+% plot3(d(:,1),d(:,2),d(:,3),'d','Color',m(i,:))
+% plot3(d2(:,1),d2(:,2),d2(:,3),'d','Color',m(i,:))
+% axis equal
+% temp = reshape(tempNEWNPVLST,[numel(tempNPVLST)/3,3,(valNUMB-1)]);
+% tempVLSTADD = reshape(permute(temp,[2,1,3]),[3,(valNUMB-1)*(numel(tempNPVLST)/3)])' + vecROTAX;
+% matNEWNPVLST = [matNEWNPVLST; tempVLSTADD];
+matNEWNPVLST = [matNEWNPVLST; tempNEWNPVLST+vecROTAX];
 
 %% Parameters to increase vector for number of blades
-vecNEWAIRFOIL = [vecNEWAIRFOIL; repmat(vecAIRFOIL(idxDVEBLADE),[valNUMB-1,1])];
-vecNEWN = [vecNEWN; repmat(vecN(idxDVEBLADE),[valNUMB-1,1])];
-vecNEWM = [vecNEWM; repmat(vecM(idxDVEBLADE),[valNUMB-1,1])];
-vecNEWDVEHVSPN =[vecNEWDVEHVSPN; repmat(vecDVEHVSPN(idxDVEBLADE),[valNUMB-1,1])];
-vecNEWDVEHVCRD =[vecNEWDVEHVCRD; repmat(vecDVEHVCRD(idxDVEBLADE),[valNUMB-1,1])]; 
-vecNEWDVELESWP = [vecNEWDVELESWP; repmat(vecDVELESWP(idxDVEBLADE),[valNUMB-1,1])]; 
-vecNEWDVEMCSWP = [vecNEWDVEMCSWP; repmat(vecDVEMCSWP(idxDVEBLADE),[valNUMB-1,1])];
-vecNEWDVETESWP = [vecNEWDVETESWP; repmat(vecDVETESWP(idxDVEBLADE),[valNUMB-1,1])];
+% vecNEWAIRFOIL = [vecNEWAIRFOIL; repmat(vecAIRFOIL(idxDVEBLADE),[valNUMB-1,1])];
+% vecNEWN = [vecNEWN; repmat(vecN(idxDVEBLADE),[valNUMB-1,1])];
+% vecNEWM = [vecNEWM; repmat(vecM(idxDVEBLADE),[valNUMB-1,1])];
+% vecNEWDVEHVSPN =[vecNEWDVEHVSPN; repmat(vecDVEHVSPN(idxDVEBLADE),[valNUMB-1,1])];
+% vecNEWDVEHVCRD =[vecNEWDVEHVCRD; repmat(vecDVEHVCRD(idxDVEBLADE),[valNUMB-1,1])]; 
+% vecNEWDVELESWP = [vecNEWDVELESWP; repmat(vecDVELESWP(idxDVEBLADE),[valNUMB-1,1])]; 
+% vecNEWDVEMCSWP = [vecNEWDVEMCSWP; repmat(vecDVEMCSWP(idxDVEBLADE),[valNUMB-1,1])];
+% vecNEWDVETESWP = [vecNEWDVETESWP; repmat(vecDVETESWP(idxDVEBLADE),[valNUMB-1,1])];
 
-vecNEWDVEAREA = [vecNEWDVEAREA; repmat(vecDVEAREA(idxDVEBLADE),[valNUMB-1,1])];
-vecNEWDVETIP = [vecNEWDVETIP; repmat(vecDVETIP(idxDVEBLADE),[valNUMB-1,1])];
-vecNEWDVELE = [vecNEWDVELE; repmat(vecDVELE(idxDVEBLADE),[valNUMB-1,1])];
-vecNEWDVETE = [vecNEWDVETE; repmat(vecDVETE(idxDVEBLADE),[valNUMB-1,1])];
+vecNEWAIRFOIL = [vecNEWAIRFOIL;vecAIRFOIL(idxDVEBLADE)];
+vecNEWN = [vecNEWN; vecN(idxDVEBLADE)];
+vecNEWM = [vecNEWM; vecM(idxDVEBLADE)];
+vecNEWDVEHVSPN =[vecNEWDVEHVSPN; vecDVEHVSPN(idxDVEBLADE)];
+vecNEWDVEHVCRD =[vecNEWDVEHVCRD; vecDVEHVCRD(idxDVEBLADE)]; 
+vecNEWDVELESWP = [vecNEWDVELESWP; vecDVELESWP(idxDVEBLADE)]; 
+vecNEWDVEMCSWP = [vecNEWDVEMCSWP; vecDVEMCSWP(idxDVEBLADE)];
+vecNEWDVETESWP = [vecNEWDVETESWP; vecDVETESWP(idxDVEBLADE)];
+
+
+% vecNEWDVEAREA = [vecNEWDVEAREA; repmat(vecDVEAREA(idxDVEBLADE),[valNUMB-1,1])];
+% vecNEWDVETIP = [vecNEWDVETIP; repmat(vecDVETIP(idxDVEBLADE),[valNUMB-1,1])];
+% vecNEWDVELE = [vecNEWDVELE; repmat(vecDVELE(idxDVEBLADE),[valNUMB-1,1])];
+% vecNEWDVETE = [vecNEWDVETE; repmat(vecDVETE(idxDVEBLADE),[valNUMB-1,1])];
+
+vecNEWDVEAREA = [vecNEWDVEAREA;vecDVEAREA(idxDVEBLADE)];
+vecNEWDVETIP = [vecNEWDVETIP; vecDVETIP(idxDVEBLADE)];
+vecNEWDVELE = [vecNEWDVELE; vecDVELE(idxDVEBLADE)];
+vecNEWDVETE = [vecNEWDVETE; vecDVETE(idxDVEBLADE)];
+
 
 %% Parameters to be multiplied by constant
 
 % New matDVE list
-tempADDI = ((reshape(repmat(1:(valNUMB-1),size(matDVE(idxDVEBLADE,:),1),4),[(valNUMB-1)*size(matDVE(idxDVEBLADE,:),1) 4]))*(max(max(matNEWDVE))));
-matNEWDVE = [matNEWDVE; repmat(matDVE(idxDVEBLADE,:),[valNUMB-1 1])+tempADDI]; 
+% tempADDI = ((reshape(repmat(1:(valNUMB-1),size(matDVE(idxDVEBLADE,:),1),4),[(valNUMB-1)*size(matDVE(idxDVEBLADE,:),1) 4])));
+% temp = repmat(matDVE(idxDVEBLADE,:),[valNUMB-1 1]);
+% for j = 1:(valNUMB-1)
+%     tempD = (1+temp-min(temp(tempADDI==j))).*(tempADDI == j)+(tempADDI == j)*(max(max(matNEWDVE)));
+%     matNEWDVE = [matNEWDVE;tempD(any(tempD,2),:)]
+% end
+% hold on
+% if i == 1
+% scatter3(matNEWVLST(matNEWDVE(1:8,:),1),matNEWVLST(matNEWDVE(1:8,:),2),matNEWVLST(matNEWDVE(1:8,:),3),'k')
+% elseif i == 2
+% scatter3(matNEWVLST(matNEWDVE(9:16,:),1),matNEWVLST(matNEWDVE(9:16,:),2),matNEWVLST(matNEWDVE(9:16,:),3),'r')
+% elseif i == 3
+% scatter3(matNEWVLST(17:24,1),matNEWVLST(17:24,2),matNEWVLST(17:24,3),'b')
+% elseif i == 4
+% scatter3(matNEWVLST(25:32,1),matNEWVLST(25:32,2),matNEWVLST(25:32,3),'g')
+% end
+end
+matNEWDVE = [matNEWDVE; matNEWDVE0+max(matNEWDVE(:))];
+end
+
+% Define which DVE is on which rotor
+vecDVEROTOR = repmat(vecDVEWING,valNUMB,1);
+
+% Create vecDVEVLSTROTOR to define which VLST point is associated to which
+% rotor
+vecDVEVLSTROTOR = zeros(size(matNEWVLST,1),1);
+for i = 1:size(matNEWDVE,1)
+    for j = 1:size(matNEWDVE,2)
+        tempVLST = matNEWVLST(matNEWDVE(i,j),:);
+        idx = (sum(tempVLST(1,:) == matNEWVLST(:,:),2) == 3);
+        vecDVEVLSTROTOR(idx) = vecDVEROTOR(i);
+    end
 end
 
 % New matADJE
@@ -137,24 +214,24 @@ end
 tempADJEADD = repmat([matADJE(:,1) matADJE(:,3)],[valNUMB 1]) + tempADDI;
 tempADJDUP = repmat([matADJE(:,2) matADJE(:,4)],[valNUMB,1]);
     
-matADJE = [tempADJEADD(:,1),tempADJDUP(:,1),tempADJEADD(:,2),tempADJDUP(:,2)];
+matNEWADJE = [tempADJEADD(:,1),tempADJDUP(:,1),tempADJEADD(:,2),tempADJDUP(:,2)];
 
 % New vecDVEWING
 tempADDI = (reshape(repmat(1:valNUMB,numel(vecDVEWING),1),[valNUMB*numel(vecDVEWING) 1]))*(max(max(vecDVEWING))) - max(max(vecDVEWING));
-vecDVEWING = repmat(vecDVEWING,[valNUMB 1])+tempADDI;
+vecNEWDVEWING = repmat(vecDVEWING,[valNUMB 1])+tempADDI;
 
 % New vecDVEPANEL
 tempADDI = (reshape(repmat(1:valNUMB,numel(vecDVEPANEL),1),[valNUMB*numel(vecDVEPANEL) 1]))*(max(max(vecDVEPANEL))) - max(max(vecDVEPANEL));
-vecDVEPANEL = repmat(vecDVEPANEL,[valNUMB 1])+tempADDI;
+vecNEWDVEPANEL = repmat(vecDVEPANEL,[valNUMB 1])+tempADDI;
 
-valNELE = valNELE*valNUMB;
+valNEWNELE = valNELE*valNUMB;
 
 %% Updating roll, pitch, yaw, etc
-[~, ~, vecDVEROLL, vecDVEPITCH, vecDVEYAW, ~, ~, ~, ~, matNEWDVENORM, ...
-    ~, ~, matNEWCENTER] = fcnVLST2DVEPARAM( matDVE, matNEWVLST);
+[~, ~, vecNEWDVEROLL, vecNEWDVEPITCH, vecNEWDVEYAW, ~, ~, ~, ~, matNEWDVENORM, ...
+    ~, ~, matNEWCENTER] = fcnVLST2DVEPARAM(matNEWDVE, matNEWVLST);
 
 % Chordwise radial distances
-vecQARM = abs(matNEWCENTER(:,2)-vecROTAX(2));
+vecQARM = abs(matNEWCENTER(:,2)-matROTAX(vecDVEROTOR,2));
 
 %% Scatter plot of centers and verticies for validation
 % figure(1)
