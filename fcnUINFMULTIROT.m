@@ -79,7 +79,8 @@ matTEPTS(:,:,2) = xte ; %middle
 matTEPTS(:,:,3) = (xte + s.*repmat(eta8,1,3)); %right ride
 
 % Radial points of trailing edge points from rotational axis
-tempTE = matTEPTS - repmat(matROTAX(vecDVEROTOR,:),1,1,3);
+idxte = vecDVETE == 3;
+tempTE = matTEPTS - repmat(matROTAX(vecDVEROTOR(idxte),:),1,1,3);
 
 % Radius Magnitude
 tempRMAGTE = sqrt(tempTE(:,1,:).^2+tempTE(:,2,:).^2+tempTE(:,3,:).^2);
