@@ -21,10 +21,11 @@ disp(' ');
 %% Reading in geometry
 %strFILE = 'inputs/ROTORINPUT_MA11by7.txt';
 %strFILE = 'inputs/rectangle.txt';
-strFILE = 'inputs/TMotor.txt';
+% strFILE = 'inputs/TMotor.txt';
 %strFILE = 'inputs/standard_cirrus.txt';
 %strFILE = 'inputs/TMotorQuad.txt';
 %strFILE = 'inputs/TenzinHover.txt';
+strFILE = 'inputs/simple_rotor.txt'
 
 [flagRELAX, flagSTEADY, valMAXTIME, valMINTIME, valAZNUM, valDELTAE, ...
     seqALPHAR, seqJ, valRPM, valDENSITY, valKINV, valAREA, valDIA, ...
@@ -75,14 +76,14 @@ filename = 'TMotorSweepViscousApparentMass'; % Save workspace name
 
 valWSIZE = length(nonzeros(vecDVETE)); % Amount of wake DVEs shed each timestep
 %% Add boundary conditions to D-Matrix
-[matD] = fcnDWING(valNELE, matADJE, vecDVEHVSPN0, vecDVESYM, vecDVETIP);
+[matD] = fcnDWING(valNELE, matADJE, vecDVEHVSPN0, vecDVESYM, vecDVETIP, sum(vecN)/valNUMB);
 
 %% Add kinematic conditions to D-Matrix
 
 [vecK] = fcnSINGFCT(valNELE, vecDVEWING, vecDVETIP, vecDVEHVSPN0);
 [matD] = fcnKINCON(matD, valNELE, matDVE, matCENTER0, matVLST0, ...
     matDVENORM0, vecK, vecDVEROLL, vecDVEPITCH, vecDVEYAW, vecDVELESWP, ...
-    vecDVETESWP, vecDVEHVSPN0, vecDVEHVCRD,vecSYM);
+    vecDVETESWP, vecDVEHVSPN0, vecDVEHVCRD, vecSYM);
 
 %% Performance sweeps
 % Preallocating for a turbo-boost in performance
@@ -278,7 +279,7 @@ for ai = 1:length(seqALPHAR)
           [matWD, vecWR] = fcnWDWAKE([1:valWSIZE]', temp_WADJE, ...
               vecWDVEHVSPN(end-valWSIZE+1:end), vecWDVESYM(end-valWSIZE+ ...
               1:end), vecWDVETIP(end-valWSIZE+1:end), vecWKGAM(end- ...
-              valWSIZE+1:end)); 
+              valWSIZE+1:end), sum(vecN)/valNUMB); 
          [matWCOEFF(end-valWSIZE+1:end,:)] = fcnSOLVEWD(matWD, vecWR, ...
              valWSIZE, vecWKGAM(end-valWSIZE+1:end), vecWDVEHVSPN(end- ...
              valWSIZE+1:end)); 
@@ -300,7 +301,7 @@ for ai = 1:length(seqALPHAR)
         
         % Creating and solving WD-Matrix
         [matWD, vecWR] = fcnWDWAKE([1:valWNELE]', matWADJE, ...
-            vecWDVEHVSPN, vecWDVESYM, vecWDVETIP, vecWKGAM);
+            vecWDVEHVSPN, vecWDVESYM, vecWDVETIP, vecWKGAM, sum(vecN)/valNUMB);
         [matWCOEFF] = fcnSOLVEWD(matWD, vecWR, valWNELE, vecWKGAM, ...
             vecWDVEHVSPN);
 
@@ -321,7 +322,7 @@ for ai = 1:length(seqALPHAR)
                 vecWDVEYAW, vecWK, vecWDVEWING, flagSTEADY);   
             % Creating and solving WD-Matrix
             [matWD, vecWR] = fcnWDWAKE([1:valWNELE]', matWADJE, ...
-                vecWDVEHVSPN, vecWDVESYM, vecWDVETIP, vecWKGAM);
+                vecWDVEHVSPN, vecWDVESYM, vecWDVETIP, vecWKGAM, sum(vecN)/valNUMB);
             [matWCOEFF] = fcnSOLVEWD(matWD, vecWR, valWNELE, ...
                 vecWKGAM, vecWDVEHVSPN);
         end

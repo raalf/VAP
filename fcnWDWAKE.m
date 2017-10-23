@@ -1,4 +1,4 @@
-function [matWD, vecWR] = fcnWDWAKE(all_DVEs, matWADJE, vecWDVEHVSPN, vecWDVESYM, vecWDVETIP, vecWKGAM)
+function [matWD, vecWR] = fcnWDWAKE(all_DVEs, matWADJE, vecWDVEHVSPN, vecWDVESYM, vecWDVETIP, vecWKGAM, vecN)
 % Creates the Wake D-matrix, for updating the vorticity coefficients
 % for the wake to account for stretching.
 
@@ -184,6 +184,8 @@ end
 
 [tip2,~] = find(vecWDVETIP == 2);
 [tip4,~] = find(vecWDVETIP == 4);
+
+if sum(vecN) == 1; tip2 = [1:length(vecWDVETIP)]'; tip4 = [1:length(vecWDVETIP)]'; end
 
 if isempty(tip2)
     tip2 = double.empty(0,1); % Ensuring the empty is the correct size if this is empty

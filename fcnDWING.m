@@ -1,4 +1,4 @@
-function [matD] = fcnDWING(valNELE, matADJE, vecDVEHVSPN, vecDVESYM, vecDVETIP)
+function [matD] = fcnDWING(valNELE, matADJE, vecDVEHVSPN, vecDVESYM, vecDVETIP, vecN)
 % Currently creates the upper 2/3rds of the D-matrix, which are the boundary conditions based
 % on adjacent DVEs, etc.
 
@@ -179,10 +179,12 @@ end
 [tip2,~] = find(vecDVETIP == 2);
 [tip4,~] = find(vecDVETIP == 4);
 
-if isempty(tip2)
-    tip2 = double.empty(0,1); % Ensuring the empty is the correct size if this is empty
-elseif isempty(tip4)
-    tip4 = double.empty(0,1);
+if sum(vecN) == 1; tip2 = [1:length(vecDVETIP)]'; tip4 = [1:length(vecDVETIP)]'; end
+
+len = length(tip2) + length(tip4);
+
+if isempty(tip2); tip2 = double.empty(0,1); % Ensuring the empty is the correct size if this is empty
+elseif isempty(tip4); tip4 = double.empty(0,1);
 end
 
 gamma1t = [ones(length(tip2),1) vecDVEHVSPN(tip2) vecDVEHVSPN(tip2).^2];
