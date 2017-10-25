@@ -1,4 +1,4 @@
-function [matUINF, matUINFTE, matTEPTS, vecTHETA] = fcnUINFMULTIROT(matCENTER, matROTAX, valTIMESTEP, valRPM, valALPHAR, valAZNUM, valDIA, valJ, valNUMB, vecDVEROTOR, vecDVEHVSPN, vecDVETE, matVLST, matDVE, vecRODIR)
+function [matUINF, matUINFTE, matTEPTS, vecTHETA] = fcnUINFMULTIROT(matCENTER, matROTAX, valTIMESTEP, vecRPM, valALPHAR, vecAZNUM, valDIA, valJ, valNUMB, vecDVEROTOR, vecDVEHVSPN, vecDVETE, matVLST, matDVE, vecRODIR)
 
 % This function defines the direction and magnitude of the inflow velocity.
 % This is calculated at both the control points and TE points.
@@ -15,20 +15,23 @@ function [matUINF, matUINFTE, matTEPTS, vecTHETA] = fcnUINFMULTIROT(matCENTER, m
 %   vecTHETA - Current angle of each DVE
 %   vecCPRADI - Radius from rotation axis to control point
 
+tempV = valJ*valDIA*vecRPM(1)/60;
+vecJ = tempV./((vecRPM/60).*valDIA);
+
 % Finding the rotation angle for the timestep
-valDELROT = (2*pi)/valAZNUM;
+valDELROT = (2.*pi)./vecAZNUM(vecDVEROTOR);
 
 % Number of DVEs per blade
-tempTOTDVE = size(matCENTER);
-tempNUMDVE = tempTOTDVE(1)/valNUMB;
+tempTOTDVE = size(matCENTER,1);
+tempNUMDVE = tempTOTDVE/valNUMB;
 
 % Find the current rotor angle (relative to initial position)
 temp = 0:2*pi/(valNUMB):2*pi;
 temp(valNUMB+1) = [];
-vecTHETA = valDELROT*valTIMESTEP*vecRODIR(vecDVEROTOR)+reshape(repmat(temp,tempNUMDVE,1),tempTOTDVE(1),1);
+vecTHETA = valDELROT.*valTIMESTEP.*vecRODIR(vecDVEROTOR)+reshape(repmat(temp,tempNUMDVE,1),tempTOTDVE,1);
 
 % Convert rpm to rad per second
-tempRADPS = valRPM*2*pi/60;
+tempRADPS = vecRPM*2*pi/60;
 
 % Radial points of control points from rotational axis
 tempCENTER = matCENTER - matROTAX(vecDVEROTOR,:);
@@ -37,8 +40,8 @@ tempCENTER = matCENTER - matROTAX(vecDVEROTOR,:);
 vecCPRADI = sqrt(tempCENTER(:,1).^2+tempCENTER(:,2).^2+tempCENTER(:,3).^2);
 
 % Rotation matrix and traslation vector
-matUROT = tempRADPS*[vecCPRADI.*cos(vecTHETA) vecCPRADI.*sin(vecTHETA) zeros(tempTOTDVE(1),1)];
-vecUTRANS = (valJ*valDIA*valRPM/60)*[-cos(valALPHAR) 0 sin(valALPHAR)];
+matUROT = tempRADPS(vecDVEROTOR).*[vecCPRADI.*cos(vecTHETA) vecCPRADI.*sin(vecTHETA) zeros(tempTOTDVE,1)];
+vecUTRANS = (valDIA.*vecJ(vecDVEROTOR).*vecRPM(vecDVEROTOR)./60)*[-cos(valALPHAR) 0 sin(valALPHAR)];
 
 if valJ == 0
     %vecUTRANS = ones(size(matCENTER,1)
@@ -86,7 +89,7 @@ tempTE = matTEPTS - repmat(matROTAX(vecDVEROTOR(idxte),:),1,1,3);
 tempRMAGTE = sqrt(tempTE(:,1,:).^2+tempTE(:,2,:).^2+tempTE(:,3,:).^2);
 
 % TE rotation matrix
-matUROTTE = tempRADPS*[tempRMAGTE.*cos(vecTHETA(idte)) tempRMAGTE.*sin(vecTHETA(idte)) zeros(numte,1,3)];
+matUROTTE = tempRADPS(vecDVEROTOR).*[tempRMAGTE.*cos(vecTHETA(idte)) tempRMAGTE.*sin(vecTHETA(idte)) zeros(numte,1,3)];
 
 % TE velocity matrix
 matUINFTE = matUROTTE - vecUTRANS;

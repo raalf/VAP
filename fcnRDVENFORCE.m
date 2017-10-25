@@ -1,4 +1,4 @@
-function [nind, nfree, thrustind, thrustfree, sideind, sidefree, axialind, axialfree, A, B, C, matWUINF,  es, ea, en, gamma_old, dGammadt] = fcnRDVENFORCE(valWSIZE, valTIMESTEP, valNELE, valWNELE, seqALPHAR, vecDVEPITCH, vecK, vecWK, vecWDVEYAW, vecWDVELESWP, vecWDVETESWP, vecDVEYAW, vecDVEMCSWP, vecWDVEHVSPN, vecWDVEHVCRD, vecWDVEROLL, vecDVEROLL,  vecDVEHVCRD, vecDVELE, vecDVEHVSPN, vecWDVEPITCH, vecDVELESWP, vecDVETESWP, vecSYM, vecTHETA, matVLST, matDVE, matUINF, matCOEFF, matADJE, matWDVE, matWVLST, matCENTER, matWCOEFF, flagSTEADY, gamma_old, dGammadt, valRPM, valAZNUM)
+function [nind, nfree, thrustind, thrustfree, sideind, sidefree, axialind, axialfree, A, B, C, matWUINF,  es, ea, en, gamma_old, dGammadt] = fcnRDVENFORCE(valWSIZE, valTIMESTEP, valNELE, valWNELE, seqALPHAR, vecDVEPITCH, vecK, vecWK, vecWDVEYAW, vecWDVELESWP, vecWDVETESWP, vecDVEYAW, vecDVEMCSWP, vecWDVEHVSPN, vecWDVEHVCRD, vecWDVEROLL, vecDVEROLL,  vecDVEHVCRD, vecDVELE, vecDVEHVSPN, vecWDVEPITCH, vecDVELESWP, vecDVETESWP, vecSYM, vecTHETA, matVLST, matDVE, matUINF, matCOEFF, matADJE, matWDVE, matWVLST, matCENTER, matWCOEFF, flagSTEADY, gamma_old, dGammadt, vecRPM, vecAZNUM)
 
 % A modified DVENFORCE function that has been tailored to calculate thrust
 % and axial force. Mostly transfered directly from fcnDVENFORCE.
@@ -71,23 +71,23 @@ C(idx1 ==0) = (matCOEFF(idx1==0,3)-matCOEFF(idxf,3));
 
 nfree = ((A .*2 .* vecDVEHVSPN'+  C./3.*2.*vecDVEHVSPN'.*vecDVEHVSPN'.*vecDVEHVSPN') .*uxs')';
 
-% Apply apparent mass if unsteady
-lambda = 0.5; % Relaxation factor for dGammadt term
-GammaInt = (A .*2 .* vecDVEHVSPN'+  C./3.*2.*vecDVEHVSPN'.*vecDVEHVSPN'.*vecDVEHVSPN'); % Integrated circulation across DVE
-
-if valTIMESTEP > 2 && flagSTEADY == 2
-    % Time rate of change of circulation    
-    dGammadt = lambda.*(GammaInt' - gamma_old')./(1/((valRPM/60)*(valAZNUM))) + (1-lambda).*dGammadt;
-else
-    dGammadt = zeros(size(vecDVEHVSPN,1),1);     
-end
-
-if valTIMESTEP > 1 && flagSTEADY == 2
-% Add apparent mass term to freestream normal force
-    nfree = nfree + dGammadt.*vecDVEHVCRD.*2;
-end
-% Store integrated circulation for current timestep to use on next timestep calc
-gamma_old = (A .*2 .* vecDVEHVSPN'+  C./3.*2.*vecDVEHVSPN'.*vecDVEHVSPN'.*vecDVEHVSPN'); 
+% %% Apply apparent mass if unsteady
+% lambda = 0.5; % Relaxation factor for dGammadt term
+% GammaInt = (A .*2 .* vecDVEHVSPN'+  C./3.*2.*vecDVEHVSPN'.*vecDVEHVSPN'.*vecDVEHVSPN'); % Integrated circulation across DVE
+% 
+% if valTIMESTEP > 2 && flagSTEADY == 2
+%     % Time rate of change of circulation    
+%     dGammadt = lambda.*(GammaInt' - gamma_old')./(1/((valRPM/60)*(valAZNUM))) + (1-lambda).*dGammadt;
+% else
+%     dGammadt = zeros(size(vecDVEHVSPN,1),1);     
+% end
+% 
+% if valTIMESTEP > 1 && flagSTEADY == 2
+% % Add apparent mass term to freestream normal force
+%     nfree = nfree + dGammadt.*vecDVEHVCRD.*2;
+% end
+% % Store integrated circulation for current timestep to use on next timestep calc
+% gamma_old = (A .*2 .* vecDVEHVSPN'+  C./3.*2.*vecDVEHVSPN'.*vecDVEHVSPN'.*vecDVEHVSPN'); 
 
 %% Induced force
 

@@ -1,7 +1,7 @@
-function [vecDVEVLSTROTOR, vecDVEROTOR, valNEWNELE, matNEWNPVLST, vecNEWAIRFOIL, vecNEWDVELE, vecNEWDVETE, ...
+function [valDELTIME, vecAZNUM, vecDVEVLSTROTOR, vecDVEROTOR, valNEWNELE, matNEWNPVLST, vecNEWAIRFOIL, vecNEWDVELE, vecNEWDVETE, ...
     vecNEWDVEYAW, vecNEWDVEPANEL, vecNEWDVETIP, vecNEWDVEWING, vecDVESYM, vecNEWM, vecNEWN, ...
     vecNEWDVEROLL, vecNEWDVEAREA, vecNEWDVEPITCH, vecNEWDVEMCSWP, vecNEWDVETESWP, vecNEWDVELESWP, ...
-    vecNEWDVEHVCRD, vecNEWDVEHVSPN, vecSYM, vecQARM, matNEWADJE, matNEWCENTER, matNEWVLST, matNEWDVE, matNEWDVENORM] = fcnDVEMULTIROTORNEW(valNUMRO, valNELE, valNUMB, vecDVETIP, vecDVETESWP, vecDVEWING, vecDVEMCSWP, vecM, vecN, vecDVEPANEL, vecDVELESWP, vecDVEHVCRD, vecDVEHVSPN, vecDVEAREA, vecDVESYM, vecDVELE, vecDVETE, vecSYM, matROTAX, vecAIRFOIL, matNPVLST, matDVE, matADJE, matVLST)
+    vecNEWDVEHVCRD, vecNEWDVEHVSPN, vecSYM, vecQARM, matNEWADJE, matNEWCENTER, matNEWVLST, matNEWDVE, matNEWDVENORM] = fcnDVEMULTIROTORNEW(valNUMRO, valNELE, valNUMB, vecDVETIP, vecDVETESWP, vecDVEWING, vecDVEMCSWP, vecM, vecN, vecDVEPANEL, vecDVELESWP, vecDVEHVCRD, vecDVEHVSPN, vecDVEAREA, vecDVESYM, vecDVELE, vecDVETE, vecSYM, matROTAX, vecAIRFOIL, matNPVLST, matDVE, matADJE, matVLST, vecRPM, valAZNUM)
 % This function modifies the created DVEs and all required input values
 %	for multiple rotor blades.
 %
@@ -236,6 +236,12 @@ valNEWNELE = valNELE*valNUMB;
 
 % Chordwise radial distances
 vecQARM = abs(matNEWCENTER(:,2)-matROTAX(vecDVEROTOR,2));
+
+
+% Calculate a del time using information from first rotor
+valDELTIME = 1/((vecRPM(1)/60)*(valAZNUM));
+
+vecAZNUM = 1./((vecRPM./60).*valDELTIME);
 
 %% Scatter plot of centers and verticies for validation
 % figure(1)

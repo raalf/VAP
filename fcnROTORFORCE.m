@@ -1,4 +1,4 @@
-function [ thrustind, thrustfree, thrustCFfree, tempTi, Pthrust, difthrustP, valCT, valFy, valFx, valCQ, valCP, valCMy, valCMx, vecCTCONV, vecCFyCONV, vecCFxCONV, vecCQCONV, vecCPCONV, vecCMyCONV, vecCMxCONV, vecDISTHRUST, vecDISNORM, vecDISAXIAL, vecDISSIDE, matDISNORM, matDISTHRUST, matDISAXIAL, matDISSIDE] = fcnROTORFORCE(difthrustP, diffsideP, diffaxialP, nind, nfree, nfreecs, Pthrust, thrustind, thrustfree, thrustCFfree,  thrustinddrag, Ptorque, axialCFfree, axialind, axialfree, inddrag, sideind, sidefree, sideCFfree, sideinddrag, valRPM, valDIA, valAZNUM, valTIMESTEP, vecCTCONV, vecCFxCONV, vecCFyCONV, vecCQCONV, vecCPCONV, vecCMxCONV, vecCMyCONV, vecQARM, vecDVETE, vecTHETA, matDISNORM, matDISTHRUST, matDISAXIAL, matDISSIDE, valNUMRO, vecDVEROTOR)
+function [ thrustind, thrustfree, thrustCFfree, tempTi, Pthrust, difthrustP, valCT, valFy, valFx, valCQ, valCP, valCMy, valCMx, vecCTCONV, vecCFyCONV, vecCFxCONV, vecCQCONV, vecCPCONV, vecCMyCONV, vecCMxCONV, vecDISTHRUST, vecDISNORM, vecDISAXIAL, vecDISSIDE, matDISNORM, matDISTHRUST, matDISAXIAL, matDISSIDE] = fcnROTORFORCE(difthrustP, diffsideP, diffaxialP, nind, nfree, nfreecs, Pthrust, thrustind, thrustfree, thrustCFfree,  thrustinddrag, Ptorque, axialCFfree, axialind, axialfree, inddrag, sideind, sidefree, sideCFfree, sideinddrag, vecRPM, valDIA, vecAZNUM, valTIMESTEP, vecCTCONV, vecCFxCONV, vecCFyCONV, vecCQCONV, vecCPCONV, vecCMxCONV, vecCMyCONV, vecQARM, vecDVETE, vecTHETA, matDISNORM, matDISTHRUST, matDISAXIAL, matDISSIDE, valNUMRO, vecDVEROTOR)
 %   This function uses the previously calculated induced and freestream
 %   forces and calculates non-dimensionalized values.
 %
@@ -7,7 +7,7 @@ function [ thrustind, thrustfree, thrustCFfree, tempTi, Pthrust, difthrustP, val
 %   Outputs:
 %   valCT - Thrust Coefficient
 %   valCQ - Torque Coefficient
-%   vecCTCONV - Convergence thrust, vector the length of valAZNUM
+%   vecCTCONV - Convergence thrust, vector the length of vecAZNUM
 tempDi = zeros(size(axialfree,1),1);
 tempTi = zeros(size(axialfree,1),1);
 tempSi = zeros(size(axialfree,1),1);
@@ -41,29 +41,32 @@ for i = 1:valNUMRO
 
 end
 
-power = torque.*2.*pi.*(valRPM./60);
+power = torque.*2.*pi.*(vecRPM'./60);
 % Calculate non-dimensionalized coefficient using US customary definitions
 % CT = T/(rho*Omega^2*D^4)
-valCT = thrust./(((valRPM/60)^2)*((valDIA)^4));
-valFy = Fy./(((valRPM/60)^2)*((valDIA)^4));
-valFx = Fx./(((valRPM/60)^2)*((valDIA)^4));
+valCT = thrust'./(((vecRPM./60).^2).*((valDIA).^4));
+valFy = Fy'./(((vecRPM./60).^2).*((valDIA).^4));
+valFx = Fx'./(((vecRPM./60).^2).*((valDIA).^4));
 
-valCQ = torque./(((valRPM/60)^2)*((valDIA)^5));
-valCP = power./((valRPM/60)^3*(valDIA^5));
-valCMy = My./(((valRPM/60)^2)*((valDIA)^5));
-valCMx = Mx./(((valRPM/60)^2)*((valDIA)^5));
+valCQ = torque'./(((vecRPM./60).^2).*((valDIA).^5));
+valCP = power'./((vecRPM./60).^3.*(valDIA.^5));
+valCMy = My'./(((vecRPM./60).^2).*((valDIA).^5));
+valCMx = Mx'./(((vecRPM./60).^2).*((valDIA).^5));
 
 % Convergence Forces and Moments (average thrust across 1 full rotation)
-temp = valTIMESTEP - (floor((valTIMESTEP-1)/valAZNUM))*(valAZNUM);
-vecCTCONV(temp,:)= valCT;
-vecCFyCONV(temp,:)= valFy;
-vecCFxCONV(temp,:) = valFx;
+temp = valTIMESTEP - ceil((floor((valTIMESTEP-1)./((vecAZNUM)))).*((vecAZNUM)));
+for i = 1:valNUMRO
+    vecCTCONV(temp(i),i)= valCT(i);
+    vecCFyCONV(temp(i),i)= valFy(i);
+    vecCFxCONV(temp(i),i) = valFx(i);
 
-vecCQCONV(temp,:) = valCQ;
-vecCPCONV(temp,:) = valCP;
-vecCMyCONV(temp,:) = valCMy;
-vecCMxCONV(temp,:) = valCMx;
+    vecCQCONV(temp(i),i) = valCQ(i);
+    vecCPCONV(temp(i),i) = valCP(i);
+    vecCMyCONV(temp(i),i) = valCMy(i);
+    vecCMxCONV(temp(i),i) = valCMx(i);
+end
 
+temp = valTIMESTEP - (floor((valTIMESTEP-1)/(max(vecAZNUM))))*(max(vecAZNUM));
 matDISNORM(:,temp) = vecDISNORM;
 matDISTHRUST(:,temp) = vecDISTHRUST;
 matDISAXIAL(:,temp) = vecDISAXIAL;

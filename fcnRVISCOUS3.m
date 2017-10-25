@@ -1,7 +1,7 @@
 function [vecCLPDIST, vecCDPDIST, THRUSTDIST, TORQUEDIST] = fcnRVISCOUS3(flagVERBOSE, ...
-    valRPM,  valKINV, vecQARM, vecDVEHVCRD, vecN, vecM, ...
+    vecRPM,  valKINV, vecQARM, vecDVEHVCRD, vecN, vecM, ...
     vecDVELE, vecDVEPANEL, vecAIRFOIL, vecTHETA, vecDISNORM, vecDVEAREA,...
-    matUINF, matVLST, matDVE, matWUINF)
+    vecDVEROTOR, matUINF, matVLST, matDVE, matWUINF)
 % This function applies a viscous correction using look up tables.
 % OUTPUT
 %   valCT - Viscous corrected thrust coeff
@@ -34,9 +34,9 @@ lepanels = vecDVEPANEL(ledves);
 % vecDVEROTOR is which rotor each DVE is associated to and must be updated
 % for mutiple rotors
 len = size(vecDISNORM,1);
-vecDVEROTOR = ones(len,1);
-idxdve = ledves(vecDVEROTOR(ledves) == 1);
-idxpanel = lepanels(vecDVEROTOR(ledves) == 1);
+tempDVEROTOR = ones(len,1);
+idxdve = ledves(tempDVEROTOR(ledves) == 1);
+idxpanel = lepanels(tempDVEROTOR(ledves) == 1);
 
 m = vecM(idxpanel);
 
@@ -140,7 +140,7 @@ matDPDIST = vecDPDIST.*tempDIR;
 % Resolve to viscous thrust and torque
 THRUSTDIST = matDPDIST(:,3);
 TORQUEDIST = (dot(matDPDIST,[abs(cos(vecTHETA(rows(:,1)))) abs(sin(vecTHETA(rows(:,1)))) zeros(size(matDPDIST,1),1)],2)).*vecQARM(vecDVELE==1);
-POWERDIST = TORQUEDIST*2.*pi.*(valRPM./60);
+POWERDIST = TORQUEDIST*2.*pi.*(vecRPM(vecDVEROTOR)./60);
 
 % vecCNDISTDIF = vecCNDIST0 - vecCNDIST;
 % vecDELNORMDISTP = 0.5*vecCNDISTDIF.*vecV.^2.*sum(vecDVEAREA(rows),2);
