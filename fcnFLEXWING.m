@@ -1,11 +1,12 @@
 function [valDELTIME, matEIx, matGJt, vecEA, vecCG, vecJT, vecLM, vecLSM, vecLSAC, matAEROCNTR, matSCLST,...
     vecSPANDIST, matSC, vecMAC, vecDEF, vecTWIST, matDEFGLOB, matTWISTGLOB, matDEF_old, matTWIST_old, matSLOPE,...
     matNPVLST, matNPNEWWAKE, matNEWWAKE, valUINF, vecDVEHVSPN, vecDVEHVCRD, vecDVEROLL, vecDVEPITCH, vecDVEYAW, ...
-    vecDVELESWP, vecDVEMCSWP, vecDVETESWP, vecDVEAREA, matDVENORM, matVLST, matDVE, matCENTER, matUINF, valGUSTTIME, flagSTEADY, gust_vel_old] = fcnFLEXWING(vecDVEHVSPN,...
+    vecDVELESWP, vecDVEMCSWP, vecDVETESWP, vecDVEAREA, matDVENORM, matVLST, matDVE, matCENTER, matUINF, valGUSTTIME, flagSTEADY, gust_vel_old,zvel] = fcnFLEXWING(vecDVEHVSPN,...
     vecDVELE, vecDVETE, vecEIxCOEFF, vecGJtCOEFF, vecEACOEFF, vecCGCOEFF, vecJTCOEFF, vecLMCOEFF, matNPVLST, matNPDVE, vecDVEPANEL,...
     vecN, vecM, vecDVEWING, vecDVEROLL, vecDVEPITCH, vecDVEYAW, vecLIFTDIST, vecMOMDIST, valSPAN, valTIMESTEP, matDEFGLOB, matTWISTGLOB,...
     matSLOPE, valALPHA, valBETA, matVLST, matCENTER, matDVE, vecCL, valWEIGHT, valAREA, valDENSITY, valUINF,...
-    flagSTATIC, valSDELTIME, valDELTIME, matDEF, matTWIST, valSTIFFSTEPS, valGUSTTIME, valGUSTAMP, valGUSTL, valGUSTSTART, flagGUSTMODE, flagSTEADY, gust_vel_old)
+    flagSTATIC, valSDELTIME, valDELTIME, valNSELE, matDEF, matTWIST, valSTIFFSTEPS, valGUSTTIME, valGUSTAMP, valGUSTL,...
+    valGUSTSTART, flagGUSTMODE, flagSTEADY, gust_vel_old, matUINF, zvel)
 
 % valDELTIME = valSDELTIME;
 
@@ -18,15 +19,16 @@ matCENTER_old = matCENTER;
 % Michael A. D. Melville, Denver, CO, 80218
 if valGUSTTIME > 1
     
-
-    valDELTIME = valSDELTIME;
-    flagSTEADY = 2;
-
+%     valDELTIME = valSDELTIME;    
+    for tempTIME = 1:floor(valDELTIME/valSDELTIME)
+        
     [vecDEF, vecTWIST, matDEFGLOB, matTWISTGLOB, matDEF, matTWIST, matSLOPE] = fcnWINGTWISTBEND(vecLIFTDIST, vecMOMDIST, matEIx, vecLM, vecJT, matGJt,...
-        vecLSM, vecN, valSPAN, vecDVEHVSPN, valTIMESTEP, matDEFGLOB, matTWISTGLOB, vecSPANDIST, valSDELTIME, matSLOPE);
+        vecLSM, valSPAN, valTIMESTEP, matDEFGLOB, matTWISTGLOB, vecSPANDIST, valSDELTIME, matSLOPE, matDEF, matTWIST, valNSELE, tempTIME);
     
     matDEF_old = matDEF;
     matTWIST_old = matTWIST;
+    
+    end
     
 % Runs structure code until static aeroleastic convergence
 else
@@ -40,6 +42,7 @@ else
     matTWIST_old = matTWIST;
     matDEFGLOB(valTIMESTEP,:) = matDEF(end,:);
     matTWISTGLOB(valTIMESTEP,:) = matTWIST(end,:);
+    
 end
 
 [matNPVLST, matNPNEWWAKE, matNEWWAKE, valUINF] = fcnMOVEFLEXWING(valALPHA, valBETA, valDELTIME, matVLST, matCENTER, matDVE, vecDVETE, vecDVEHVSPN, vecDVELE, matNPVLST, matDEFGLOB,...
@@ -50,7 +53,7 @@ end
     vecDVELESWP, vecDVEMCSWP, vecDVETESWP, ...
     vecDVEAREA, matDVENORM, matVLST, matDVE, matCENTER, matNEWWAKE ] = fcnVLST2DVEPARAM( matNPDVE, matNPVLST, matNEWWAKE, vecDVETE );
 
-[matUINF] = fcnFLEXUINF(matCENTER_old, matCENTER, valDELTIME, valTIMESTEP);
+[matUINF,zvel] = fcnFLEXUINF(matCENTER_old, matCENTER, valDELTIME, zvel);
 
 % Determine % relative change between aeroelastic timesteps
 % tol_def = (100*abs(matDEFGLOB(valTIMESTEP,end-2)-matDEFGLOB(valTIMESTEP-valSTIFFSTEPS,end-2))/matDEFGLOB(valTIMESTEP-valSTIFFSTEPS,end-2));

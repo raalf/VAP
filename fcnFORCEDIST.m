@@ -45,7 +45,7 @@ vecLIFTDIST = triu(vecLIFTDIST);
 vecLIFTDIST = ((vecSPANDIST(2:(end-1))' - tempSPANDIST(1,1:(end-1)))./(tempSPANDIST(2,2:end)-...
     tempSPANDIST(1,1:(end-1)))).*(vecLIFTDIST(2,2:end)-vecLIFTDIST(1,1:(end-1))) + vecLIFTDIST(1,1:(end-1)); % Linear interpolation of lift
 
-vecLIFTDIST = [vecLIFTDIST(1), vecLIFTDIST, 0]; % Add zero lift to tip. Use the same lift at root as at the next neighbouring node. This doesn't really have any impact since the structure solver doesn't use this value
+vecLIFTDIST = [vecLIFTDIST(1), vecLIFTDIST, 0]'; % Add zero lift to tip. Use the same lift at root as at the next neighbouring node. This doesn't really have any impact since the structure solver doesn't use this value
 
 % ======================================================================= % 
 %                        Start Moment Calculation                         %

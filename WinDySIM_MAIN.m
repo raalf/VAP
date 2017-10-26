@@ -36,7 +36,7 @@ disp(' ');
 
 strFILE = 'inputs/WinDySIM_Gust_Goland.txt';
 strSTRUCT_INPUT = 'inputs/Struct_Input_Goland.txt';
-strOUTPUTFILE = 'Solar_Plane_Loading.mat';
+strOUTPUTFILE = 'Goland_Wing_Validation.mat';
 
 [flagRELAX, flagSTEADY, flagSTIFFWING, flagGUSTMODE, valAREA, valSPAN,...
     valCMAC, valWEIGHT, valCM, seqALPHA, seqBETA, valKINV, valUINF, valGUSTAMP,...
@@ -52,8 +52,11 @@ matSC = [];
 vecMAC = [];
 matAEROCNTR = [];
 
-if flagSTIFFWING == 2
-    [valSDELTIME, valSTIFFSTEPS, flagSTATIC, vecEIxCOEFF, vecGJtCOEFF, vecEACOEFF, vecCGCOEFF, vecJTCOEFF, vecLMCOEFF] = fcnSTRUCTREAD(strSTRUCT_INPUT);
+% Read structure input if flexible wing case is selected
+if flagSTIFFWING == 2  
+    [valSDELTIME, valNSELE, valSTIFFSTEPS, flagSTATIC, vecEIxCOEFF, vecGJtCOEFF, vecEACOEFF, vecCGCOEFF, vecJTCOEFF, vecLMCOEFF] = fcnSTRUCTREAD(strSTRUCT_INPUT);
+else % If stiff wing, set number of spanwise elements equal to number of DVEs across span
+    valNSELE = sum(vecN,1);
 end
  
 % [flagRELAX, flagSTEADY, valAREA, valSPAN, valCMAC, valWEIGHT, ...
@@ -122,14 +125,6 @@ for ai = 1:length(seqALPHA)
         % Initializing wake parameters
         matWAKEGEOM = [];
         matNPWAKEGEOM = [];
-        matDEFGLOB = [];
-        matTWISTGLOB = [];
-        matDEF = zeros(2,size(vecLEDVES,1)+5);
-        matTWIST = zeros(2,size(vecLEDVES,1)+5);
-        matCENTER_old = zeros(size(matCENTER,1),size(matCENTER,2));
-        matSLOPE = [];
-        vecLIFTSTATIC = [];
-        vecMOMSTATIC = [];
         vecWDVEHVSPN = [];
         vecWDVEHVCRD = [];
         vecWDVEROLL = [];
@@ -153,12 +148,23 @@ for ai = 1:length(seqALPHA)
         vecWDVESYM = [];
         vecWDVETIP = [];
         vecWDVEWING = [];
+        
+        % Initialize structure and gust parameters
+        matDEFGLOB = [];
+        matTWISTGLOB = [];
+        matDEF = zeros(valSTIFFSTEPS,valNSELE+4);
+        matTWIST = zeros(valSTIFFSTEPS,valNSELE+4);
+        matCENTER_old = zeros(size(matCENTER,1),size(matCENTER,2));
+        matSLOPE = [];
+        vecLIFTSTATIC = [];
+        vecMOMSTATIC = [];
         valGUSTTIME = 1;
         gust_vel_old = zeros(valNELE,1);
+        zvel = zeros(valNELE,1);
         
-       gamma_old = [];
-       dGammadt = [];
-       test = [];
+        % Initialize unsteady aero terms
+        gamma_old = [];
+        dGammadt = [];
         
         n = 1;
         
@@ -195,11 +201,11 @@ for ai = 1:length(seqALPHA)
             if valTIMESTEP <= valSTIFFSTEPS || flagSTIFFWING == 1
 
                 [matVLST, matCENTER, matNEWWAKE, matNPNEWWAKE, matNTVLST, matNPVLST, matDEFGLOB, matTWISTGLOB, valUINF, valGUSTTIME, matUINF, flagSTEADY,...
-                    gust_vel_old,test] = fcnSTIFFWING(valALPHA, valBETA, valDELTIME, matVLST, matCENTER, matDVE, vecDVETE, matNTVLST, matNPVLST, vecN,...
+                    gust_vel_old] = fcnSTIFFWING(valALPHA, valBETA, valDELTIME, matVLST, matCENTER, matDVE, vecDVETE, matNTVLST, matNPVLST, vecN,...
                     valTIMESTEP, vecCL, valWEIGHT, valAREA, valDENSITY, valUINF, valGUSTTIME, valGUSTL, valGUSTAMP, flagGUSTMODE, valGUSTSTART,...
-                    flagSTEADY, matUINF, gust_vel_old,test);
+                    flagSTEADY, matUINF, gust_vel_old);
                 
-                % Only move structure if flex wing case is selected
+                % Only update structure position if flex wing case is selected
                 if flagSTIFFWING == 2
                 
                     [matEIx, matGJt, vecEA, vecCG, vecJT, vecLM, vecLSM, vecLSAC, matAEROCNTR, matSCLST, vecSPANDIST, matSC, vecMAC] = fcnSTRUCTDIST(vecDVEHVSPN, vecDVELE, vecDVETE, vecEIxCOEFF, vecGJtCOEFF,...
@@ -214,12 +220,12 @@ for ai = 1:length(seqALPHA)
                 [valDELTIME, matEIx, matGJt, vecEA, vecCG, vecJT, vecLM, vecLSM, vecLSAC, matAEROCNTR, matSCLST,...
                     vecSPANDIST, matSC, vecMAC, vecDEF, vecTWIST, matDEFGLOB, matTWISTGLOB, matDEF, matTWIST, matSLOPE,...
                     matNPVLST, matNPNEWWAKE, matNEWWAKE, valUINF, vecDVEHVSPN, vecDVEHVCRD, vecDVEROLL, vecDVEPITCH, vecDVEYAW, ...
-                    vecDVELESWP, vecDVEMCSWP, vecDVETESWP, vecDVEAREA, matDVENORM, matVLST, matDVE, matCENTER, matUINF, valGUSTTIME, flagSTEADY, gust_vel_old] = fcnFLEXWING(vecDVEHVSPN,...
+                    vecDVELESWP, vecDVEMCSWP, vecDVETESWP, vecDVEAREA, matDVENORM, matVLST, matDVE, matCENTER, matUINF, valGUSTTIME, flagSTEADY, gust_vel_old, zvel] = fcnFLEXWING(vecDVEHVSPN,...
                     vecDVELE, vecDVETE, vecEIxCOEFF, vecGJtCOEFF, vecEACOEFF, vecCGCOEFF, vecJTCOEFF, vecLMCOEFF, matNPVLST, matNPDVE, vecDVEPANEL,...
                     vecN, vecM, vecDVEWING, vecDVEROLL, vecDVEPITCH, vecDVEYAW, vecLIFTDIST, vecMOMDIST, valSPAN, valTIMESTEP, matDEFGLOB, matTWISTGLOB,...
                     matSLOPE, valALPHA, valBETA, matVLST, matCENTER, matDVE, vecCL, valWEIGHT, valAREA, valDENSITY, valUINF,...
-                    flagSTATIC, valSDELTIME, valDELTIME, matDEF, matTWIST, valSTIFFSTEPS, valGUSTTIME, valGUSTAMP, valGUSTL,...
-                    valGUSTSTART, flagGUSTMODE, flagSTEADY, gust_vel_old);
+                    flagSTATIC, valSDELTIME, valDELTIME, valNSELE, matDEF, matTWIST, valSTIFFSTEPS, valGUSTTIME, valGUSTAMP, valGUSTL,...
+                    valGUSTSTART, flagGUSTMODE, flagSTEADY, gust_vel_old, matUINF, zvel);
                 
                 n = n + 1;
                 
@@ -246,7 +252,8 @@ for ai = 1:length(seqALPHA)
 %             else
                 wake_chop = valMAXTIME;
 %             end
-
+            % Chop wake elements if wake is larger than specified length
+            % (wake_chop)
             if valWNELE/valWSIZE >= (wake_chop+1)
                 
                 dve_cut = ((valWSIZE)*(wake_chop+1)-valWSIZE+1):valWSIZE*(wake_chop+1);
@@ -396,18 +403,18 @@ end
 if flagSTIFFWING ~= 1
 figure(3)
 clf
-plot(vecSPANDIST, matDEFGLOB(valTIMESTEP,(3:size(matDEFGLOB,2)-2)));
+plot(vecSPANDIST, matDEFGLOB(valTIMESTEP,:));
 ylabel('Deflection (m)')
 xlabel('Span Location (m)')
 hold on
 yyaxis right
-plot(vecSPANDIST, (180/pi)*matTWISTGLOB(valTIMESTEP,(3:size(matDEFGLOB,2)-2)));
+plot(vecSPANDIST, (180/pi)*matTWISTGLOB(valTIMESTEP,:));
 ylabel('Twist (deg)')
 hold off
 
 figure(4)
 clf
-plot(valDELTIME*(1:valTIMESTEP),(180/pi)*matTWISTGLOB(:,end-2))
+plot(valDELTIME*(1:valTIMESTEP),(180/pi)*matTWISTGLOB(:,end))
 xlabel('Time (s)')
 ylabel('Tip Twist (deg)')
 grid on
@@ -415,7 +422,7 @@ box on
 
 figure(5)
 clf
-plot(valDELTIME*(1:valTIMESTEP),matDEFGLOB(:,end-2))
+plot(valDELTIME*(1:valTIMESTEP),matDEFGLOB(:,end))
 xlabel('Time (s)')
 ylabel('Tip Deflection (m)')
 grid on

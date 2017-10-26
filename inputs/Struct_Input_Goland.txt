@@ -2,20 +2,21 @@ Input file for VAP Structural Dynamics Package
 Input file m/N/sec
 Please note that the program uses equal, number and : signs as special recognizers!
 
-Width of each time step (sec):				valSDELTIME 	=	0.0001
-Number of timesteps with no deflections: 	valSTIFFSTEPS	=	2
-Static (0) or Dynamic (1) aeroelasticity:	flagSTATIC		=	0
+Width of each time step (sec):				valSDELTIME 	=	0.000001
+Number of spanwise structural elements:		valNSELE		=	50
+Number of timesteps with no deflections: 	valSTIFFSTEPS	=	20
+Static (0) or Dynamic (1) aeroelasticity:	flagSTATIC		=	1
 
 ----------------------
 Stiffness Distribution
 ----------------------
 
-	Bending (E*Ix)
+	Bending Stiffness (Nm^2)
 		A Coefficient: vec_EIx = 0
 		B Coefficient: vec_EIx = 0
 		C Coefficient: vec_EIx = 9772210
 
-	Torsion (G*Jt):
+	Torsional Stiffness (Nm^2):
 		A Coefficient: vec_GJt = 0
 		B Coefficient: vec_GJt = 0
 		C Coefficient: vec_GJt = 985810
@@ -24,17 +25,17 @@ Stiffness Distribution
 Geometry
 --------
 
-	Elastic Axis (X_ea):
+	Elastic Axis Location (m):
 		A Coefficient: vec_EA = 0
 		B Coefficient: vec_EA = 0
 		C Coefficient: vec_EA = 0.603504
 
-	Center of Gravity (X_cg):
+	Center of Gravity Location (m):
 		A Coefficient: vec_CG = 0
 		B Coefficient: vec_CG = 0
-		C Coefficient: vec_CG = 0.768096
+		C Coefficient: vec_CG = 0.786384
 
-	Torsion Constant (Jt):
+	Torsion Constant (kgm):
 		A Coefficient: vec_Jt = 0
 		B Coefficient: vec_Jt = 0
 		C Coefficient: vec_Jt = 8.6405832
@@ -43,7 +44,7 @@ Geometry
 Mass Distribution
 -----------------
 
-	Linear Mass (mu):
+	Linear Mass (kg/m):
 		A Coefficient: vec_LM = 0
 		B Coefficient: vec_LM = 0
 		C Coefficient: vec_LM = 35.709121

@@ -14,7 +14,7 @@ function [aloc, bloc, cloc] = fcnVSIND(hspan, hchord, phi, fp_0, k)
 % T.D.K 2016-09-28 ROTHWELL STREET, AURORA, ONTARIO, CANADA, L4G-0V8
 
 
-dbl_eps = 1e-14;
+dbl_eps = 1e-7;
 
 % To save on memory, eta xsi and zeta no longer have their own vectors
 % eta_0 = fp_0(:,2);

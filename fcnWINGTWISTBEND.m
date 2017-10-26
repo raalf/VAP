@@ -1,5 +1,5 @@
 function [vecDEF, vecTWIST, matDEFGLOB, matTWISTGLOB, matDEF, matTWIST, matSLOPE] = fcnWINGTWISTBEND(vecLIFTDIST, vecMOMDIST, matEIx, vecLM, vecJT, matGJt, vecLSM,...
-    vecN, valSPAN, vecDVEHVSPN, valTIMESTEP, matDEFGLOB, matTWISTGLOB, vecSPANDIST, valSDELTIME, matSLOPE, matDEF, matTWIST)
+    valSPAN, valTIMESTEP, matDEFGLOB, matTWISTGLOB, vecSPANDIST, valSDELTIME, matSLOPE, matDEF, matTWIST, valNSELE, tempTIME)
 % This function computes the spanwise deflection and twist using an
 % explicit finite difference method given a loading and structural
 % distribution.
@@ -37,44 +37,67 @@ function [vecDEF, vecTWIST, matDEFGLOB, matTWISTGLOB, matDEF, matTWIST, matSLOPE
 % valNSELE - Number of spanwise elements
 %
 
-valDY = sum(2*vecDVEHVSPN,1)/length(vecDVEHVSPN);
+valDY = 0.5*valSPAN/valNSELE;
 
-valNSELE = sum(vecN,1)+1;
+temp_y = (0:valDY:0.5*valSPAN)';
+
+vecSPANDIST(end) = temp_y(end);
+
+% valNSELE = sum(vecN,1)+1;
 
 valSTRUCTDELTIME = valSDELTIME;
-
-vecDEF = zeros(1,valNSELE+4);
-vecTWIST = zeros(1,valNSELE+4);
-vecSLOPE = zeros(1,valNSELE-1);
-
-% Temporary cross sectional area calculation
-C = -0.0333*vecSPANDIST + 0.76*ones(length(vecSPANDIST),1) ;
-tk = 0.02 ;
-Tk = 0.13 ;
-vecSPANAREA = pi*tk*C*(1 + Tk);
-
-valSTRUCTTIME = valTIMESTEP;
-% valSTRUCTTIME = tempTIME + 2;
 
 % vecJT = 0.00037078.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST...
 %     - 0.01102270.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST...
 %     + 0.12838255.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST - 0.73708913.*vecSPANDIST.*vecSPANDIST.*vecSPANDIST...
 %     + 2.15067037.*vecSPANDIST.*vecSPANDIST - 2.99312818.*vecSPANDIST + 1.84576176;
 
+%% Interpolate values at structural grid points
+
+[matEIx_interp(:,1)] = linterp(vecSPANDIST,matEIx(:,1)',temp_y);
+[matEIx_interp(:,2)] = linterp(vecSPANDIST,matEIx(:,2)',temp_y);
+[matEIx_interp(:,3)] = linterp(vecSPANDIST,matEIx(:,3)',temp_y);
+[matGJt_interp(:,1)] = linterp(vecSPANDIST,matGJt(:,1)',temp_y);
+[matGJt_interp(:,2)] = linterp(vecSPANDIST,matGJt(:,2)',temp_y);
+[vecLM] = linterp(vecSPANDIST,vecLM',temp_y);
+[vecJT] = linterp(vecSPANDIST,vecJT',temp_y);
+[vecLSM] = linterp(vecSPANDIST,vecLSM',temp_y);
+[vecLIFTDIST] = linterp(vecSPANDIST,vecLIFTDIST,temp_y);
+[vecMOMDIST] = linterp(vecSPANDIST,vecMOMDIST',temp_y);
+
+% vecLSM = -vecLSM;
+matEIx = matEIx_interp;
+matGJt = matGJt_interp;
+
+vecDEF = zeros(1,valNSELE+4);
+vecTWIST = zeros(1,valNSELE+4);
+vecSLOPE = zeros(1,valNSELE-1);
+
+% valSTRUCTTIME = valTIMESTEP;
+valSTRUCTTIME = tempTIME + 2;
+
 %% Beam boundary conditions
 
-matDEF(1:valSTRUCTTIME-1,:) = matDEFGLOB(1:valTIMESTEP-1,:);
+% matDEF(1:valSTRUCTTIME-1,:) = matDEFGLOB(1:valTIMESTEP-1,:);
+% matDEF(1:valSTRUCTTIME-1,:) = matDEF(1:valTIMESTEP-1,:);
 % if tempTIME == 1
 % matDEF(1:valSTRUCTTIME-1,:) = matDEFGLOB((valTIMESTEP-2):valTIMESTEP-1,:);
-matTWIST(1:valSTRUCTTIME-1,:) = matTWISTGLOB(1:valTIMESTEP-1,:);
+% matTWIST(1:valSTRUCTTIME-1,:) = matTWISTGLOB(1:valTIMESTEP-1,:);
+% matTWIST(1:valSTRUCTTIME-1,:) = matTWIST(1:valTIMESTEP-1,:);
 % matTWIST(1:valSTRUCTTIME-1,:) = matTWISTGLOB((valTIMESTEP-2):valTIMESTEP-1,:);
 % end
+
+if tempTIME == 1
+    matDEF(1:valSTRUCTTIME-1,:) = matDEF((end-1):end,:);
+    matTWIST(1:valSTRUCTTIME-1,:) = matTWIST((end-1):end,:);
+end
 
 vecDEF(3) = 0; % Zero deflection at root BC
 vecTWIST(3) = 0; % Zero twist at root BC
 
 % Assemble load matrix
-matLOAD = [vecLIFTDIST' - vecLM.*9.81, vecMOMDIST - vecLM.*vecLSM.*9.81];
+% matLOAD = [vecLIFTDIST' - vecLM'.*9.81, vecMOMDIST' - vecLSM'.*vecLM'.*9.81];
+matLOAD = [vecLIFTDIST', vecMOMDIST'];
 % matLOAD(end,:) = [0,0]; 
 
 for yy = 4:(valNSELE+2)
@@ -82,7 +105,6 @@ for yy = 4:(valNSELE+2)
     %% Geometric property assembly
 
     % Assemble mass matrix
-%             matMASS = [vecLM(yy-2), -vecLM(yy-2).*vecLSM(yy-2); -vecLM(yy-2).*vecLSM(yy-2), vecLM(yy-2)*(vecLSM(yy-2)*vecLSM(yy-2) + vecJT(yy-2)/vecSPANAREA(yy-2))];
     matMASS = [vecLM(yy-2), -vecLM(yy-2).*vecLSM(yy-2); -vecLM(yy-2).*vecLSM(yy-2), vecJT(yy-2)];
 
     % Assemble stiffness matrices
@@ -125,7 +147,7 @@ for yy = 4:(valNSELE+2)
 
     % Calculate angle between DVE and horizontal based on
     % deflection
-    vecSLOPE(yy-3) = asin((vecDEF(yy)-vecDEF(yy-1))/(vecSPANDIST(yy-2)-vecSPANDIST(yy-3)));
+    vecSLOPE(yy-3) = asin((vecDEF(yy)-vecDEF(yy-1))/(temp_y(yy-2)-temp_y(yy-3)));
 
 end
 
@@ -149,10 +171,10 @@ vecTWIST = matTWIST(end,:);
 vecSLOPE = [0; vecSLOPE'];
 
 % Spanwise deflection and twist wrt to global timestep
-matDEFGLOB(valTIMESTEP,:) = matDEF(valSTRUCTTIME,:);
-matTWISTGLOB(valTIMESTEP,:) = matTWIST(valSTRUCTTIME,:);
+matDEFGLOB(valTIMESTEP,:) = linterp(temp_y,matDEF(valSTRUCTTIME,3:end-1),vecSPANDIST);
+matTWISTGLOB(valTIMESTEP,:) = linterp(temp_y,matTWIST(valSTRUCTTIME,3:end-1),vecSPANDIST);
 
-matSLOPE(valTIMESTEP,:) = vecSLOPE';
+matSLOPE(valTIMESTEP,:) = linterp(temp_y(1:end-1),vecSLOPE,vecSPANDIST(1:end-1));
 
 
 end

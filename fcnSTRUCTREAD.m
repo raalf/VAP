@@ -1,4 +1,4 @@
-function [valSDELTIME, valSTIFFSTEPS, flagSTATIC, vecEIxCOEFF, vecGJtCOEFF, vecEACOEFF, vecCGCOEFF, vecJTCOEFF, vecLMCOEFF] = fcnSTRUCTREAD(strSTRUCT_INPUT)
+function [valSDELTIME, valNSELE, valSTIFFSTEPS, flagSTATIC, vecEIxCOEFF, vecGJtCOEFF, vecEACOEFF, vecCGCOEFF, vecJTCOEFF, vecLMCOEFF] = fcnSTRUCTREAD(strSTRUCT_INPUT)
 
 % This function reads in the structure input file and stores each parameter
 % in a vector. The vectors are all 1 x 3 with col 1 = A, col 2 = B, and col
@@ -36,6 +36,13 @@ while(ch~='=');
     ch = fscanf(fp,'%c',1);
 end
 valSDELTIME = fscanf(fp,'%lf',1);
+
+% Read number of structural grid points
+ch = fscanf(fp,'%c',1);
+while(ch~='=');
+    ch = fscanf(fp,'%c',1);
+end
+valNSELE = fscanf(fp,'%d',1);
 
 % Read number of timesteps to run without deflecting the wing
 ch = fscanf(fp,'%c',1);

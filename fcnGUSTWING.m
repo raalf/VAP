@@ -1,4 +1,4 @@
-function [matUINF, gust_vel_old,test] = fcnGUSTWING(matUINF,valGUSTAMP,valGUSTL,flagGUSTMODE,valDELTIME,valGUSTTIME,valUINF,valGUSTSTART,matCENTER,gust_vel_old,test)
+function [matUINF, gust_vel_old] = fcnGUSTWING(matUINF,valGUSTAMP,valGUSTL,flagGUSTMODE,valDELTIME,valGUSTTIME,valUINF,valGUSTSTART,matCENTER,gust_vel_old,test)
 
 % This function modifies matUINF to model a sinusoidal gust.
 
@@ -33,7 +33,7 @@ elseif flagGUSTMODE == 2
     if any(idx1) > 0
         gust_vel = 0.5*valGUSTAMP*(1 - cos((2*pi*tau/(valGUSTL/valUINF))));
         matUINF(idx2,3) = matUINF(idx2,3) + (gust_vel - gust_vel_old(idx2,1));
-        gust_vel_old = matUINF(:,3);
+        gust_vel_old(idx2) = gust_vel;
     end
     
 % Create gust velocity for sharp edge gust
@@ -45,12 +45,14 @@ elseif flagGUSTMODE == 3
         gust_vel_old = matUINF(:,3);
     end
     
+elseif flagGUSTMODE == 0
+    
+    gust_vel = 0;
+    
 else
     
-    disp('No gust mode exists for entered value');
+    disp('No gust mode exists for entered value')
     
 end
-
-test(valGUSTTIME,1) = matUINF(1,3);
 
 end
