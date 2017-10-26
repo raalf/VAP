@@ -1,7 +1,7 @@
 function [aloc, bloc, cloc] = fcnVSIND(hspan, hchord, phi, fp_0, k)
 % This function finds the influence of a semi-infinite vortex sheet on a
 % point
-
+% length(fp_0)
 % INPUT:
 %   hspan - half-span of the DVE
 %   phi - sweep of the vortex sheet leading edge
@@ -12,9 +12,13 @@ function [aloc, bloc, cloc] = fcnVSIND(hspan, hchord, phi, fp_0, k)
 %   aloc, bloc, cloc - influence coefficients of the vortex sheet on the point
 
 % T.D.K 2016-09-28 ROTHWELL STREET, AURORA, ONTARIO, CANADA, L4G-0V8
+flagGPU = 1;
 
-
-dbl_eps = 1e-7;
+if flagGPU == 1
+    dbl_eps = single(1e-7);
+else
+    dbl_eps = 1e-14;
+end
 
 % To save on memory, eta xsi and zeta no longer have their own vectors
 % eta_0 = fp_0(:,2);
@@ -111,8 +115,14 @@ mu3_2(idx31) = 0.0001.*hchord(idx31) + mu3_2(idx31);
 % G25b = zeros(len,1);
 % G25c = zeros(len,1);
 % G26a = zeros(len,1);
-G21b = zeros(len,1);
-G21c = zeros(len,1);
+
+if flagGPU == 1
+    G21b = gpuArray(single(zeros(len,1)));
+    G21c = gpuArray(single(zeros(len,1)));
+else  
+    G21b = zeros(len,1);
+    G21c = zeros(len,1);
+end
 
 G25b = -0.5.*log((k + zeta_0sq + t2s)./(k + zeta_0sq + t1s));
 G25c = -hspan.*log((k + zeta_0sq + t1s).*(k + zeta_0sq + t2s));
@@ -184,11 +194,21 @@ G27 = t2 - t1;
 % Eqn A2-13
 b21 = -le_vect;
 b22 = (zeta_0sq).*tanphi;
-b23 = zeros(len,1);
 b24 = -tanphi;
-b25 = -ones(len,1);
-b26 = zeros(len,1);
-b27 = zeros(len,1);
+
+if flagGPU == 1
+    b23 = gpuArray(single(zeros(len,1)));
+    b25 = gpuArray(single(-ones(len,1)));
+    b26 = gpuArray(single(zeros(len,1)));
+    b27 = gpuArray(single(zeros(len,1))); 
+    c27 = gpuArray(single(repmat(2,len,1)));
+else
+    b23 = zeros(len,1);
+    b25 = -ones(len,1);
+    b26 = zeros(len,1);
+    b27 = zeros(len,1);
+    c27 = repmat(2,len,1);
+end
 
 c21 = -2.*((zeta_0sq).*tanphi + fp_0(:,2).*le_vect);
 c22 = -2.*(zeta_0sq).*(fp_0(:,1) - 2.*fp_0(:,2).*tanphi);
@@ -196,7 +216,7 @@ c23 = 2.*tanphi;
 c24 = 2.*(fp_0(:,1) - 2.*fp_0(:,2).*tanphi);
 c25 = -2.*fp_0(:,2);
 c26 = -2.*(zeta_0sq);
-c27 = repmat(2,len,1);
+
 
 % Point is in plane of vortex sheet, but not on bound vortex
 idx30 = abs(fp_0(:,3)) <= dbl_eps & abs(le_vect) > dbl_eps;
@@ -250,15 +270,12 @@ b2_zeta(abs(fp_0(:,3)) <= dbl_eps & abs(le_vect) <= dbl_eps & abs(tanphi) > dbl_
 % a, b, c in local ref frame
 bloc = [b2_xsi b2_eta b2_zeta];
 cloc = [c2_xsi c2_eta c2_zeta];
-% aloc = zeros(size(bloc));
 aloc = [];
 
 % % If the point lies on a swept leading edge
-% idx_LE = abs(zeta_0) <= dbl_eps & abs(xsi_0 - eta_0.*tan(phi)) <= dbl_eps; %& abs(phi) <= dbl_eps;
-% bl(idx_LE,:) = zeros(size(bl(idx_LE,:)));
-% cl(idx_LE,:) = zeros(size(cl(idx_LE,:)));
-% 
-% clear idx_LE 
+idx_LE = abs(fp_0(:,3)) <= dbl_eps & abs(le_vect) <= dbl_eps; %& abs(phi) <= dbl_eps;
+bloc(idx_LE,:) = zeros(size(bloc(idx_LE,:)));
+cloc(idx_LE,:) = zeros(size(cloc(idx_LE,:)));
 
 % If the point lies on an unswept leading edge
 % a23ind.f - Line 604
@@ -274,12 +291,3 @@ cloc(idx_LE,1:2) = zeros(size(cloc(idx_LE,1:2)));
 % Bramesfelds:
 bloc(idx_LE,3) = 0.5.*log((t1s(idx_LE) + k(idx_LE))./(t2s(idx_LE) + k(idx_LE)));
 cloc(idx_LE,3) = -4.*hspan(idx_LE) + fp_0(idx_LE,2).*2.*bloc(idx_LE,3);
-
-% T = whos('fp_0');
-% fp2 = fopen('size.txt','at');
-% fprintf(fp2,'%f', T.size);
-% fprintf(fp2,'\r\n');
-% fclose(fp2);
-
-end
-
