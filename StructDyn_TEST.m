@@ -1,24 +1,24 @@
 clear,clc
 
-valNSELE = 25;
-valMAXTIME = 50000;
-L = 1.5;
+valNSELE = 30;
+valMAXTIME = 20000;
+Len = 5;
 
-valDY = L/(valNSELE-1);
+valDY = Len/(valNSELE-1);
 
 valSTRUCTDELTIME = 0.00001;
 
-matEIx(:,1) = 16680*ones(valNSELE,1);
+matEIx(:,1) = 750000*ones(valNSELE,1);
 matEIx(:,2) = zeros(valNSELE,1);
 matEIx(:,3) = zeros(valNSELE,1);
 
-matGJt(:,1) = 10.81*ones(valNSELE,1);
+matGJt(:,1) = 500000*ones(valNSELE,1);
 matGJt(:,2) = zeros(valNSELE,1);
 
-vecJT = 0.0059*ones(valNSELE,1);
+vecJT = 0.1*ones(valNSELE,1);
 
-vecLM = 1.947*ones(valNSELE,1);
-vecLSM = 0.02316*ones(valNSELE,1);
+vecLM = 0.5*ones(valNSELE,1);
+vecLSM = 0*ones(valNSELE,1);
 
 vecDEF = zeros(1,valNSELE+3);
 vecTWIST = zeros(1,valNSELE+3);
@@ -43,7 +43,7 @@ vecTWIST(2) = 0; % Zero twist at root BC
 
 % Assemble load matrix
 matLOAD = [vecLIFTDIST' - vecLM.*9.81, vecMOMDIST' - vecLM.*vecLSM.*9.81];
-matLOAD(end,:) = [0,0]; 
+% matLOAD(end,:) = [0,0];
 
 for yy = 3:(valNSELE+1)
 
@@ -116,28 +116,47 @@ vecTWIST = matTWIST(end,:);
 
 end
 
-valNELE = size(vecLIFTDIST,2);
+res = fft(matDEF(:,end));
+Fs = 1/valSTRUCTDELTIME;
+L = valMAXTIME;
+P2 = abs(res/L);
+P1 = P2(1:L/2+1);
+P1(2:end-1) = 2*P1(2:end-1);
+f = Fs*(0:(L/2))/L;
 
-valDY = 0.01;
-valNELE = 500;
+figure;
+plot(f,P1)
+xlim([0 0.5e4])
+xlim([0 500])
 
-vecLOAD = -5*ones(1,valNELE)*9.81;
-matEIx = [];
-matEIx(:,1) = 20000*ones(valNELE,1);
+fn1 = (1.875^2/(2*pi*Len^2))*sqrt(matEIx(1,1)/(vecLM(1)*Len))
+fn2 = (4.694^2/(2*pi*Len^2))*sqrt(matEIx(1,1)/(vecLM(1)*Len))
+fn3 = (7.8539^2/(2*pi*Len^2))*sqrt(matEIx(1,1)/(vecLM(1)*Len))
 
-S(valNELE) = 0;
-M(valNELE) = 0;
-
-for yy = (valNELE-1):-1:1
-    S(yy) = S(yy+1) - ((vecLOAD(yy+1)+vecLOAD(yy))/2)*valDY;
-    M(yy) = M(yy+1) - ((S(yy+1)+S(yy))/2)*valDY;
-end
-
-theta(1) = 0;
-w(1) = 0;
-
-for yy = 2:valNELE
-    theta(yy) = theta(yy-1) + 0.5*((M(yy)+M(yy-1))/matEIx(yy,1))*valDY;
-    w(yy) = w(yy-1) + ((theta(yy)+theta(yy-1))/2)*valDY;
-    vecSLOPE(yy) = asin((w(yy)-w(yy-1))/(valDY));
-end
+figure;
+plot((1:valMAXTIME).*valSTRUCTDELTIME,matDEF(:,end))
+% valNELE = size(vecLIFTDIST,2);
+% 
+% valDY = 0.01;
+% valNELE = 500;
+% 
+% vecLOAD = -5*ones(1,valNELE)*9.81;
+% matEIx = [];
+% matEIx(:,1) = 20000*ones(valNELE,1);
+% 
+% S(valNELE) = 0;
+% M(valNELE) = 0;
+% 
+% for yy = (valNELE-1):-1:1
+%     S(yy) = S(yy+1) - ((vecLOAD(yy+1)+vecLOAD(yy))/2)*valDY;
+%     M(yy) = M(yy+1) - ((S(yy+1)+S(yy))/2)*valDY;
+% end
+% 
+% theta(1) = 0;
+% w(1) = 0;
+% 
+% for yy = 2:valNELE
+%     theta(yy) = theta(yy-1) + 0.5*((M(yy)+M(yy-1))/matEIx(yy,1))*valDY;
+%     w(yy) = w(yy-1) + ((theta(yy)+theta(yy-1))/2)*valDY;
+%     vecSLOPE(yy) = asin((w(yy)-w(yy-1))/(valDY));
+% end

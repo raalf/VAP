@@ -231,7 +231,7 @@ for ai = 1:length(seqALPHA)
                 
             else
              
-                [matVLST, matCENTER, matNEWWAKE, matNPNEWWAKE, matNTVLST, matNPVLST, matUINF, matDEFGLOB, matTWISTGLOB, valUINF] = fcnSTIFFWING_STATIC(valALPHA, valBETA,...
+                [matVLST, matCENTER, matNEWWAKE, matNPNEWWAKE, matNTVLST, matNPVLST, matDEFGLOB, matTWISTGLOB, valUINF] = fcnSTIFFWING_STATIC(valALPHA, valBETA,...
                     valDELTIME, matVLST, matCENTER, matDVE, vecDVETE, matNTVLST, matNPVLST, vecN, valTIMESTEP, vecCL, valWEIGHT, valAREA, valDENSITY, valUINF, matNPDVE,...
                     matDEFGLOB, matTWISTGLOB);              
                 
@@ -361,7 +361,7 @@ for ai = 1:length(seqALPHA)
             end
             if flagPRINT == 1 && flagSTIFFWING == 2
                 fprintf('  %4d     %0.5f     %0.5f         %0.5f          %0.5f\n',valTIMESTEP,vecCL(valTIMESTEP,ai),vecCDI(valTIMESTEP,ai),...
-                    matDEFGLOB(valTIMESTEP,end-2),(180/pi)*matTWISTGLOB(valTIMESTEP,end-2)); %valTIMESTEP
+                    matDEFGLOB(valTIMESTEP,end),(180/pi)*matTWISTGLOB(valTIMESTEP,end)); %valTIMESTEP
             else
                 fprintf('  %4d     %0.5f     %0.5f\n',valTIMESTEP,vecCL(valTIMESTEP,ai),vecCDI(valTIMESTEP,ai)); %valTIMESTEP               
             end

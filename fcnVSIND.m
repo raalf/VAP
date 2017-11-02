@@ -1,4 +1,4 @@
-function [aloc, bloc, cloc] = fcnVSIND(hspan, hchord, phi, fp_0, k)
+function [aloc, bloc, cloc] = fcnVSIND(hspan, hchord, phi, fp_0, k, flagGPU)
 % This function finds the influence of a semi-infinite vortex sheet on a
 % point
 % length(fp_0)
@@ -12,12 +12,11 @@ function [aloc, bloc, cloc] = fcnVSIND(hspan, hchord, phi, fp_0, k)
 %   aloc, bloc, cloc - influence coefficients of the vortex sheet on the point
 
 % T.D.K 2016-09-28 ROTHWELL STREET, AURORA, ONTARIO, CANADA, L4G-0V8
-flagGPU = 1;
 
 if flagGPU == 1
     dbl_eps = single(1e-7);
 else
-    dbl_eps = 1e-14;
+    dbl_eps = 1e-7;
 end
 
 % To save on memory, eta xsi and zeta no longer have their own vectors

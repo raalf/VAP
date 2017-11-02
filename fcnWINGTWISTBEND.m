@@ -65,7 +65,6 @@ valSTRUCTDELTIME = valSDELTIME;
 [vecLIFTDIST] = linterp(vecSPANDIST,vecLIFTDIST,temp_y);
 [vecMOMDIST] = linterp(vecSPANDIST,vecMOMDIST',temp_y);
 
-% vecLSM = -vecLSM;
 matEIx = matEIx_interp;
 matGJt = matGJt_interp;
 
@@ -79,11 +78,11 @@ valSTRUCTTIME = tempTIME + 2;
 %% Beam boundary conditions
 
 % matDEF(1:valSTRUCTTIME-1,:) = matDEFGLOB(1:valTIMESTEP-1,:);
-% matDEF(1:valSTRUCTTIME-1,:) = matDEF(1:valTIMESTEP-1,:);
+% matDEF(1:valSTRUCTTIME-1,:) = matDEF(end-valSTRUCTTIME+2:end,:);
 % if tempTIME == 1
 % matDEF(1:valSTRUCTTIME-1,:) = matDEFGLOB((valTIMESTEP-2):valTIMESTEP-1,:);
 % matTWIST(1:valSTRUCTTIME-1,:) = matTWISTGLOB(1:valTIMESTEP-1,:);
-% matTWIST(1:valSTRUCTTIME-1,:) = matTWIST(1:valTIMESTEP-1,:);
+% matTWIST(1:valSTRUCTTIME-1,:) = matTWIST(end-valSTRUCTTIME+2:end,:);
 % matTWIST(1:valSTRUCTTIME-1,:) = matTWISTGLOB((valTIMESTEP-2):valTIMESTEP-1,:);
 % end
 
@@ -109,7 +108,7 @@ for yy = 4:(valNSELE+2)
 
     % Assemble stiffness matrices
     matK_1 = [matEIx(yy-2,3), 0; 0, 0];
-    matK_2 = [matEIx(yy-2,2), 0; 0, -matGJt(yy-2,2)]; 
+    matK_2 = [matEIx(yy-2,2), 0; 0, -matGJt(yy-2,2)];
     matK_3 = [matEIx(yy-2,1), 0; 0, -matGJt(yy-2,1)];
     matB = [0 0; 0 0];
 

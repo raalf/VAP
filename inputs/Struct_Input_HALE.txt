@@ -2,8 +2,9 @@ Input file for VAP Structural Dynamics Package
 Input file m/N/sec
 Please note that the program uses equal, number and : signs as special recognizers!
 
-Width of each time step (sec):				valSDELTIME 	=	0.0015
-Number of timesteps with no deflections: 	valSTIFFSTEPS	=	15
+Width of each time step (sec):				valSDELTIME 	=	0.0003
+Number of spanwise structural elements:		valNSELE		=	17
+Number of timesteps with no deflections: 	valSTIFFSTEPS	=	25
 Static (0) or Dynamic (1) aeroelasticity:	flagSTATIC		=	0
 
 ----------------------
@@ -13,12 +14,12 @@ Stiffness Distribution
 	Bending (E*Ix)
 		A Coefficient: vec_EIx = 0
 		B Coefficient: vec_EIx = 0
-		C Coefficient: vec_EIx = 20000
+		C Coefficient: vec_EIx = 600000
 
 	Torsion (G*Jt):
 		A Coefficient: vec_GJt = 0
 		B Coefficient: vec_GJt = 0
-		C Coefficient: vec_GJt = 10000
+		C Coefficient: vec_GJt = 300000
 
 --------
 Geometry

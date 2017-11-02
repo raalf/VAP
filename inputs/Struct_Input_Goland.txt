@@ -3,7 +3,7 @@ Input file m/N/sec
 Please note that the program uses equal, number and : signs as special recognizers!
 
 Width of each time step (sec):				valSDELTIME 	=	0.000001
-Number of spanwise structural elements:		valNSELE		=	50
+Number of spanwise structural elements:		valNSELE		=	30
 Number of timesteps with no deflections: 	valSTIFFSTEPS	=	20
 Static (0) or Dynamic (1) aeroelasticity:	flagSTATIC		=	1
 
