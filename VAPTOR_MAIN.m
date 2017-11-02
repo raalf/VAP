@@ -31,15 +31,14 @@ strFILE = 'inputs/TMotorQuad.txt';
     valNUMB, valNUMRO, matROTAX0, vecRODIR, valPANELS, vecROTAXLOC, matGEOM, vecAIRFOIL, vecN, vecM, vecSYM, ...
     valINTERF] = fcnVAPTORREADMULTI(strFILE);
 
-
 flagVISCOUS = 1;
 flagPRINT   = 1;
-flagPLOT    = 1;
+flagPLOT    = 0;
 flagPLOTWAKEVEL = 0;
 flagVERBOSE = 0;
-flagSAVE = 0;
+flagSAVE = 1;
 flagPROGRESS = 0;
-filename = 'TMotorSweepViscousApparentMass'; % Save workspace name
+filename = 'JuliaQuadHover20Aznum'; % Save workspace name
 
 %% Apply multiple rotors
 [valPANELS, vecN, vecM, vecAIRFOIL, matGEOM ] = fcnGEOMMULTIROTOR(valNUMRO, valPANELS, vecRODIR, vecROTAXLOC, vecN, vecM, vecAIRFOIL, matGEOM, matROTAX0);
@@ -364,6 +363,9 @@ for ai = 1:length(seqALPHAR)
          matCMxCONV(valTIMESTEP,i,ji,ai) = vecCMxCONV(temp(i),i);
          matCMyCONV(valTIMESTEP,i,ji,ai) = vecCMyCONV(temp(i),i);
         end
+        if flagSAVE ==1
+            save(filename)
+        end
 %         if valTIMESTEP == valMAXTIME
 %             matSWPDISNORM(:,:,ji,ai) = matDISNORM;
 %             matSWPDISTHRUST(:,:,ji,ai) = matDISTHRUST;
@@ -376,9 +378,9 @@ for ai = 1:length(seqALPHAR)
                 fprintf('CT = %0.3f CP = %0.3f   ',nanmean(vecCTCONV(:,i),1), nanmean(vecCPCONV(:,i),1));
             end
             fprintf('\n')
-        end
-    fprintf('Completed Advance Ratio: %.1f\n\n',seqJ(ji))    
+        end    
     end
+    fprintf('Completed Advance Ratio: %.1f\n\n',seqJ(ji))
     if flagPROGRESS == 1
         progressbar(ai/length(seqALPHAR));
     end

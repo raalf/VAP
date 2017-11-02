@@ -3,16 +3,16 @@ Input file in m/N/sec
 NO TRIM
 Please note that the program uses equal, number and : signs as special recognizers!
 
-Relaxed wake (yes 1, no 0):		flagRELAX 	=	0
+Relaxed wake (yes 1, no 0):		flagRELAX 	=	1
 Steady (1) or unsteady (2):		flagSTEADY 	=	1
 
-Max. number of time steps:		valMAXTIME 	=	80
+Max. number of time steps:		valMAXTIME 	=	120
 Min. number of time steps: 		valMINTIME 	= 	1
 Number of azmith locations		valAZNUM 	=	20
 Convergence delta-span effic.:	valDELTAE 	=	0.0
 
-AOA sequence: 			seqALPHAR 	= 	30
-Advance ratio 			seqJ		= 	0.6
+AOA sequence: 			seqALPHAR 	= 	0
+Advance ratio 			seqJ		= 	0
 Density:				valDENSITY 	= 	1.2250
 Kinematic viscosity:	valKINV		=	1.460000e-05
 
@@ -23,24 +23,24 @@ Number of blades			valNUMB		=	2
 No. of rotors				valNUMRO	=	4
 
 Rotor #1
-Rotation axis x y z 	 	matROTAX	= 	0.25 0.25 0.0
+Rotation axis x y z 	 	matROTAX	= 	0.2828 0.2828 0.0
 Rotation dir (CCW -1,CW 1) 	vecRODIR	= 	-1
-Rotor RPM					valRPM		=	3000
+Rotor RPM					valRPM		=	2063
 
 Rotor #2
-Rotation axis x y z 	 	matROTAX	= 	0.25 -0.25 0.0
+Rotation axis x y z 	 	matROTAX	= 	0.2828 -0.2828 0.0
 Rotation dir (CCW -1,CW 1) 	vecRODIR	= 	1
-Rotor RPM					valRPM		=	3500
+Rotor RPM					valRPM		=	2063
 
 Rotor #3
-Rotation axis x y z 	 	matROTAX	= 	-0.25 -0.25 0.0
+Rotation axis x y z 	 	matROTAX	= 	-0.2828 -0.2828 0.0
 Rotation dir (CCW -1,CW 1)	vecRODIR	= 	-1
-Rotor RPM					valRPM		=	4000
+Rotor RPM					valRPM		=	2063
 
 Rotor #4
-Rotation axis x y z 	 	matROTAX	= 	-0.25 0.25 0.0
+Rotation axis x y z 	 	matROTAX	= 	-0.2828 0.2828 0.0
 Rotation dir (CCW -1,CW 1) 	vecRODIR	= 	1
-Rotor RPM					valRPM		=	4500
+Rotor RPM					valRPM		=	2063
 
 
 No. of panels:	valPANELS =	17
