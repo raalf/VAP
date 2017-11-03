@@ -29,8 +29,8 @@ disp(' ');
 % filename = 'inputs/J_COLE_BASELINE_SYM.vap';
 % filename = 'inputs/J_COLE_BASELINE_SYM_CLOCKWISE.vap';
 % filename = 'inputs/J_COLE_BASELINE_WING.vap';
-filename = 'inputs/QuadRotor.vap';
-% filename = 'inputs/QuadPlane.vap';
+% filename = 'inputs/QuadRotor.vap';
+filename = 'inputs/QuadPlane.vap';
 
 % filename = 'inputs/2MotorGliders_simple.vap'
 
