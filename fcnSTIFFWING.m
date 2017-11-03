@@ -12,8 +12,6 @@ matCENTER_old = matCENTER;
 
 if valGUSTTIME > 1 || valTIMESTEP == valGUSTSTART
     
-    flagSTEADY = 2;
-    
     [matUINF, gust_vel_old] = fcnGUSTWING(matUINF,valGUSTAMP,valGUSTL,flagGUSTMODE,valDELTIME,valGUSTTIME,valUINF,valGUSTSTART,matCENTER,gust_vel_old);
     valGUSTTIME = valGUSTTIME + 1;
     

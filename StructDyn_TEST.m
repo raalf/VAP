@@ -1,31 +1,29 @@
 clear,clc
 
 valNSELE = 30;
-valMAXTIME = 20000;
+valMAXTIME = 400000;
 Len = 5;
+omega = 17*2*pi;
 
 valDY = Len/(valNSELE-1);
 
 valSTRUCTDELTIME = 0.00001;
 
-matEIx(:,1) = 750000*ones(valNSELE,1);
+matEIx(:,1) = 9772210*ones(valNSELE,1);
 matEIx(:,2) = zeros(valNSELE,1);
 matEIx(:,3) = zeros(valNSELE,1);
 
-matGJt(:,1) = 500000*ones(valNSELE,1);
+matGJt(:,1) = 985810*ones(valNSELE,1);
 matGJt(:,2) = zeros(valNSELE,1);
 
-vecJT = 0.1*ones(valNSELE,1);
+vecJT = 8.6405832*ones(valNSELE,1);
 
-vecLM = 0.5*ones(valNSELE,1);
+vecLM = 35.709121*ones(valNSELE,1);
 vecLSM = 0*ones(valNSELE,1);
 
 vecDEF = zeros(1,valNSELE+3);
 vecTWIST = zeros(1,valNSELE+3);
 vecSLOPE = zeros(1,valNSELE-1);
-
-vecLIFTDIST = zeros(1,valNSELE);
-vecMOMDIST = zeros(1,valNSELE);
 
 matDEF = zeros(valMAXTIME,valNSELE+3);
 matTWIST = zeros(valMAXTIME,valNSELE+3);
@@ -40,6 +38,9 @@ for valSTRUCTTIME = 3:valMAXTIME
 
 vecDEF(2) = 0; % Zero deflection at root BC
 vecTWIST(2) = 0; % Zero twist at root BC
+
+vecLIFTDIST = 0*sin(omega*valSTRUCTTIME*valSTRUCTDELTIME)*ones(1,valNSELE);
+vecMOMDIST = 100*sin(omega*valSTRUCTTIME*valSTRUCTDELTIME)*ones(1,valNSELE);
 
 % Assemble load matrix
 matLOAD = [vecLIFTDIST' - vecLM.*9.81, vecMOMDIST' - vecLM.*vecLSM.*9.81];
@@ -116,7 +117,7 @@ vecTWIST = matTWIST(end,:);
 
 end
 
-res = fft(matDEF(:,end));
+res = fft(matTWIST(:,end-1));
 Fs = 1/valSTRUCTDELTIME;
 L = valMAXTIME;
 P2 = abs(res/L);
@@ -127,14 +128,14 @@ f = Fs*(0:(L/2))/L;
 figure;
 plot(f,P1)
 xlim([0 0.5e4])
-xlim([0 500])
+xlim([0 100])
 
 fn1 = (1.875^2/(2*pi*Len^2))*sqrt(matEIx(1,1)/(vecLM(1)*Len))
 fn2 = (4.694^2/(2*pi*Len^2))*sqrt(matEIx(1,1)/(vecLM(1)*Len))
 fn3 = (7.8539^2/(2*pi*Len^2))*sqrt(matEIx(1,1)/(vecLM(1)*Len))
 
 figure;
-plot((1:valMAXTIME).*valSTRUCTDELTIME,matDEF(:,end))
+plot((1:valMAXTIME).*valSTRUCTDELTIME,matTWIST(:,end-1))
 % valNELE = size(vecLIFTDIST,2);
 % 
 % valDY = 0.01;
