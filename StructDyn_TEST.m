@@ -1,9 +1,9 @@
 clear,clc
 
 valNSELE = 30;
-valMAXTIME = 400000;
-Len = 5;
-omega = 17*2*pi;
+valMAXTIME = 600000;
+Len = 6;
+omega = 1*2*pi;
 
 valDY = Len/(valNSELE-1);
 
@@ -16,10 +16,10 @@ matEIx(:,3) = zeros(valNSELE,1);
 matGJt(:,1) = 985810*ones(valNSELE,1);
 matGJt(:,2) = zeros(valNSELE,1);
 
-vecJT = 8.6405832*ones(valNSELE,1);
+vecJT = 8.6505832*ones(valNSELE,1);
 
-vecLM = 35.709121*ones(valNSELE,1);
-vecLSM = 0*ones(valNSELE,1);
+vecLM = 35.75121*ones(valNSELE,1);
+vecLSM = 0.18*ones(valNSELE,1);
 
 vecDEF = zeros(1,valNSELE+3);
 vecTWIST = zeros(1,valNSELE+3);
@@ -29,8 +29,6 @@ matDEF = zeros(valMAXTIME,valNSELE+3);
 matTWIST = zeros(valMAXTIME,valNSELE+3);
 %% Beam boundary conditions
 
-% temp = (0.*(0:valDY:L)./(6*matEIx(:,1)')).*(3*L-(0:valDY:L));
-% matDEF(1:2,:) = repmat([temp(2),temp,2*temp(end)-temp(end-1),3*temp(end)-2*temp(end-1)],2,1);
 matDEF(1:2,:) = zeros(2,valNSELE+3);
 matTWIST(1:2,:) = zeros(2,valNSELE+3);
 
@@ -39,7 +37,7 @@ for valSTRUCTTIME = 3:valMAXTIME
 vecDEF(2) = 0; % Zero deflection at root BC
 vecTWIST(2) = 0; % Zero twist at root BC
 
-vecLIFTDIST = 0*sin(omega*valSTRUCTTIME*valSTRUCTDELTIME)*ones(1,valNSELE);
+vecLIFTDIST = 100*sin(omega*valSTRUCTTIME*valSTRUCTDELTIME)*ones(1,valNSELE);
 vecMOMDIST = 100*sin(omega*valSTRUCTTIME*valSTRUCTDELTIME)*ones(1,valNSELE);
 
 % Assemble load matrix
@@ -51,7 +49,6 @@ for yy = 3:(valNSELE+1)
     %% Geometric property assembly
 
     % Assemble mass matrix
-%             matMASS = [vecLM(yy-2), -vecLM(yy-2).*vecLSM(yy-2); -vecLM(yy-2).*vecLSM(yy-2), vecLM(yy-2)*(vecLSM(yy-2)*vecLSM(yy-2) + vecJT(yy-2)/vecSPANAREA(yy-2))];
     matMASS = [vecLM(yy-1), -vecLM(yy-1).*vecLSM(yy-1); -vecLM(yy-1).*vecLSM(yy-1), vecJT(yy-1)];
 
     % Assemble stiffness matrices
@@ -133,6 +130,10 @@ xlim([0 100])
 fn1 = (1.875^2/(2*pi*Len^2))*sqrt(matEIx(1,1)/(vecLM(1)*Len))
 fn2 = (4.694^2/(2*pi*Len^2))*sqrt(matEIx(1,1)/(vecLM(1)*Len))
 fn3 = (7.8539^2/(2*pi*Len^2))*sqrt(matEIx(1,1)/(vecLM(1)*Len))
+
+fnt1 = (pi/(2*Len)).*sqrt(matGJt(1,1)/vecJT(1))/(2*pi)
+fnt2 = (3*pi/(2*Len)).*sqrt(matGJt(1,1)/vecJT(1))/(2*pi)
+fnt3 = (5*pi/(2*Len)).*sqrt(matGJt(1,1)/vecJT(1))/(2*pi)
 
 figure;
 plot((1:valMAXTIME).*valSTRUCTDELTIME,matTWIST(:,end-1))
