@@ -1,0 +1,56 @@
+Input file for VAP
+Input file in m/N/sec
+NO TRIM
+Please note that the program uses equal, number and : signs as special recognizers!
+
+Relaxed wake (yes 1, no 0):		flagRELAX =		0
+Steady (1) or unsteady (2):		flagSTEADY =	2
+Stiff (1) or Flexible (2) Wing:	flagSTIFFWING = 2
+Gust Type (0, 1, 2 or 3):		flagGUSTMODE =	3
+
+Max. number of time steps:		valMAXTIME 	=	300
+Min. number of time steps: 		valMINTIME 	= 	0
+Width of each time step (sec):	valDELTIME 	=	0.0001
+Convergence delta-span effic.:	valDELTAE 	=	0.000000	(0 if only timestepping)
+
+AOA sequence: 			seqALPHA 	= 	0.0
+Sideslip angle [deg]:	seqBETA 	=	0.0
+Density:				valDENSITY 	= 	1.225
+Kinematic viscosity:	valKINV		=	1.460000e-05
+Freestream velocity:	valUINF		=	50.0
+Gust amplitude:			valGUSTAMP	=	0.5
+Gust length:			valGUSTL	=	2.00
+
+Reference area:				valAREA 	=	32.00
+Reference span:				valSPAN 	=	32.00
+Mean aerodynamic chord: 	valCMAC 	=	1
+Aircraft weight (N):		valWEIGHT 	=	3434
+Pitching Moment Coeff.:		valCM 		=	0.00
+
+No. of panels:	valPANELS =	1
+
+Defines leading edge of wing, all measured in metres:
+Keep vecM the same for all panels on a wing!
+
+Panel #:1. 
+Number of spanwise elements:	vecN 		= 16.
+Number of chordwise elements: 	vecM 		= 1.
+Airfoil number: 				vecAIRFOIL 	= 1
+Symmetry edge (0, 1 or 2): 		vecSYM 		= 1;
+xleft		yleft		zleft		chord		epsilon
+0.0000000	0.000000	0.0000000	1.000000	1.00000
+0.0000000	16.00000	0.0000000	1.000000	1.00000
+
+%<- special identifier
+Vertical tail information:
+Number of panels (max 5)  	valVSPANELS = 0
+no.	chord	area	airfoil
+
+Fuselage information:
+Number of sections (max 20) 	valFPANELS 	=	0
+Width of each section  			valFPWIDTH	=	0
+Panel where transition occurs 	valFTURB 	=	0
+No.	Diamter
+
+Interference drag 	valINTERF 	= 0.0 %
+##############

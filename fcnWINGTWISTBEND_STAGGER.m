@@ -96,8 +96,8 @@ vecDEF(3) = 0; % Zero deflection at root BC
 vecTWIST(3) = 0; % Zero twist at root BC
 
 % Assemble load matrix
-% matLOAD = [vecLIFTDIST' - vecLM'.*9.81, vecMOMDIST' - vecLSM'.*vecLM'.*9.81];
-matLOAD = [vecLIFTDIST', vecMOMDIST'];
+matLOAD = [vecLIFTDIST' - vecLM'.*9.81, vecMOMDIST' - vecLSM'.*vecLM'.*9.81];
+% matLOAD = [vecLIFTDIST', vecMOMDIST'];
 % matLOAD(end,:) = [0,0]; 
 
 for yy = 4:(valNSELE+2)

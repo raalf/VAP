@@ -34,8 +34,8 @@ disp(' ');
 
 %% Reading in geometry
 
-strFILE = 'inputs/WinDySIM_Gust_Goland.txt';
-strSTRUCT_INPUT = 'inputs/Struct_Input_Goland.txt';
+strFILE = 'inputs/WinDySIM_Gust_AIAA.txt';
+strSTRUCT_INPUT = 'inputs/Struct_Input_AIAA.txt';
 strOUTPUTFILE = 'Goland_Wing_Validation.mat';
 
 [flagRELAX, flagSTEADY, flagSTIFFWING, flagGUSTMODE, valAREA, valSPAN,...
@@ -70,7 +70,7 @@ flagPLOT    = 1;
 flagPLOTWAKEVEL = 0;
 flagVERBOSE = 0;
 
-valGUSTSTART = valSTIFFSTEPS;
+valGUSTSTART = 300;
 
 %% Discretize geometry into DVEs
 

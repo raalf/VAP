@@ -19,8 +19,10 @@ matCENTER_old = matCENTER;
 % Michael A. D. Melville, Denver, CO, 80218
 if valGUSTTIME > 1
     
+    n = floor(valSDELTIME/valDELTIME);
+    
 %     valDELTIME = valSDELTIME;    
-    for tempTIME = 1:floor(valDELTIME/valSDELTIME)
+    for tempTIME = 1:n
         
     [vecDEF, vecTWIST, matDEFGLOB, matTWISTGLOB, matDEF, matTWIST, matSLOPE] = fcnWINGTWISTBEND(vecLIFTDIST, vecMOMDIST, matEIx, vecLM, vecJT, matGJt,...
         vecLSM, valSPAN, valTIMESTEP, matDEFGLOB, matTWISTGLOB, vecSPANDIST, valSDELTIME, matSLOPE, matDEF, matTWIST, valNSELE, tempTIME);
@@ -33,7 +35,9 @@ if valGUSTTIME > 1
 % Runs structure code until static aeroleastic convergence
 else
     
-    for tempTIME = 1:7500
+    n = 10000;
+    
+    for tempTIME = 1:n
         
     [vecDEF, vecTWIST, matDEFGLOB, matTWISTGLOB, matDEF, matTWIST, matSLOPE] = fcnWINGTWISTBEND_STAGGER(vecLIFTDIST, vecMOMDIST, matEIx, vecLM, vecJT, matGJt,...
         vecLSM, valSPAN, valTIMESTEP, matDEFGLOB, matTWISTGLOB, vecSPANDIST, valSDELTIME, matSLOPE, matDEF, matTWIST, valNSELE, tempTIME);
@@ -42,8 +46,8 @@ else
     
     matDEF_old = matDEF;
     matTWIST_old = matTWIST;
-    matDEFGLOB(valTIMESTEP,:) = matDEF(end,:);
-    matTWISTGLOB(valTIMESTEP,:) = matTWIST(end,:);
+%     matDEFGLOB(valTIMESTEP,:) = matDEF(end,:);
+%     matTWISTGLOB(valTIMESTEP,:) = matTWIST(end,:);
     
 end
 
@@ -55,16 +59,15 @@ end
     vecDVELESWP, vecDVEMCSWP, vecDVETESWP, ...
     vecDVEAREA, matDVENORM, matVLST, matDVE, matCENTER, matNEWWAKE ] = fcnVLST2DVEPARAM( matNPDVE, matNPVLST, matNEWWAKE, vecDVETE );
 
-[matUINF,zvel] = fcnFLEXUINF(matCENTER_old, matCENTER, valDELTIME, zvel);
-
 % Determine % relative change between aeroelastic timesteps
-% tol_def = (100*abs(matDEFGLOB(valTIMESTEP,end-2)-matDEFGLOB(valTIMESTEP-valSTIFFSTEPS,end-2))/matDEFGLOB(valTIMESTEP-valSTIFFSTEPS,end-2));
-% tol_twist = (100*abs(matTWISTGLOB(valTIMESTEP,end-2)-matTWISTGLOB(valTIMESTEP-valSTIFFSTEPS,end-2))/matTWISTGLOB(valTIMESTEP-valSTIFFSTEPS,end-2));
+tol_def = (100*abs(matDEFGLOB(valTIMESTEP,end)-matDEFGLOB(valTIMESTEP-valSTIFFSTEPS,end))/matDEFGLOB(valTIMESTEP-valSTIFFSTEPS,end));
+tol_twist = (100*abs(matTWISTGLOB(valTIMESTEP,end)-matTWISTGLOB(valTIMESTEP-valSTIFFSTEPS,end))/matTWISTGLOB(valTIMESTEP-valSTIFFSTEPS,end));
 % 
 % % Add in gust velocities to matUINF if convergence tolerance is met
-% if (tol_def < 0.05 && tol_twist < 0.05) || valGUSTTIME > 1
+if (tol_def < 1 && tol_twist < 1) || valGUSTTIME > 1
+    [matUINF,zvel] = fcnFLEXUINF(matCENTER_old, matCENTER, valDELTIME, zvel, n);
     [matUINF, gust_vel_old] = fcnGUSTWING(matUINF,valGUSTAMP,valGUSTL,flagGUSTMODE,valDELTIME,valGUSTTIME,valUINF,valGUSTSTART,matCENTER,gust_vel_old);
     valGUSTTIME = valGUSTTIME + 1;
-% end
+end
 
 end
