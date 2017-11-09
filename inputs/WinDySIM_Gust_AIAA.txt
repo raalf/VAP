@@ -8,7 +8,7 @@ Steady (1) or unsteady (2):		flagSTEADY =	2
 Stiff (1) or Flexible (2) Wing:	flagSTIFFWING = 2
 Gust Type (0, 1, 2 or 3):		flagGUSTMODE =	3
 
-Max. number of time steps:		valMAXTIME 	=	300
+Max. number of time steps:		valMAXTIME 	=	1500
 Min. number of time steps: 		valMINTIME 	= 	0
 Width of each time step (sec):	valDELTIME 	=	0.0001
 Convergence delta-span effic.:	valDELTAE 	=	0.000000	(0 if only timestepping)
@@ -17,11 +17,11 @@ AOA sequence: 			seqALPHA 	= 	0.0
 Sideslip angle [deg]:	seqBETA 	=	0.0
 Density:				valDENSITY 	= 	1.225
 Kinematic viscosity:	valKINV		=	1.460000e-05
-Freestream velocity:	valUINF		=	50.0
-Gust amplitude:			valGUSTAMP	=	0.5
+Freestream velocity:	valUINF		=	100.0
+Gust amplitude:			valGUSTAMP	=	5.0
 Gust length:			valGUSTL	=	2.00
 
-Reference area:				valAREA 	=	32.00
+Reference area:				valAREA 	=	1.600
 Reference span:				valSPAN 	=	32.00
 Mean aerodynamic chord: 	valCMAC 	=	1
 Aircraft weight (N):		valWEIGHT 	=	3434
@@ -34,12 +34,12 @@ Keep vecM the same for all panels on a wing!
 
 Panel #:1. 
 Number of spanwise elements:	vecN 		= 16.
-Number of chordwise elements: 	vecM 		= 1.
+Number of chordwise elements: 	vecM 		= 10.
 Airfoil number: 				vecAIRFOIL 	= 1
 Symmetry edge (0, 1 or 2): 		vecSYM 		= 1;
 xleft		yleft		zleft		chord		epsilon
-0.0000000	0.000000	0.0000000	1.000000	1.00000
-0.0000000	16.00000	0.0000000	1.000000	1.00000
+0.0000000	0.000000	0.0000000	0.100000	0.25000
+0.0000000	16.00000	0.0000000	0.100000	0.25000
 
 %<- special identifier
 Vertical tail information:

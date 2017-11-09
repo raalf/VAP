@@ -1,5 +1,5 @@
 function [vecDEF, vecTWIST, matDEFGLOB, matTWISTGLOB, matDEF, matTWIST, matSLOPE] = fcnWINGTWISTBEND(vecLIFTDIST, vecMOMDIST, matEIx, vecLM, vecJT, matGJt, vecLSM,...
-    valSPAN, valTIMESTEP, matDEFGLOB, matTWISTGLOB, vecSPANDIST, valSDELTIME, matSLOPE, matDEF, matTWIST, valNSELE, tempTIME)
+    valSPAN, valTIMESTEP, matDEFGLOB, matTWISTGLOB, vecSPANDIST, valSDELTIME, matSLOPE, matDEF_old, matTWIST_old, valNSELE)
 % This function computes the spanwise deflection and twist using an
 % explicit finite difference method given a loading and structural
 % distribution.
@@ -72,24 +72,24 @@ vecDEF = zeros(1,valNSELE+4);
 vecTWIST = zeros(1,valNSELE+4);
 vecSLOPE = zeros(1,valNSELE-1);
 
-% valSTRUCTTIME = valTIMESTEP;
-valSTRUCTTIME = tempTIME + 2;
+valSTRUCTTIME = valTIMESTEP;
+% valSTRUCTTIME = tempTIME + 2;
 
 %% Beam boundary conditions
 
-% matDEF(1:valSTRUCTTIME-1,:) = matDEFGLOB(1:valTIMESTEP-1,:);
-% matDEF(1:valSTRUCTTIME-1,:) = matDEF(end-valSTRUCTTIME+2:end,:);
-% if tempTIME == 1
-% matDEF(1:valSTRUCTTIME-1,:) = matDEFGLOB((valTIMESTEP-2):valTIMESTEP-1,:);
-% matTWIST(1:valSTRUCTTIME-1,:) = matTWISTGLOB(1:valTIMESTEP-1,:);
-% matTWIST(1:valSTRUCTTIME-1,:) = matTWIST(end-valSTRUCTTIME+2:end,:);
-% matTWIST(1:valSTRUCTTIME-1,:) = matTWISTGLOB((valTIMESTEP-2):valTIMESTEP-1,:);
+% Grab solution from last two time steps 
+matDEF(valSTRUCTTIME-2:valTIMESTEP-1,:) = matDEF_old(end-1:end,:);
+matTWIST(valSTRUCTTIME-2:valTIMESTEP-1,:) = matTWIST_old(end-1:end,:);
+
+% for i=1:(valTIMESTEP-1)
+%     matDEF(i,3:end-1) = linterp(vecSPANDIST,matDEFGLOB(i,:),temp_y);
+%     matTWIST(i,3:end-1) = linterp(vecSPANDIST,matTWISTGLOB(i,:),temp_y);
 % end
 
-if tempTIME == 1
-    matDEF(1:valSTRUCTTIME-1,:) = matDEF((end-1):end,:);
-    matTWIST(1:valSTRUCTTIME-1,:) = matTWIST((end-1):end,:);
-end
+% if tempTIME == 1
+%     matDEF(1:valSTRUCTTIME-1,:) = matDEF((end-1):end,:);
+%     matTWIST(1:valSTRUCTTIME-1,:) = matTWIST((end-1):end,:);
+% end
 
 vecDEF(3) = 0; % Zero deflection at root BC
 vecTWIST(3) = 0; % Zero twist at root BC
@@ -110,7 +110,7 @@ for yy = 4:(valNSELE+2)
     matK_1 = [matEIx(yy-2,3), 0; 0, 0];
     matK_2 = [matEIx(yy-2,2), 0; 0, -matGJt(yy-2,2)];
     matK_3 = [matEIx(yy-2,1), 0; 0, -matGJt(yy-2,1)];
-    matB = [5 0; 0 10];
+    matB = [0 0; 0 0];
 
     %% Finite difference relations for partial derivatives
 
@@ -164,8 +164,8 @@ matDEF(valSTRUCTTIME,:) = vecDEF;
 matTWIST(valSTRUCTTIME,:) = vecTWIST;
 
 % Spanwise deflection and twist wrt structural timestep
-vecDEF = matDEF(end,:);
-vecTWIST = matTWIST(end,:);
+vecDEF = matDEF(valSTRUCTTIME,:);
+vecTWIST = matTWIST(valSTRUCTTIME,:);
 
 vecSLOPE = [0; vecSLOPE'];
 

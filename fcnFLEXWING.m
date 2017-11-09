@@ -19,18 +19,13 @@ matCENTER_old = matCENTER;
 % Michael A. D. Melville, Denver, CO, 80218
 if valGUSTTIME > 1
     
-    n = floor(valSDELTIME/valDELTIME);
-    
-%     valDELTIME = valSDELTIME;    
-    for tempTIME = 1:n
-        
+    n = 1;
+%     valDELTIME = valSDELTIME;        
     [vecDEF, vecTWIST, matDEFGLOB, matTWISTGLOB, matDEF, matTWIST, matSLOPE] = fcnWINGTWISTBEND(vecLIFTDIST, vecMOMDIST, matEIx, vecLM, vecJT, matGJt,...
-        vecLSM, valSPAN, valTIMESTEP, matDEFGLOB, matTWISTGLOB, vecSPANDIST, valSDELTIME, matSLOPE, matDEF, matTWIST, valNSELE, tempTIME);
+        vecLSM, valSPAN, valTIMESTEP, matDEFGLOB, matTWISTGLOB, vecSPANDIST, valSDELTIME, matSLOPE, matDEF, matTWIST, valNSELE);
     
     matDEF_old = matDEF;
     matTWIST_old = matTWIST;
-    
-    end
     
 % Runs structure code until static aeroleastic convergence
 else

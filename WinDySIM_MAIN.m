@@ -36,7 +36,7 @@ disp(' ');
 
 strFILE = 'inputs/WinDySIM_Gust_AIAA.txt';
 strSTRUCT_INPUT = 'inputs/Struct_Input_AIAA.txt';
-strOUTPUTFILE = 'Goland_Wing_Validation.mat';
+strOUTPUTFILE = 'AIAA_Aero_Damping.mat';
 
 [flagRELAX, flagSTEADY, flagSTIFFWING, flagGUSTMODE, valAREA, valSPAN,...
     valCMAC, valWEIGHT, valCM, seqALPHA, seqBETA, valKINV, valUINF, valGUSTAMP,...
@@ -70,7 +70,7 @@ flagPLOT    = 1;
 flagPLOTWAKEVEL = 0;
 flagVERBOSE = 0;
 
-valGUSTSTART = 300;
+valGUSTSTART = 150;
 
 %% Discretize geometry into DVEs
 

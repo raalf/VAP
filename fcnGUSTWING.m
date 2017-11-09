@@ -41,8 +41,8 @@ elseif flagGUSTMODE == 3
     
     if any(idx1) > 0
         gust_vel = valGUSTAMP;
-        matUINF(idx2,3) = matUINF(idx2,3) + (gust_vel - gust_vel_old(idx2,1));
-        gust_vel_old = matUINF(:,3);
+        matUINF(idx2,3) = matUINF(idx2,3) + (gust_vel);
+        gust_vel_old(idx2) = gust_vel;
     end
     
 elseif flagGUSTMODE == 0
