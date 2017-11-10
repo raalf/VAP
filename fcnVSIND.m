@@ -16,7 +16,7 @@ function [aloc, bloc, cloc] = fcnVSIND(hspan, hchord, phi, fp_0, k, flagGPU)
 if flagGPU == 1
     dbl_eps = single(1e-7);
 else
-    dbl_eps = 1e-7;
+    dbl_eps = 1e-14;
 end
 
 % To save on memory, eta xsi and zeta no longer have their own vectors
@@ -49,7 +49,8 @@ rt_2 = sqrt((t2s).*a2 + 2.*t2.*b2 + c2);
 eps = (le_vect.^2) - (zeta_0sq).*(tanphi).^2;
 rho = sqrt(eps.^2 + 4.*(zeta_0sq).*(b2.^2));
 beta1 = -sqrt((rho + eps)./2);
-beta2 = -sqrt((rho - eps)./2);
+beta2(rho - eps >= 0,1) = -sqrt((rho(rho - eps >= 0) - eps(rho - eps >= 0))./2);
+beta2(rho - eps < 0,1) = zeros(length(nonzeros((rho - eps < 0))),1);
 
 % Corrections to beta for special conditions
 beta1(0.5.*(rho + eps) <= dbl_eps) = 0;
@@ -271,10 +272,10 @@ bloc = [b2_xsi b2_eta b2_zeta];
 cloc = [c2_xsi c2_eta c2_zeta];
 aloc = [];
 
-% % If the point lies on a swept leading edge
-idx_LE = abs(fp_0(:,3)) <= dbl_eps & abs(le_vect) <= dbl_eps; %& abs(phi) <= dbl_eps;
-bloc(idx_LE,:) = zeros(size(bloc(idx_LE,:)));
-cloc(idx_LE,:) = zeros(size(cloc(idx_LE,:)));
+% % % If the point lies on a swept leading edge
+% idx_LE = abs(fp_0(:,3)) <= dbl_eps & abs(le_vect) <= dbl_eps; %& abs(phi) <= dbl_eps;
+% bloc(idx_LE,:) = zeros(size(bloc(idx_LE,:)));
+% cloc(idx_LE,:) = zeros(size(cloc(idx_LE,:)));
 
 % If the point lies on an unswept leading edge
 % a23ind.f - Line 604
@@ -290,3 +291,6 @@ cloc(idx_LE,1:2) = zeros(size(cloc(idx_LE,1:2)));
 % Bramesfelds:
 bloc(idx_LE,3) = 0.5.*log((t1s(idx_LE) + k(idx_LE))./(t2s(idx_LE) + k(idx_LE)));
 cloc(idx_LE,3) = -4.*hspan(idx_LE) + fp_0(idx_LE,2).*2.*bloc(idx_LE,3);
+
+end
+

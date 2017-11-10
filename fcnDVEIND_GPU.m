@@ -24,7 +24,7 @@ function [a, b, c] = fcnDVEIND_GPU(dvenum_all, dvetype_all, fpg_all, vecK, matDV
 % OUTPUT:
 %   a,b,c - influence coefficients (each are (x,y,z))
 
-chunk_sz = 9e6;
+chunk_sz = 36e6;
 
 num_pts = length(dvenum_all);
 
@@ -36,11 +36,9 @@ for i = 1:chunk_sz:num_pts
     
     if num_pts <= chunk_sz
         idx_chunk = [1:num_pts];
-    else
+    elseif i + chunk_sz - 1 <= num_pts
         idx_chunk = [i:i + chunk_sz - 1];
-    end
-    
-    if idx_chunk(end) > num_pts
+    else
         idx_chunk = [i:num_pts];
     end
     
