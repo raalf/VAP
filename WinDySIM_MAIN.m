@@ -70,7 +70,7 @@ flagPLOT    = 1;
 flagPLOTWAKEVEL = 0;
 flagVERBOSE = 0;
 
-valGUSTSTART = 150;
+valGUSTSTART = 310;
 
 %% Discretize geometry into DVEs
 

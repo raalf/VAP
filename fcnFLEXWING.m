@@ -59,7 +59,7 @@ tol_def = (100*abs(matDEFGLOB(valTIMESTEP,end)-matDEFGLOB(valTIMESTEP-valSTIFFST
 tol_twist = (100*abs(matTWISTGLOB(valTIMESTEP,end)-matTWISTGLOB(valTIMESTEP-valSTIFFSTEPS,end))/matTWISTGLOB(valTIMESTEP-valSTIFFSTEPS,end));
 % 
 % % Add in gust velocities to matUINF if convergence tolerance is met
-if (tol_def < 1 && tol_twist < 1) || valGUSTTIME > 1
+if (tol_def < 5 && tol_twist < 5) || valGUSTTIME > 1
     [matUINF,zvel] = fcnFLEXUINF(matCENTER_old, matCENTER, valDELTIME, zvel, n);
     [matUINF, gust_vel_old] = fcnGUSTWING(matUINF,valGUSTAMP,valGUSTL,flagGUSTMODE,valDELTIME,valGUSTTIME,valUINF,valGUSTSTART,matCENTER,gust_vel_old);
     valGUSTTIME = valGUSTTIME + 1;

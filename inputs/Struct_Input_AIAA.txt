@@ -4,7 +4,7 @@ Please note that the program uses equal, number and : signs as special recognize
 
 Width of each time step (sec):				valSDELTIME 	=	0.0001
 Number of spanwise structural elements:		valNSELE		=	20
-Number of timesteps with no deflections: 	valSTIFFSTEPS	=	10
+Number of timesteps with no deflections: 	valSTIFFSTEPS	=	20
 Static (0) or Dynamic (1) aeroelasticity:	flagSTATIC		=	1
 
 ----------------------
@@ -19,7 +19,7 @@ Stiffness Distribution
 	Torsion (G*Jt):
 		A Coefficient: vec_GJt = 0
 		B Coefficient: vec_GJt = 0
-		C Coefficient: vec_GJt = 500000
+		C Coefficient: vec_GJt = 750000
 
 --------
 Geometry
