@@ -21,11 +21,11 @@ disp(' ');
 %% Reading in geometry
 %strFILE = 'inputs/ROTORINPUT_MA11by7.txt';
 %strFILE = 'inputs/rectangle.txt';
-% strFILE = 'inputs/TMotor.txt';
+%strFILE = 'inputs/TMotor.txt';
 %strFILE = 'inputs/standard_cirrus.txt';
 %strFILE = 'inputs/TMotorQuad.txt';
-%strFILE = 'inputs/TenzinHover.txt';
-strFILE = 'inputs/simple_rotor.txt'
+strFILE = 'inputs/TenzinHover.txt';
+%strFILE = 'inputs/simple_rotor.txt';
 
 [flagRELAX, flagSTEADY, valMAXTIME, valMINTIME, valAZNUM, valDELTAE, ...
     seqALPHAR, seqJ, valRPM, valDENSITY, valKINV, valAREA, valDIA, ...
@@ -37,14 +37,15 @@ strFILE = 'inputs/simple_rotor.txt'
 %     valNUMB, valNUMRO, matROTAX, vecRODIR, valPANELS, vecROTAXLOC, matGEOM, vecAIRFOIL, vecN, vecM, vecSYM, ...
 %     valINTERF] = fcnVAPTORREADMULTI(strFILE);
 
-flagVISCOUS = 1;
+flagMOVINGHOVER = 1;
+flagVISCOUS = 0;
 flagPRINT   = 1;
-flagPLOT    = 0;
+flagPLOT    = 1;
 flagPLOTWAKEVEL = 0;
 flagVERBOSE = 0;
 flagSAVE = 1;
 flagPROGRESS = 0;
-filename = 'TMotorSweepViscousApparentMass'; % Save workspace name
+filename = 'TenzinHoverMovingWake'; % Save workspace name
 
 %% Apply multiple rotors
 %[valPANELS, vecN, vecM, vecAIRFOIL, matGEOM ] = fcnGEOMMULTIROTOR(valNUMRO, valPANELS, vecRODIR, vecROTAXLOC, vecN, vecM, vecAIRFOIL, matGEOM, matROTAX);
@@ -319,16 +320,16 @@ for ai = 1:length(seqALPHAR)
                 vecDVEROLL, vecDVETESWP, vecDVEYAW, vecK, vecSYM, ...
                 vecWDVEHVSPN, vecWDVEHVCRD, vecWDVELESWP, vecWDVEPITCH, ...
                 vecWDVEROLL, vecWDVESYM, vecWDVETESWP, vecWDVETIP, ...
-                vecWDVEYAW, vecWK, vecWDVEWING, flagSTEADY);   
+                vecWDVEYAW, vecWK, vecWDVEWING, flagSTEADY, flagMOVINGHOVER);   
             % Creating and solving WD-Matrix
             [matWD, vecWR] = fcnWDWAKE([1:valWNELE]', matWADJE, ...
                 vecWDVEHVSPN, vecWDVESYM, vecWDVETIP, vecWKGAM, sum(vecN)/valNUMB);
             [matWCOEFF] = fcnSOLVEWD(matWD, vecWR, valWNELE, ...
                 vecWKGAM, vecWDVEHVSPN);
         end
-%         [hFig2] = fcnPLOTBODY(flagVERBOSE, valNELE, matDVE, matVLST, matCENTER);
-%         [hLogo] = fcnPLOTLOGO(0.97,0.03,14,'k','none');
-%         [hFig2] = fcnPLOTWAKE(flagVERBOSE, hFig2, valWNELE, matWDVE, matWVLST, matWCENTER);
+        [hFig2] = fcnPLOTBODY(flagVERBOSE, valNELE, matDVE, matVLST, matCENTER);
+        [hLogo] = fcnPLOTLOGO(0.97,0.03,14,'k','none');
+        [hFig2] = fcnPLOTWAKE(flagVERBOSE, hFig2, valWNELE, matWDVE, matWVLST, matWCENTER);
 
         %% Calculate Forces
 
@@ -458,8 +459,8 @@ if flagSAVE ==1
 end
 fprintf('\nDONE\n');
 % save(filename)
-% if flagPLOT == 1
-%     [hFig2] = fcnPLOTBODY(flagVERBOSE, valNELE, matDVE, matVLST, matCENTER);
-%     [hLogo] = fcnPLOTLOGO(0.97,0.03,14,'k','none');
-%     [hFig2] = fcnPLOTWAKE(flagVERBOSE, hFig2, valWNELE, matWDVE, matWVLST, matWCENTER);
-% end
+if flagPLOT == 1
+    [hFig2] = fcnPLOTBODY(flagVERBOSE, valNELE, matDVE, matVLST, matCENTER);
+    [hLogo] = fcnPLOTLOGO(0.97,0.03,14,'k','none');
+    [hFig2] = fcnPLOTWAKE(flagVERBOSE, hFig2, valWNELE, matWDVE, matWVLST, matWCENTER);
+end

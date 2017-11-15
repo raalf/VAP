@@ -168,7 +168,7 @@ gamma(:,3) = A + B.*eta8' + C.*eta8'.*eta8';
 tempr = tempd .* repmat(permute(gamma,[1 3 2]),1,3,1);
 
 %//The resulting induced force is
-%//determined by numerically integrating forces across element
+%//determined by numerically integrating forces acrToss element
 %//using Simpson's Rule with overhaning parts
 %  R = (R1 + 4*Ro+R2).*eta8/3;
 r = (tempr(:,:,1) + 4.*tempr(:,:,2) + tempr(:,:,3)) .* repmat(eta8,1,3) ./3;
@@ -187,7 +187,6 @@ axialind = dot(r,ea,2);
 thrustfree = nfree.*(en(:,3));
 sidefree = nfree.*(dot(es,en,2));
 axialfree = nfree.*(dot(ea,en,2));
-
 
 % For viscious
 matWUINF = w(:,:,2);

@@ -3,7 +3,7 @@ function [vecWDVEHVSPN, vecWDVEHVCRD, vecWDVEROLL, vecWDVEPITCH, vecWDVEYAW,...
     matWVLST, matWDVE, matWDVEMP, matWDVEMPIND, idxWVLST, vecWK] = fcnRELAXROTORWAKE(matUINF, matCOEFF, matDVE, matVLST, matWADJE, matWCOEFF, ...
     matWDVE, matWVLST, valAZNUM, valRPM, valNELE, valTIMESTEP, valWNELE, valWSIZE, vecDVEHVSPN, vecDVEHVCRD, vecDVELESWP, ...
     vecDVEPITCH, vecDVEROLL, vecDVETESWP, vecDVEYAW, vecK, vecSYM, vecWDVEHVSPN, vecWDVEHVCRD, vecWDVELESWP, vecWDVEPITCH, ...
-    vecWDVEROLL, vecWDVESYM, vecWDVETESWP, vecWDVETIP, vecWDVEYAW, vecWK, vecWDVEWING, flagSTEADY)
+    vecWDVEROLL, vecWDVESYM, vecWDVETESWP, vecWDVETIP, vecWDVEYAW, vecWK, vecWDVEWING, flagSTEADY, flagMOVINGHOVER)
 %FCNRLXWAKE Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -16,6 +16,12 @@ valDELTIME = 1/(valAZNUM*(valRPM/60));
 [ matWDVEMPIND ] = fcnINDVEL(matWDVEMP,valNELE, matDVE, matVLST, matCOEFF, vecK, vecDVEHVSPN, vecDVEHVCRD, vecDVEROLL, vecDVEPITCH, vecDVEYAW, vecDVELESWP, vecDVETESWP, vecSYM,...
     valWNELE, matWDVE, matWVLST, matWCOEFF, vecWK, vecWDVEHVSPN, vecWDVEHVCRD, vecWDVEROLL, vecWDVEPITCH, vecWDVEYAW, vecWDVELESWP, vecWDVETESWP, valWSIZE, valTIMESTEP, flagSTEADY);
 
+maxRot = 2;
+startVel = 6;
+if valTIMESTEP/valAZNUM <= maxRot && flagMOVINGHOVER == 1
+    Vel = -startVel/maxRot*(valTIMESTEP/valAZNUM)+startVel;
+    matWDVEMPIND(:,3) = matWDVEMPIND(:,3) - Vel;
+end
 % Assemble matrices for fcnDISPLACE (vup, vnow, vdown)
 [ matVUP, matVNOW, matVDOWN ] = fcnDISPMAT(matWDVEMPIND, vecWMPUP, vecWMPDN );
 
