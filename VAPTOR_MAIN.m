@@ -327,9 +327,9 @@ for ai = 1:length(seqALPHAR)
             [matWCOEFF] = fcnSOLVEWD(matWD, vecWR, valWNELE, ...
                 vecWKGAM, vecWDVEHVSPN);
         end
-        [hFig2] = fcnPLOTBODY(flagVERBOSE, valNELE, matDVE, matVLST, matCENTER);
-        [hLogo] = fcnPLOTLOGO(0.97,0.03,14,'k','none');
-        [hFig2] = fcnPLOTWAKE(flagVERBOSE, hFig2, valWNELE, matWDVE, matWVLST, matWCENTER);
+%         [hFig2] = fcnPLOTBODY(flagVERBOSE, valNELE, matDVE, matVLST, matCENTER);
+%         [hLogo] = fcnPLOTLOGO(0.97,0.03,14,'k','none');
+%         [hFig2] = fcnPLOTWAKE(flagVERBOSE, hFig2, valWNELE, matWDVE, matWVLST, matWCENTER);
 
         %% Calculate Forces
 
