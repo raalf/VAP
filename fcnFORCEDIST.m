@@ -1,5 +1,5 @@
-function [vecLIFTDIST, vecMOMDIST] = fcnFORCEDIST(liftfree, liftind, matSCLST, valDENSITY, valWEIGHT, valCL, vecDVEHVSPN, vecLEDVES, vecN, vecM,...
-    vecDVEWING, vecDVEPANEL, matCENTER, vecSPANDIST, matNPVLST, matNPDVE, matSC, matLIFTDIR, vecMAC, valCM, valAREA, vecSPNWSEAREA, valUINF, matAEROCNTR)
+function [vecLIFTDIST, vecMOMDIST, vecWRBM] = fcnFORCEDIST(liftfree, liftind, valDENSITY, vecDVEHVSPN, vecLEDVES, vecN, vecM,...
+    vecDVEWING, vecDVEPANEL, matCENTER, vecSPANDIST, matNPVLST, matNPDVE, matSC, matLIFTDIR, vecMAC, valCM, valUINF, matAEROCNTR, vecWRBM, valTIMESTEP)
 
 % This function computes the dimensional force and moment distribution
 % across the wing, resolved to the shear center line. Moment is taken
@@ -46,6 +46,8 @@ vecLIFTDIST = ((vecSPANDIST(2:(end-1))' - tempSPANDIST(1,1:(end-1)))./(tempSPAND
     tempSPANDIST(1,1:(end-1)))).*(vecLIFTDIST(2,2:end)-vecLIFTDIST(1,1:(end-1))) + vecLIFTDIST(1,1:(end-1)); % Linear interpolation of lift
 
 vecLIFTDIST = [vecLIFTDIST(1), vecLIFTDIST, 0]'; % Add zero lift to tip. Use the same lift at root as at the next neighbouring node. This doesn't really have any impact since the structure solver doesn't use this value
+
+vecWRBM(valTIMESTEP,1) = sum(vecSPANDIST.*vecLIFTDIST,1);
 
 % ======================================================================= % 
 %                        Start Moment Calculation                         %

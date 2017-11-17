@@ -95,7 +95,7 @@ vecDEF(3) = 0; % Zero deflection at root BC
 vecTWIST(3) = 0; % Zero twist at root BC
 
 % Assemble load matrix
-matLOAD = [vecLIFTDIST' - vecLM'.*9.81, vecMOMDIST' - vecLSM'.*vecLM'.*9.81];
+matLOAD = [vecLIFTDIST' - vecLM'.*9.81, vecMOMDIST' + vecLSM'.*vecLM'.*9.81];
 % matLOAD = [vecLIFTDIST', vecMOMDIST'];
 % matLOAD(end,:) = [0,0]; 
 
@@ -104,13 +104,13 @@ for yy = 4:(valNSELE+2)
     %% Geometric property assembly
 
     % Assemble mass matrix
-    matMASS = [vecLM(yy-2), -vecLM(yy-2).*vecLSM(yy-2); -vecLM(yy-2).*vecLSM(yy-2), vecJT(yy-2)];
+    matMASS = [vecLM(yy-2), vecLM(yy-2).*vecLSM(yy-2); vecLM(yy-2).*vecLSM(yy-2), vecJT(yy-2)];
 
     % Assemble stiffness matrices
     matK_1 = [matEIx(yy-2,3), 0; 0, 0];
     matK_2 = [matEIx(yy-2,2), 0; 0, -matGJt(yy-2,2)];
     matK_3 = [matEIx(yy-2,1), 0; 0, -matGJt(yy-2,1)];
-    matB = [0 0; 0 50];
+    matB = [0 0; 0 100];
 
     %% Finite difference relations for partial derivatives
 

@@ -36,7 +36,8 @@ disp(' ');
 
 strFILE = 'inputs/WinDySIM_Gust_AIAA.txt';
 strSTRUCT_INPUT = 'inputs/Struct_Input_AIAA.txt';
-strOUTPUTFILE = 'AIAA_Aero_Damping.mat';
+strOUTPUTFILE = 'AIAA_Aero_Damping_Steady_20171115';
+save_interval = 100; % Interval for how often to save time step data
 
 [flagRELAX, flagSTEADY, flagSTIFFWING, flagGUSTMODE, valAREA, valSPAN,...
     valCMAC, valWEIGHT, valCM, seqALPHA, seqBETA, valKINV, valUINF, valGUSTAMP,...
@@ -70,7 +71,8 @@ flagPLOT    = 1;
 flagPLOTWAKEVEL = 0;
 flagVERBOSE = 0;
 
-valGUSTSTART = 310;
+save_count = 1; % Initializing counter for incrementing save interval
+valGUSTSTART = 120;
 
 %% Discretize geometry into DVEs
 
@@ -98,6 +100,7 @@ matNPDVE = matDVE;
 vecCL = zeros(valMAXTIME, length(seqALPHA));
 vecCDI = zeros(valMAXTIME, length(seqALPHA));
 vecE = zeros(valMAXTIME, length(seqALPHA));
+vecWRBM = zeros(valMAXTIME,1);
 
 for ai = 1:length(seqALPHA)
     
@@ -181,7 +184,14 @@ for ai = 1:length(seqALPHA)
                 vecEACOEFF, vecCGCOEFF, vecJTCOEFF, vecLMCOEFF, matNPVLST, matNPDVE, vecDVEPANEL, vecN, vecM, vecDVEWING, vecDVEROLL, vecDVEPITCH, vecDVEYAW);
         end
         
-        for valTIMESTEP = 1:valMAXTIME
+        load('outputs/AIAA_Aero_Damping_Steady_20171115_Timestep_1500.mat');
+%         for valTIMESTEP = 1:valMAXTIME
+
+        valMAXTIME = 2250;
+            
+        while valTIMESTEP < valMAXTIME
+                
+            valTIMESTEP = valTIMESTEP + 1;
             %% Timestep to solution
             %   Move wing
             %   Generate new wake elements
@@ -220,7 +230,7 @@ for ai = 1:length(seqALPHA)
                 [valDELTIME, matEIx, matGJt, vecEA, vecCG, vecJT, vecLM, vecLSM, vecLSAC, matAEROCNTR, matSCLST,...
                     vecSPANDIST, matSC, vecMAC, vecDEF, vecTWIST, matDEFGLOB, matTWISTGLOB, matDEF, matTWIST, matSLOPE,...
                     matNPVLST, matNPNEWWAKE, matNEWWAKE, valUINF, vecDVEHVSPN, vecDVEHVCRD, vecDVEROLL, vecDVEPITCH, vecDVEYAW, ...
-                    vecDVELESWP, vecDVEMCSWP, vecDVETESWP, vecDVEAREA, matDVENORM, matVLST, matDVE, matCENTER, matUINF, valGUSTTIME, flagSTEADY, gust_vel_old, zvel] = fcnFLEXWING(vecDVEHVSPN,...
+                    vecDVELESWP, vecDVEMCSWP, vecDVETESWP, vecDVEAREA, matDVENORM, matVLST, matDVE, matCENTER, matUINF, valGUSTTIME, flagSTEADY, gust_vel_old, zvel, valGUSTSTART] = fcnFLEXWING(vecDVEHVSPN,...
                     vecDVELE, vecDVETE, vecEIxCOEFF, vecGJtCOEFF, vecEACOEFF, vecCGCOEFF, vecJTCOEFF, vecLMCOEFF, matNPVLST, matNPDVE, vecDVEPANEL,...
                     vecN, vecM, vecDVEWING, vecDVEROLL, vecDVEPITCH, vecDVEYAW, vecLIFTDIST, vecMOMDIST, valSPAN, valTIMESTEP, matDEFGLOB, matTWISTGLOB,...
                     matSLOPE, valALPHA, valBETA, matVLST, matCENTER, matDVE, vecCL, valWEIGHT, valAREA, valDENSITY, valUINF,...
@@ -346,17 +356,17 @@ for ai = 1:length(seqALPHA)
             end
             
             [vecCL(valTIMESTEP,ai), vecCLF(valTIMESTEP,ai),vecCLI(valTIMESTEP,ai),vecCDI(valTIMESTEP,ai), vecE(valTIMESTEP,ai), vecDVENFREE, vecDVENIND, ...
-                vecDVELFREE, vecDVELIND, vecDVESFREE, vecDVESIND, vecLIFTDIST, vecMOMDIST, vecCLDIST, gamma_old, dGammadt] = ...
+                vecDVELFREE, vecDVELIND, vecDVESFREE, vecDVESIND, vecLIFTDIST, vecMOMDIST, vecCLDIST, gamma_old, dGammadt, vecWRBM] = ...
                 fcnFORCES(matCOEFF, vecK, matDVE, valNELE, matCENTER, matVLST, matUINF, vecDVELESWP,...
                 vecDVEMCSWP, vecDVEHVSPN, vecDVEHVCRD,vecDVEROLL, vecDVEPITCH, vecDVEYAW, vecDVELE, vecDVETE, matADJE,...
                 valWNELE, matWDVE, matWVLST, matWCOEFF, vecWK, vecWDVEHVSPN, vecWDVEHVCRD,vecWDVEROLL, vecWDVEPITCH, vecWDVEYAW, ...
                 vecWDVELESWP, vecWDVETESWP, valWSIZE, valTIMESTEP, vecSYM, vecDVETESWP, valAREA, valSPAN, valBETA, ...
                 vecDVEWING, vecWDVEWING, vecN, vecM, vecDVEPANEL, vecDVEAREA, vecSPNWSECRD, vecSPNWSEAREA, matQTRCRD, valDENSITY, valWEIGHT,...
                 vecLEDVES, vecUINF, matSCLST, vecSPANDIST, matNPVLST, matNPDVE, matSC, vecMAC, valCM, valUINF, matAEROCNTR, flagSTIFFWING, temp,...
-                flagSTEADY, gamma_old, dGammadt, valDELTIME);
+                flagSTEADY, gamma_old, dGammadt, valDELTIME, vecWRBM);
             
             if flagPRINT == 1 && valTIMESTEP == 1
-                fprintf(' TIMESTEP    CL          CDI          Tip Def.       Twist (deg)\n'); %header
+                fprintf(' TIMESTEP    CL          CDI      Tip Def. (m)       Twist (deg)\n'); %header
                 fprintf('----------------------------------------------------------------\n'); 
             end
             if flagPRINT == 1 && flagSTIFFWING == 2
@@ -364,6 +374,15 @@ for ai = 1:length(seqALPHA)
                     matDEFGLOB(valTIMESTEP,end),(180/pi)*matTWISTGLOB(valTIMESTEP,end)); %valTIMESTEP
             else
                 fprintf('  %4d     %0.5f     %0.5f\n',valTIMESTEP,vecCL(valTIMESTEP,ai),vecCDI(valTIMESTEP,ai)); %valTIMESTEP               
+            end
+            
+            % Save results every "save_interval" timesteps to output directory
+            if valTIMESTEP == save_count*save_interval
+                
+                save(strcat('outputs/',strOUTPUTFILE,'_Timestep_',num2str(valTIMESTEP),'.mat'));
+                
+                save_count = save_count + 1;
+                
             end
             
 %             fprintf('\n\tTimestep = %0.0f', valTIMESTEP);
@@ -414,22 +433,22 @@ hold off
 
 figure(4)
 clf
-plot(valDELTIME*(1:valTIMESTEP),(180/pi)*matTWISTGLOB(:,end))
-xlabel('Time (s)')
+subplot(2,1,1)
+plot(valDELTIME*(valGUSTSTART:valTIMESTEP)-valGUSTSTART.*valDELTIME,(180/pi)*matTWISTGLOB(valGUSTSTART:end,end))
 ylabel('Tip Twist (deg)')
 grid on
 box on
 
-figure(5)
-clf
-plot(valDELTIME*(1:valTIMESTEP),matDEFGLOB(:,end))
+subplot(2,1,2)
+plot(valDELTIME*(valGUSTSTART:valTIMESTEP)-valGUSTSTART.*valDELTIME,matDEFGLOB(valGUSTSTART:end,end))
 xlabel('Time (s)')
 ylabel('Tip Deflection (m)')
 grid on
 box on
+  
 end
 
-save(strOUTPUTFILE);
+save(strcat(strOUTPUTFILE,'.mat'));
 
 toc
 % profreport

@@ -113,6 +113,7 @@ matSCLST = matSCLST - matNPVLST; % Matrix of vectors between shear center and ve
 % hold on
 % plot3(matAEROCNTR(:,1), matAEROCNTR(:,2), matAEROCNTR(:,3),'-ok')
 % plot3(matSC(:,1), matSC(:,2), matSC(:,3),'-ob')
+% plot3(matCG(:,1), matCG(:,2), matCG(:,3),'-^g')
 % axis equal
 
 end

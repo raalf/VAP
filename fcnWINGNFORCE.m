@@ -1,6 +1,6 @@
-function [valCL, valCLF, valCLI, valCY, valCYF, valCYI, valCDI, valE, vecLIFTDIST, vecMOMDIST, vecCLDIST]= fcnWINGNFORCE(liftfree,liftind,sidefree,sideind,inddrag,...
+function [valCL, valCLF, valCLI, valCY, valCYF, valCYI, valCDI, valE, vecLIFTDIST, vecMOMDIST, vecCLDIST, vecWRBM]= fcnWINGNFORCE(liftfree,liftind,sidefree,sideind,inddrag,...
     vecUINF,valAREA,valSPAN,vecSYM,valBETA,vecDVEAREA,vecDVEWING, vecM,vecN,vecDVELE,vecDVEPANEL,vecSPNWSECRD,vecSPNWSEAREA,matQTRCRD,valDENSITY,...
-    valWEIGHT,vecDVEHVSPN,vecLEDVES,matUINF,matSCLST,matCENTER,vecSPANDIST, matNPVLST, matNPDVE, matSC, matLIFTDIR, vecMAC, valCM, valUINF, matAEROCNTR, flagSTIFFWING)
+    valWEIGHT,vecDVEHVSPN,vecLEDVES,matUINF,matSCLST,matCENTER,vecSPANDIST, matNPVLST, matNPDVE, matSC, matLIFTDIR, vecMAC, valCM, valUINF, matAEROCNTR, flagSTIFFWING, valTIMESTEP, vecWRBM)
 %% Wing Normal Force
 % this routine adds up the DVE's normal forces in order to compute the
 % total wing normal forces/density and coefficients based on free stream
@@ -77,8 +77,9 @@ end
 
 if flagSTIFFWING ~= 1
 
-[vecLIFTDIST, vecMOMDIST] = fcnFORCEDIST(liftfree, liftind, matSCLST, valDENSITY, valWEIGHT, valCL, vecDVEHVSPN, vecLEDVES, vecN, vecM, vecDVEWING, vecDVEPANEL,...
-    matCENTER, vecSPANDIST, matNPVLST, matNPDVE, matSC, matLIFTDIR, vecMAC, valCM, valAREA, vecSPNWSEAREA, valUINF, matAEROCNTR);
+[vecLIFTDIST, vecMOMDIST, vecWRBM] = fcnFORCEDIST(liftfree, liftind, valDENSITY, vecDVEHVSPN, vecLEDVES, vecN, vecM,...
+    vecDVEWING, vecDVEPANEL, matCENTER, vecSPANDIST, matNPVLST, matNPDVE, matSC, matLIFTDIR, vecMAC, valCM, valUINF,...
+    matAEROCNTR, vecWRBM, valTIMESTEP);
 
 else
     
