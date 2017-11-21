@@ -36,7 +36,7 @@ disp(' ');
 
 strFILE = 'inputs/WinDySIM_Gust_AIAA.txt';
 strSTRUCT_INPUT = 'inputs/Struct_Input_AIAA.txt';
-strOUTPUTFILE = 'AIAA_Aero_Damping_Steady_20171115';
+strOUTPUTFILE = 'AIAA_EA_50c_20171119';
 save_interval = 100; % Interval for how often to save time step data
 
 [flagRELAX, flagSTEADY, flagSTIFFWING, flagGUSTMODE, valAREA, valSPAN,...
@@ -72,7 +72,7 @@ flagPLOTWAKEVEL = 0;
 flagVERBOSE = 0;
 
 save_count = 1; % Initializing counter for incrementing save interval
-valGUSTSTART = 120;
+valGUSTSTART = 20;
 
 %% Discretize geometry into DVEs
 
@@ -168,6 +168,7 @@ for ai = 1:length(seqALPHA)
         % Initialize unsteady aero terms
         gamma_old = [];
         dGammadt = [];
+        valDELTIME_old = [];
         
         n = 1;
         
@@ -184,10 +185,10 @@ for ai = 1:length(seqALPHA)
                 vecEACOEFF, vecCGCOEFF, vecJTCOEFF, vecLMCOEFF, matNPVLST, matNPDVE, vecDVEPANEL, vecN, vecM, vecDVEWING, vecDVEROLL, vecDVEPITCH, vecDVEYAW);
         end
         
-        load('outputs/AIAA_Aero_Damping_Steady_20171115_Timestep_1500.mat');
+        load('AIAA_EA_50c_20171119.mat');
 %         for valTIMESTEP = 1:valMAXTIME
 
-        valMAXTIME = 2250;
+        valMAXTIME = 3000;
             
         while valTIMESTEP < valMAXTIME
                 
@@ -230,12 +231,12 @@ for ai = 1:length(seqALPHA)
                 [valDELTIME, matEIx, matGJt, vecEA, vecCG, vecJT, vecLM, vecLSM, vecLSAC, matAEROCNTR, matSCLST,...
                     vecSPANDIST, matSC, vecMAC, vecDEF, vecTWIST, matDEFGLOB, matTWISTGLOB, matDEF, matTWIST, matSLOPE,...
                     matNPVLST, matNPNEWWAKE, matNEWWAKE, valUINF, vecDVEHVSPN, vecDVEHVCRD, vecDVEROLL, vecDVEPITCH, vecDVEYAW, ...
-                    vecDVELESWP, vecDVEMCSWP, vecDVETESWP, vecDVEAREA, matDVENORM, matVLST, matDVE, matCENTER, matUINF, valGUSTTIME, flagSTEADY, gust_vel_old, zvel, valGUSTSTART] = fcnFLEXWING(vecDVEHVSPN,...
-                    vecDVELE, vecDVETE, vecEIxCOEFF, vecGJtCOEFF, vecEACOEFF, vecCGCOEFF, vecJTCOEFF, vecLMCOEFF, matNPVLST, matNPDVE, vecDVEPANEL,...
-                    vecN, vecM, vecDVEWING, vecDVEROLL, vecDVEPITCH, vecDVEYAW, vecLIFTDIST, vecMOMDIST, valSPAN, valTIMESTEP, matDEFGLOB, matTWISTGLOB,...
-                    matSLOPE, valALPHA, valBETA, matVLST, matCENTER, matDVE, vecCL, valWEIGHT, valAREA, valDENSITY, valUINF,...
-                    flagSTATIC, valSDELTIME, valDELTIME, valNSELE, matDEF, matTWIST, valSTIFFSTEPS, valGUSTTIME, valGUSTAMP, valGUSTL,...
-                    valGUSTSTART, flagGUSTMODE, flagSTEADY, gust_vel_old, matUINF, zvel);
+                    vecDVELESWP, vecDVEMCSWP, vecDVETESWP, vecDVEAREA, matDVENORM, matVLST, matDVE, matCENTER, matUINF, valGUSTTIME, flagSTEADY, gust_vel_old,...
+                    zvel, valGUSTSTART, valDELTIME_old] = fcnFLEXWING(vecDVEHVSPN, vecDVELE, vecDVETE, vecEIxCOEFF, vecGJtCOEFF, vecEACOEFF, vecCGCOEFF,...
+                    vecJTCOEFF, vecLMCOEFF, matNPVLST, matNPDVE, vecDVEPANEL, vecN, vecM, vecDVEWING, vecDVEROLL, vecDVEPITCH, vecDVEYAW, vecLIFTDIST,...
+                    vecMOMDIST, valSPAN, valTIMESTEP, matDEFGLOB, matTWISTGLOB, matSLOPE, valALPHA, valBETA, matVLST, matCENTER, matDVE, vecCL, valWEIGHT,...
+                    valAREA, valDENSITY, valUINF, flagSTATIC, valSDELTIME, valDELTIME, valNSELE, matDEF, matTWIST, valSTIFFSTEPS, valGUSTTIME, valGUSTAMP, valGUSTL,...
+                    valGUSTSTART, flagGUSTMODE, flagSTEADY, gust_vel_old, matUINF, zvel, valDELTIME_old);
                 
                 n = n + 1;
                 

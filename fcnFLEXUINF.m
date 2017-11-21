@@ -1,4 +1,4 @@
-function [matUINF,zvel] = fcnFLEXUINF(matCENTER_old, matCENTER, valDELTIME, zvel, n)
+function [matUINF,zvel] = fcnFLEXUINF(matCENTER_old, matCENTER, valDELTIME, n)
 
 % lambda = 0.5;
 

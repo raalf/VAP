@@ -32,7 +32,7 @@ elseif flagGUSTMODE == 2
     
     if any(idx1) > 0
         gust_vel = 0.5*valGUSTAMP*(1 - cos((2*pi*tau/(valGUSTL/valUINF))));
-        matUINF(idx2,3) = matUINF(idx2,3) + (gust_vel - gust_vel_old(idx2,1));
+        matUINF(idx2,3) = matUINF(idx2,3) + (gust_vel);
         gust_vel_old(idx2) = gust_vel;
     end
     

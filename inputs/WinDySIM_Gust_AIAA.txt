@@ -4,22 +4,22 @@ NO TRIM
 Please note that the program uses equal, number and : signs as special recognizers!
 
 Relaxed wake (yes 1, no 0):		flagRELAX =		0
-Steady (1) or unsteady (2):		flagSTEADY =	1
+Steady (1) or unsteady (2):		flagSTEADY =	2
 Stiff (1) or Flexible (2) Wing:	flagSTIFFWING = 2
-Gust Type (0, 1, 2 or 3):		flagGUSTMODE =	3
+Gust Type (0, 1, 2 or 3):		flagGUSTMODE =	2
 
-Max. number of time steps:		valMAXTIME 	=	1500
+Max. number of time steps:		valMAXTIME 	=	3000
 Min. number of time steps: 		valMINTIME 	= 	0
-Width of each time step (sec):	valDELTIME 	=	0.00075
+Width of each time step (sec):	valDELTIME 	=	0.0075
 Convergence delta-span effic.:	valDELTAE 	=	0.000000	(0 if only timestepping)
 
 AOA sequence: 			seqALPHA 	= 	0.0
 Sideslip angle [deg]:	seqBETA 	=	0.0
 Density:				valDENSITY 	= 	1.225
 Kinematic viscosity:	valKINV		=	1.460000e-05
-Freestream velocity:	valUINF		=	30.0
+Freestream velocity:	valUINF		=	50.0
 Gust amplitude:			valGUSTAMP	=	0.5
-Gust length:			valGUSTL	=	1.00
+Gust length:			valGUSTL	=	6.00
 
 Reference area:				valAREA 	=	32.00
 Reference span:				valSPAN 	=	32.00
@@ -38,8 +38,8 @@ Number of chordwise elements: 	vecM 		= 5.
 Airfoil number: 				vecAIRFOIL 	= 1
 Symmetry edge (0, 1 or 2): 		vecSYM 		= 1;
 xleft		yleft		zleft		chord		epsilon
-0.0000000	0.000000	0.0000000	1.000000	1.50000
-0.0000000	16.000000	0.0000000	1.000000	1.50000
+0.0000000	0.000000	0.0000000	1.000000	0.75000
+0.0000000	16.000000	0.0000000	1.000000	0.75000
 
 %<- special identifier
 Vertical tail information:

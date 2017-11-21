@@ -8,7 +8,9 @@ matCENTER_old = matCENTER;
 
 [matVLST, matCENTER, matNEWWAKE, matNPNEWWAKE, matNTVLST, matNPVLST, valUINF] = fcnMOVEWING(valALPHA, valBETA, valDELTIME, matVLST, matCENTER, matDVE, vecDVETE, matNTVLST, matNPVLST, vecCL, valWEIGHT, valAREA, valDENSITY, valTIMESTEP, valUINF, matUINF);
 
-% [matUINF] = fcnFLEXUINF(matCENTER_old, matCENTER, valDELTIME);
+n = 1;
+
+[matUINF] = fcnFLEXUINF(matCENTER_old, matCENTER, valDELTIME, n);
 
 if valGUSTTIME > 1 || valTIMESTEP == valGUSTSTART
     

@@ -1,12 +1,12 @@
 function [valDELTIME, matEIx, matGJt, vecEA, vecCG, vecJT, vecLM, vecLSM, vecLSAC, matAEROCNTR, matSCLST,...
     vecSPANDIST, matSC, vecMAC, vecDEF, vecTWIST, matDEFGLOB, matTWISTGLOB, matDEF_old, matTWIST_old, matSLOPE,...
     matNPVLST, matNPNEWWAKE, matNEWWAKE, valUINF, vecDVEHVSPN, vecDVEHVCRD, vecDVEROLL, vecDVEPITCH, vecDVEYAW, ...
-    vecDVELESWP, vecDVEMCSWP, vecDVETESWP, vecDVEAREA, matDVENORM, matVLST, matDVE, matCENTER, matUINF, valGUSTTIME, flagSTEADY, gust_vel_old,zvel, valGUSTSTART] = fcnFLEXWING(vecDVEHVSPN,...
+    vecDVELESWP, vecDVEMCSWP, vecDVETESWP, vecDVEAREA, matDVENORM, matVLST, matDVE, matCENTER, matUINF, valGUSTTIME, flagSTEADY, gust_vel_old,zvel, valGUSTSTART, valDELTIME_old] = fcnFLEXWING(vecDVEHVSPN,...
     vecDVELE, vecDVETE, vecEIxCOEFF, vecGJtCOEFF, vecEACOEFF, vecCGCOEFF, vecJTCOEFF, vecLMCOEFF, matNPVLST, matNPDVE, vecDVEPANEL,...
     vecN, vecM, vecDVEWING, vecDVEROLL, vecDVEPITCH, vecDVEYAW, vecLIFTDIST, vecMOMDIST, valSPAN, valTIMESTEP, matDEFGLOB, matTWISTGLOB,...
     matSLOPE, valALPHA, valBETA, matVLST, matCENTER, matDVE, vecCL, valWEIGHT, valAREA, valDENSITY, valUINF,...
     flagSTATIC, valSDELTIME, valDELTIME, valNSELE, matDEF, matTWIST, valSTIFFSTEPS, valGUSTTIME, valGUSTAMP, valGUSTL,...
-    valGUSTSTART, flagGUSTMODE, flagSTEADY, gust_vel_old, matUINF, zvel)
+    valGUSTSTART, flagGUSTMODE, flagSTEADY, gust_vel_old, matUINF, zvel, valDELTIME_old)
 
 % valDELTIME = valSDELTIME;
 
@@ -62,15 +62,17 @@ tol_twist = (100*abs(matTWISTGLOB(valTIMESTEP,end)-matTWISTGLOB(valTIMESTEP-valS
 
 % Add in gust velocities to matUINF if convergence tolerance is met
 if (tol_def < 2 && tol_twist < 2) || valGUSTTIME > 1
-% if valTIMESTEP == valSTIFFSTEPS*2+1 || valGUSTTIME > 1
+    
     if valGUSTTIME == 1
         fprintf('\nStatic convergence reached. Beginning gust profile.\n\n')
-        valGUSTSTART = valTIMESTEP + 10; % Start gust 10 time steps after convergence has been reached
+        valGUSTSTART = valTIMESTEP; % Start gust 10 time steps after convergence has been reached
+        valDELTIME_old = valDELTIME;
     end
-    
+           
     % Add elastic velocities as well as gust velocity
-    [matUINF,zvel] = fcnFLEXUINF(matCENTER_old, matCENTER, valDELTIME, zvel, n);
-    [matUINF, gust_vel_old] = fcnGUSTWING(matUINF,valGUSTAMP,valGUSTL,flagGUSTMODE,valDELTIME,valGUSTTIME,valUINF,valGUSTSTART,matCENTER,gust_vel_old);
+    [matUINF,zvel] = fcnFLEXUINF(matCENTER_old, matCENTER, valDELTIME, n);
+    valDELTIME = valSDELTIME;
+    [matUINF, gust_vel_old] = fcnGUSTWING(matUINF,valGUSTAMP,valGUSTL,flagGUSTMODE,valDELTIME_old,valGUSTTIME,valUINF,valGUSTSTART,matCENTER,gust_vel_old);
     valGUSTTIME = valGUSTTIME + 1;
     
 end

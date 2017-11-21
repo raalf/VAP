@@ -104,7 +104,7 @@ for yy = 4:(valNSELE+2)
     %% Geometric property assembly
 
     % Assemble mass matrix
-    matMASS = [vecLM(yy-2), vecLM(yy-2).*vecLSM(yy-2); vecLM(yy-2).*vecLSM(yy-2), vecJT(yy-2)];
+    matMASS = [vecLM(yy-2), -vecLM(yy-2).*vecLSM(yy-2); -vecLM(yy-2).*vecLSM(yy-2), vecJT(yy-2)];
 
     % Assemble stiffness matrices
     matK_1 = [matEIx(yy-2,3), 0; 0, 0];
