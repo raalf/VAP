@@ -18,7 +18,7 @@ Sideslip angle [deg]:	seqBETA 	=	0.0
 Density:				valDENSITY 	= 	1.225
 Kinematic viscosity:	valKINV		=	1.460000e-05
 Freestream velocity:	valUINF		=	50.0
-Gust amplitude:			valGUSTAMP	=	0.5
+Gust amplitude:			valGUSTAMP	=	4.0
 Gust length:			valGUSTL	=	6.00
 
 Reference area:				valAREA 	=	32.00

@@ -1,4 +1,4 @@
-function [inddrag]=fcnDVEINDDRAG(matCOEFF,matDVE,matVLST,matUINF,vecDVEHVSPN,vecDVEHVCRD, vecDVETE,...
+function [inddrag,inddraglift]=fcnDVEINDDRAG(matCOEFF,matDVE,matVLST,matUINF,vecDVEHVSPN,vecDVEHVCRD, vecDVETE,...
     valWNELE, matWDVE, matWVLST, matWCOEFF, vecWK, vecWDVEHVSPN,vecWDVEHVCRD, vecWDVEROLL, vecWDVEPITCH, vecWDVEYAW, vecWDVELESWP, vecWDVETESWP, ...
     valWSIZE, valTIMESTEP,vecSYM,vecDVEWING,vecWDVEWING,temp,flagSTEADY)
 % Induced dve drag. Function finds induced drag values on each te element. Outputs are not
@@ -220,6 +220,11 @@ R(:,:) = R(:,:)+((7.*tempr(:,:,1)-8.*tempr(:,:,2)+7.*tempr(:,:,3)).*repmat(vecDV
 % R(:,3) = R(:,3)+((7.*R1(:,3)-8.*Ro(:,3)+7.*R2(:,3)).*(vecDVEHVSPN(idte)-eta8)./3); %//Rz
 %% FORCES
 % inddrag(:,1) = dot(R,repmat(vecUINF,size(R,1),1),2);
-inddrag(:,1) = dot(R,matUINF(idte,:)./sqrt(sum(matUINF(idte,:).^2,2)),2);
+% inddrag(:,1) = dot(R,matUINF(idte,:)./sqrt(sum(matUINF(idte,:).^2,2)),2);
+% inddrag(:,1) = dot(R,repmat([1 0 0],size(matUINF(idte,1),1),1),2);
+el = [0 0 1];
+ed = [1 0 0];
+inddrag = dot(R,repmat(ed,size(R,1),1),2);
+inddraglift = dot(R,repmat(el,size(R,1),1),2);
 
 end %end function

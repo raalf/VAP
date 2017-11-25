@@ -28,7 +28,7 @@ Geometry
 	Elastic Axis (X_ea):
 		A Coefficient: vec_EA = 0
 		B Coefficient: vec_EA = 0
-		C Coefficient: vec_EA = 0.5
+		C Coefficient: vec_EA = 0.4
 
 	Center of Gravity (X_cg):
 		A Coefficient: vec_CG = 0

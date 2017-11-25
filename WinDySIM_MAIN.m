@@ -36,7 +36,7 @@ disp(' ');
 
 strFILE = 'inputs/WinDySIM_Gust_AIAA.txt';
 strSTRUCT_INPUT = 'inputs/Struct_Input_AIAA.txt';
-strOUTPUTFILE = 'AIAA_EA_50c_20171119';
+strOUTPUTFILE = 'AIAA_EA_40c_4Gust_20171125';
 save_interval = 100; % Interval for how often to save time step data
 
 [flagRELAX, flagSTEADY, flagSTIFFWING, flagGUSTMODE, valAREA, valSPAN,...
@@ -72,7 +72,7 @@ flagPLOTWAKEVEL = 0;
 flagVERBOSE = 0;
 
 save_count = 1; % Initializing counter for incrementing save interval
-valGUSTSTART = 20;
+valGUSTSTART = 45;
 
 %% Discretize geometry into DVEs
 
@@ -123,7 +123,8 @@ for ai = 1:length(seqALPHA)
         % Determining freestream vector
         vecUINF = fcnUINFWING(valALPHA, valBETA, valUINF);
         
-        matUINF = repmat(vecUINF,size(matCENTER,1),1);
+        matUINF0 = repmat(vecUINF,size(matCENTER,1),1);
+        matUINF = matUINF0;
         
         % Initializing wake parameters
         matWAKEGEOM = [];
@@ -185,14 +186,14 @@ for ai = 1:length(seqALPHA)
                 vecEACOEFF, vecCGCOEFF, vecJTCOEFF, vecLMCOEFF, matNPVLST, matNPDVE, vecDVEPANEL, vecN, vecM, vecDVEWING, vecDVEROLL, vecDVEPITCH, vecDVEYAW);
         end
         
-        load('AIAA_EA_50c_20171119.mat');
-%         for valTIMESTEP = 1:valMAXTIME
+%         load('AIAA_EA_30c_4Gust_20171123.mat');
+        for valTIMESTEP = 1:valMAXTIME
 
-        valMAXTIME = 3000;
+%         valMAXTIME = 3000;
             
-        while valTIMESTEP < valMAXTIME
+%         while valTIMESTEP < valMAXTIME
                 
-            valTIMESTEP = valTIMESTEP + 1;
+%             valTIMESTEP = valTIMESTEP + 1;
             %% Timestep to solution
             %   Move wing
             %   Generate new wake elements
@@ -364,7 +365,7 @@ for ai = 1:length(seqALPHA)
                 vecWDVELESWP, vecWDVETESWP, valWSIZE, valTIMESTEP, vecSYM, vecDVETESWP, valAREA, valSPAN, valBETA, ...
                 vecDVEWING, vecWDVEWING, vecN, vecM, vecDVEPANEL, vecDVEAREA, vecSPNWSECRD, vecSPNWSEAREA, matQTRCRD, valDENSITY, valWEIGHT,...
                 vecLEDVES, vecUINF, matSCLST, vecSPANDIST, matNPVLST, matNPDVE, matSC, vecMAC, valCM, valUINF, matAEROCNTR, flagSTIFFWING, temp,...
-                flagSTEADY, gamma_old, dGammadt, valDELTIME, vecWRBM);
+                flagSTEADY, gamma_old, dGammadt, valDELTIME, vecWRBM, matUINF0);
             
             if flagPRINT == 1 && valTIMESTEP == 1
                 fprintf(' TIMESTEP    CL          CDI      Tip Def. (m)       Twist (deg)\n'); %header

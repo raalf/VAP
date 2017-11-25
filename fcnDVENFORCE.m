@@ -1,4 +1,4 @@
-function [nfree,nind,liftfree,liftind,sidefree,sideind,el,gamma_old,dGammadt] = fcnDVENFORCE(matCOEFF...
+function [nfree,nind,liftfree,liftind,sidefree,sideind,el,gamma_old,dGammadt,dragfree,dragind] = fcnDVENFORCE(matCOEFF...
     ,vecK,matDVE,valNELE,matCENTER,matVLST,matUINF,vecDVELESWP,vecDVEMCSWP,vecDVEHVSPN,vecDVEHVCRD,vecDVEROLL,...
     vecDVEPITCH,vecDVEYAW,vecDVELE,matADJE,valWNELE, matWDVE, matWVLST, matWCOEFF, vecWK, vecWDVEHVSPN,vecWDVEHVCRD,...
     vecWDVEROLL, vecWDVEPITCH, vecWDVEYAW, vecWDVELESWP, vecWDVETESWP, valWSIZE, valTIMESTEP, vecSYM, vecDVETESWP,...
@@ -72,6 +72,7 @@ en = tempb.*repmat((1./uxs),1,3);
 
 % the lift direction  eL=Ux[0,1,0]/|Ux[0,1,0]|
 el = [-matUINF(:,3)./sqrt(sum(abs(matUINF).^2,2)) repmat(0,[valNELE,1]) matUINF(:,1)./sqrt(sum(abs(matUINF).^2,2))]; %does this work with beta?
+% el = repmat([0 0 1],size(matUINF,1),1);
 
 % the side force direction eS=UxeL/|UxeL|
 % clear tempa tempb
@@ -212,6 +213,8 @@ r = r + ((7.*tempr(:,:,1) - 8.*tempr(:,:,2) + 7.*tempr(:,:,3)).*repmat((vecDVEHV
 
 % induced normal force
 nind = dot(r,en,2);  %induced normal force
+nind_x = dot(r,repmat([1 0 0],size(r,1),1),2);
+nind_z = dot(r,repmat([0 0 1],size(r,1),1),2);
 
 %lift and side force
 liftfree = nfree.*sqrt(en(:,1).*en(:,1) + en(:,3).*en(:,3)); %does this work with beta?
@@ -220,6 +223,14 @@ liftind = dot(r,el,2);
 
 sidefree = nfree.*en(:,2);
 sideind = dot(r,es,2);
+
+el = repmat([0 0 1],size(r,1),1);
+ed = repmat([1 0 0],size(r,1),1);
+
+liftind = dot(r,el,2);
+dragind = dot(r,ed,2);
+liftfree = nfree.*(en(:,3));
+dragfree = nfree.*(dot(ed,en,2));
 
 % figure(2)
 % hold on
