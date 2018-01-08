@@ -36,7 +36,7 @@ disp(' ');
 
 strFILE = 'inputs/WinDySIM_Gust_AIAA.txt';
 strSTRUCT_INPUT = 'inputs/Struct_Input_AIAA.txt';
-strOUTPUTFILE = 'AIAA_EA_40c_4Gust_20171125';
+strOUTPUTFILE = 'AIAA_EA_30c_Sweep_-4SineGust2_04CL_20171219';
 save_interval = 100; % Interval for how often to save time step data
 
 [flagRELAX, flagSTEADY, flagSTIFFWING, flagGUSTMODE, valAREA, valSPAN,...
@@ -49,7 +49,7 @@ save_interval = 100; % Interval for how often to save time step data
 valSTIFFSTEPS = 0;
 matSCLST = [];
 vecSPANDIST = [];
-matSC = [];
+matSC = [];  
 vecMAC = [];
 matAEROCNTR = [];
 
@@ -72,7 +72,7 @@ flagPLOTWAKEVEL = 0;
 flagVERBOSE = 0;
 
 save_count = 1; % Initializing counter for incrementing save interval
-valGUSTSTART = 45;
+valGUSTSTART = 30;
 
 %% Discretize geometry into DVEs
 
@@ -186,7 +186,7 @@ for ai = 1:length(seqALPHA)
                 vecEACOEFF, vecCGCOEFF, vecJTCOEFF, vecLMCOEFF, matNPVLST, matNPDVE, vecDVEPANEL, vecN, vecM, vecDVEWING, vecDVEROLL, vecDVEPITCH, vecDVEYAW);
         end
         
-%         load('AIAA_EA_30c_4Gust_20171123.mat');
+%         load('outputs/AIAA_EA_40c_Sweep_4Gust_20171126_Timestep_2800.mat');
         for valTIMESTEP = 1:valMAXTIME
 
 %         valMAXTIME = 3000;
@@ -395,11 +395,11 @@ for ai = 1:length(seqALPHA)
         
         %% Viscous wrapper
         
-%         [vecCLv(1,ai), vecCD(1,ai), vecPREQ(1,ai), valVINF(1,ai), valLD(1,ai)] = fcnVISCOUS(vecCL(end,ai), vecCDI(end,ai), ...
-%             valWEIGHT, valAREA, valDENSITY, valKINV, vecDVENFREE, vecDVENIND, ...
-%             vecDVELFREE, vecDVELIND, vecDVESFREE, vecDVESIND, vecDVEPANEL, vecDVELE, vecDVEWING, vecN, vecM, vecDVEAREA, ...
-%             matCENTER, vecDVEHVCRD, vecAIRFOIL, flagVERBOSE, vecSYM, valVSPANELS, matVSGEOM, valFPANELS, matFGEOM, valFTURB, ...
-%             valFPWIDTH, valINTERF, vecDVEROLL);
+        [vecCLv(1,ai), vecCD(1,ai), vecPREQ(1,ai), valVINF(1,ai), valLD(1,ai)] = fcnVISCOUS(vecCL(end,ai), vecCDI(end,ai), ...
+            valWEIGHT, valAREA, valDENSITY, valKINV, vecDVENFREE, vecDVENIND, ...
+            vecDVELFREE, vecDVELIND, vecDVESFREE, vecDVESIND, vecDVEPANEL, vecDVELE, vecDVEWING, vecN, vecM, vecDVEAREA, ...
+            matCENTER, vecDVEHVCRD, vecAIRFOIL, flagVERBOSE, vecSYM, valVSPANELS, matVSGEOM, valFPANELS, matFGEOM, valFTURB, ...
+            valFPWIDTH, valINTERF, vecDVEROLL, vecUINF);
                 
     end
 end
@@ -421,6 +421,10 @@ if flagPLOT == 1
 
 end
 
+figure(1)
+plot(seqALPHA,vecCL(end,:),'LineWidth',1.5)
+hold on
+
 if flagSTIFFWING ~= 1
 figure(3)
 clf
@@ -433,18 +437,25 @@ plot(vecSPANDIST, (180/pi)*matTWISTGLOB(valTIMESTEP,:));
 ylabel('Twist (deg)')
 hold off
 
-figure(4)
+figure(5)
 clf
-subplot(2,1,1)
+subplot(3,1,1)
 plot(valDELTIME*(valGUSTSTART:valTIMESTEP)-valGUSTSTART.*valDELTIME,(180/pi)*matTWISTGLOB(valGUSTSTART:end,end))
 ylabel('Tip Twist (deg)')
 grid on
 box on
 
-subplot(2,1,2)
+subplot(3,1,2)
 plot(valDELTIME*(valGUSTSTART:valTIMESTEP)-valGUSTSTART.*valDELTIME,matDEFGLOB(valGUSTSTART:end,end))
 xlabel('Time (s)')
 ylabel('Tip Deflection (m)')
+grid on
+box on
+
+subplot(3,1,3)
+plot((0:(valMAXTIME-valGUSTSTART-1)).*valDELTIME,integrand_t)
+xlabel('Time (s)')
+ylabel('Instantaneous Drag Reduction')
 grid on
 box on
   

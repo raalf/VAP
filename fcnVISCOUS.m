@@ -1,16 +1,16 @@
 function [valCL, valCD, valPREQ, valVINF, valLD] = fcnVISCOUS(valCL, valCDI, valWEIGHT, valAREA, valDENSITY, valKINV, vecDVENFREE, vecDVENIND, ...
     vecDVELFREE, vecDVELIND, vecDVESFREE, vecDVESIND, vecDVEPANEL, vecDVELE, vecDVEWING, vecN, vecM, vecDVEAREA, ...
     matCENTER, vecDVEHVCRD, vecAIRFOIL, flagVERBOSE, vecSYM, valVSPANELS, matVSGEOM, valFPANELS, matFGEOM, valFTURB, ...
-    valFPWIDTH, valINTERF, vecDVEROLL)
+    valFPWIDTH, valINTERF, vecDVEROLL, vecUINF)
 
-q_inf = valWEIGHT/(valCL*valAREA);
+q_inf = 0.5* sqrt(sum(abs(vecUINF).^2,2)) * sqrt(sum(abs(vecUINF).^2,2));
 valVINF = sqrt(2*q_inf/valDENSITY);
 di = valCDI*valAREA*q_inf;
 
 % Summing freestream and induced forces of each DVE
-vecDVECN = (vecDVENFREE + vecDVENIND);
-vecDVECL = (vecDVELFREE + vecDVELIND);
-vecDVECY = (vecDVESFREE + vecDVESIND);
+vecDVECN = (vecDVENFREE + vecDVENIND)/(q_inf*valAREA);
+vecDVECL = (vecDVELFREE + vecDVELIND)/(q_inf*valAREA);
+vecDVECY = (vecDVESFREE + vecDVESIND)/(q_inf*valAREA);
 
 [ledves, ~, ~] = find(vecDVELE > 0);
 lepanels = vecDVEPANEL(ledves);
