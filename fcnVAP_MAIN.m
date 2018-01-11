@@ -6,7 +6,7 @@ function [vecCLv, vecCD, vecCDI, vecPREQ, valVINF, vecDVEAREA] = fcnVAP_MAIN(fla
 
 warning off
 
-flagPRINT   = 0;
+flagPRINT   = 1;
 % flagPLOT    = 1;
 flagVERBOSE = 0;
 flagPLOTWAKEVEL = 0;
@@ -138,11 +138,13 @@ for ai = 1:length(seqALPHA)
         vecWDVESYM = [];
         vecWDVETIP = [];
         vecWDVEWING = [];
+        gamma_old = [];
+        dGammadt = [];
         
         % Building wing resultant
         [vecR] = fcnRWING(valNELE, 0, matCENTER, matDVENORM, vecUINF, valWNELE, matWDVE, ...
             matWVLST, matWCOEFF, vecWK, vecWDVEHVSPN, vecWDVEHVCRD,vecWDVEROLL, vecWDVEPITCH, vecWDVEYAW, vecWDVELESWP, ...
-            vecWDVETESWP, vecSYM, valWSIZE);
+            vecWDVETESWP, vecSYM, valWSIZE, flagSTEADY);
         
         % Solving for wing coefficients
         [matCOEFF] = fcnSOLVED(matD, vecR, valNELE);
@@ -182,7 +184,7 @@ for ai = 1:length(seqALPHA)
             %% Rebuilding and solving wing resultant
             [vecR] = fcnRWING(valNELE, valTIMESTEP, matCENTER, matDVENORM, vecUINF, valWNELE, matWDVE, ...
                 matWVLST, matWCOEFF, vecWK, vecWDVEHVSPN, vecWDVEHVCRD,vecWDVEROLL, vecWDVEPITCH, vecWDVEYAW, vecWDVELESWP, ...
-                vecWDVETESWP, vecSYM, valWSIZE);
+                vecWDVETESWP, vecSYM, valWSIZE, flagSTEADY);
             
             [matCOEFF] = fcnSOLVED(matD, vecR, valNELE);
             
@@ -198,7 +200,7 @@ for ai = 1:length(seqALPHA)
                     matWVLST, matWDVE, matWDVEMP, matWDVEMPIND, idxWVLST, vecWK] = fcnRELAXWAKE(vecUINF, matCOEFF, matDVE, matVLST, matWADJE, matWCOEFF, ...
                     matWDVE, matWVLST, valDELTIME, valNELE, valTIMESTEP, valWNELE, valWSIZE, vecDVEHVSPN, vecDVEHVCRD, vecDVELESWP, ...
                     vecDVEPITCH, vecDVEROLL, vecDVETESWP, vecDVEYAW, vecK, vecSYM, vecWDVEHVSPN, vecWDVEHVCRD, vecWDVELESWP, vecWDVEPITCH, ...
-                    vecWDVEROLL, vecWDVESYM, vecWDVETESWP, vecWDVETIP, vecWDVEYAW, vecWK, vecWDVEWING);
+                    vecWDVEROLL, vecWDVESYM, vecWDVETESWP, vecWDVETIP, vecWDVEYAW, vecWK, vecWDVEWING, flagSTEADY);
                 
                 % Creating and solving WD-Matrix
                 [matWD, vecWR] = fcnWDWAKE([1:valWNELE]', matWADJE, vecWDVEHVSPN, vecWDVESYM, vecWDVETIP, vecWKGAM);
@@ -212,10 +214,10 @@ for ai = 1:length(seqALPHA)
             %% Forces
             
             [vecCL(valTIMESTEP,ai), vecCLF(valTIMESTEP,ai),vecCLI(valTIMESTEP,ai),vecCDI(valTIMESTEP,ai), vecE(valTIMESTEP,ai), vecDVENFREE, vecDVENIND, ...
-                vecDVELFREE, vecDVELIND, vecDVESFREE, vecDVESIND] = fcnFORCES(matCOEFF, vecK, matDVE, valNELE, matCENTER, matVLST, vecUINF, vecDVELESWP, ...
+                vecDVELFREE, vecDVELIND, vecDVESFREE, vecDVESIND, gamma_old, dGammadt] = fcnFORCES(matCOEFF, vecK, matDVE, valNELE, matCENTER, matVLST, vecUINF, vecDVELESWP, ...
                 vecDVEMCSWP, vecDVEHVSPN, vecDVEHVCRD, vecDVEROLL, vecDVEPITCH, vecDVEYAW, vecDVELE, vecDVETE, matADJE, valWNELE, matWDVE, matWVLST, ...
                 matWCOEFF, vecWK, vecWDVEHVSPN, vecWDVEHVCRD, vecWDVEROLL, vecWDVEPITCH, vecWDVEYAW, vecWDVELESWP, vecWDVETESWP, valWSIZE, valTIMESTEP, ...
-                vecSYM, vecDVETESWP, valAREA, valSPAN, valBETA, vecDVEWING, vecWDVEWING, vecN, vecM, vecDVEPANEL);
+                vecSYM, vecDVETESWP, valAREA, valSPAN, valBETA, vecDVEWING, vecWDVEWING, vecN, vecM, vecDVEPANEL, flagSTEADY, gamma_old, dGammadt, valDELTIME);
             
             if flagPRINT == 1 && valTIMESTEP == 1
                 fprintf(' TIMESTEP    CL          CDI\n'); %header
@@ -229,6 +231,7 @@ for ai = 1:length(seqALPHA)
 %             fprintf('\tCL = %0.5f',vecCL(valTIMESTEP,ai));
 %             fprintf('\tCDi = %0.5f',vecCDI(valTIMESTEP,ai));
         end
+        
         
         %% Viscous wrapper
         
