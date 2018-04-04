@@ -3,21 +3,21 @@ Input file in m/N/sec
 NO TRIM
 Please note that the program uses equal, number and : signs as special recognizers!
 
-Relaxed wake (yes 1, no 0):		flagRELAX =		0
-Steady (1) or unsteady (2):		flagSTEADY =	2
-Stiff (1) or Flexible (2) Wing:	flagSTIFFWING = 2
+Relaxed wake (yes 1, no 0):		flagRELAX =		1
+Steady (1) or unsteady (2):		flagSTEADY =	1
+Stiff (1) or Flexible (2) Wing:	flagSTIFFWING = 1
 Gust Type (0, 1, 2 or 3):		flagGUSTMODE =	0
 
-Max. number of time steps:		valMAXTIME 	=	816
+Max. number of time steps:		valMAXTIME 	=	60
 Min. number of time steps: 		valMINTIME 	= 	0
 Width of each time step (sec):	valDELTIME 	=	0.005
 Convergence delta-span effic.:	valDELTAE 	=	0.000000	(0 if only timestepping)
 
 AOA sequence: 			seqALPHA 	= 	0
 Sideslip angle [deg]:	seqBETA 	=	0.0
-Density:				valDENSITY 	= 	0.0889
+Density:				valDENSITY 	= 	1.225
 Kinematic viscosity:	valKINV		=	1.460000e-05
-Freestream velocity:	valUINF		=	88.0
+Freestream velocity:	valUINF		=	50
 Gust amplitude:			valGUSTAMP	=	0.1
 Gust length:			valGUSTL	=	7.3152
 

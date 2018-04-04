@@ -1,0 +1,50 @@
+Input file for VAP Structural Dynamics Package
+Input file m/N/sec
+Please note that the program uses equal, number and : signs as special recognizers!
+
+Width of each time step (sec):				valSDELTIME 	=	0.0005
+Number of spanwise structural elements:		valNSELE		=	20
+Number of timesteps with no deflections: 	valSTIFFSTEPS	=	30
+Static (0) or Dynamic (1) aeroelasticity:	flagSTATIC		=	1
+
+----------------------
+Stiffness Distribution
+----------------------
+
+	Bending (E*Ix)
+		A Coefficient: vec_EIx = 0
+		B Coefficient: vec_EIx = 0
+		C Coefficient: vec_EIx = 500000
+
+	Torsion (G*Jt):
+		A Coefficient: vec_GJt = 0
+		B Coefficient: vec_GJt = 0
+		C Coefficient: vec_GJt = 500000
+
+--------
+Geometry
+--------
+
+	Elastic Axis (X_ea):
+		A Coefficient: vec_EA = 0
+		B Coefficient: vec_EA = 0
+		C Coefficient: vec_EA = 0.5
+
+	Center of Gravity (X_cg):
+		A Coefficient: vec_CG = 0
+		B Coefficient: vec_CG = 0
+		C Coefficient: vec_CG = 0.5
+
+	Torsion Constant (Jt):
+		A Coefficient: vec_Jt = 0
+		B Coefficient: vec_Jt = 0
+		C Coefficient: vec_Jt = 5.0
+
+-----------------
+Mass Distribution
+-----------------
+
+	Linear Mass (mu):
+		A Coefficient: vec_LM = 0
+		B Coefficient: vec_LM = 0
+		C Coefficient: vec_LM = 10.0

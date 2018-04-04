@@ -34,10 +34,10 @@ disp(' ');
 
 %% Reading in geometry
 
-strFILE = 'inputs/WinDySIM_Gust_AIAA.txt';
-strSTRUCT_INPUT = 'inputs/Struct_Input_AIAA.txt';
-strOUTPUTFILE = 'AIAA_EA_30c_Sweep_-4SineGust2_04CL_20171219';
-save_interval = 100; % Interval for how often to save time step data
+strFILE = 'inputs/WinDySIM_Gust_HALE.txt';
+strSTRUCT_INPUT = 'inputs/Struct_Input_Sailplane.txt';
+strOUTPUTFILE = 'Sailplane_Rigid';
+save_interval = 200; % Interval for how often to save time step data
 
 [flagRELAX, flagSTEADY, flagSTIFFWING, flagGUSTMODE, valAREA, valSPAN,...
     valCMAC, valWEIGHT, valCM, seqALPHA, seqBETA, valKINV, valUINF, valGUSTAMP,...
@@ -72,7 +72,7 @@ flagPLOTWAKEVEL = 0;
 flagVERBOSE = 0;
 
 save_count = 1; % Initializing counter for incrementing save interval
-valGUSTSTART = 30;
+valGUSTSTART = 250;
 
 %% Discretize geometry into DVEs
 
@@ -338,7 +338,7 @@ for ai = 1:length(seqALPHA)
                     matWVLST, matWDVE, matWDVEMP, matWDVEMPIND, idxWVLST, vecWK] = fcnRELAXWAKE(vecUINF, matCOEFF, matDVE, matVLST, matWADJE, matWCOEFF, ...
                     matWDVE, matWVLST, valDELTIME, valNELE, valTIMESTEP, valWNELE, valWSIZE, vecDVEHVSPN, vecDVEHVCRD, vecDVELESWP, ...
                     vecDVEPITCH, vecDVEROLL, vecDVETESWP, vecDVEYAW, vecK, vecSYM, vecWDVEHVSPN, vecWDVEHVCRD, vecWDVELESWP, vecWDVEPITCH, ...
-                    vecWDVEROLL, vecWDVESYM, vecWDVETESWP, vecWDVETIP, vecWDVEYAW, vecWK, vecWDVEWING);
+                    vecWDVEROLL, vecWDVESYM, vecWDVETESWP, vecWDVETIP, vecWDVEYAW, vecWK, vecWDVEWING, flagSTEADY);
                 
                 % Creating and solving WD-Matrix
                 [matWD, vecWR] = fcnWDWAKE([1:valWNELE]', matWADJE, vecWDVEHVSPN, vecWDVESYM, vecWDVETIP, vecWKGAM);
@@ -421,10 +421,6 @@ if flagPLOT == 1
 
 end
 
-figure(1)
-plot(seqALPHA,vecCL(end,:),'LineWidth',1.5)
-hold on
-
 if flagSTIFFWING ~= 1
 figure(3)
 clf
@@ -435,29 +431,31 @@ hold on
 yyaxis right
 plot(vecSPANDIST, (180/pi)*matTWISTGLOB(valTIMESTEP,:));
 ylabel('Twist (deg)')
+grid on
+xlim([0 valSPAN/2])
 hold off
 
-figure(5)
-clf
-subplot(3,1,1)
-plot(valDELTIME*(valGUSTSTART:valTIMESTEP)-valGUSTSTART.*valDELTIME,(180/pi)*matTWISTGLOB(valGUSTSTART:end,end))
-ylabel('Tip Twist (deg)')
-grid on
-box on
-
-subplot(3,1,2)
-plot(valDELTIME*(valGUSTSTART:valTIMESTEP)-valGUSTSTART.*valDELTIME,matDEFGLOB(valGUSTSTART:end,end))
-xlabel('Time (s)')
-ylabel('Tip Deflection (m)')
-grid on
-box on
-
-subplot(3,1,3)
-plot((0:(valMAXTIME-valGUSTSTART-1)).*valDELTIME,integrand_t)
-xlabel('Time (s)')
-ylabel('Instantaneous Drag Reduction')
-grid on
-box on
+% figure(5)
+% clf
+% subplot(3,1,1)
+% plot(valDELTIME*(valGUSTSTART:valTIMESTEP)-valGUSTSTART.*valDELTIME,(180/pi)*matTWISTGLOB(valGUSTSTART:end,end))
+% ylabel('Tip Twist (deg)')
+% grid on
+% box on
+% 
+% subplot(3,1,2)
+% plot(valDELTIME*(valGUSTSTART:valTIMESTEP)-valGUSTSTART.*valDELTIME,matDEFGLOB(valGUSTSTART:end,end))
+% xlabel('Time (s)')
+% ylabel('Tip Deflection (m)')
+% grid on
+% box on
+% 
+% subplot(3,1,3)
+% plot((0:(valMAXTIME-valGUSTSTART-1)).*valDELTIME,integrand_t)
+% xlabel('Time (s)')
+% ylabel('Instantaneous Drag Reduction')
+% grid on
+% box on
   
 end
 
