@@ -4,28 +4,28 @@ NO TRIM
 Please note that the program uses equal, number and : signs as special recognizers!
 
 Relaxed wake (yes 1, no 0):		flagRELAX =		0
-Steady (1) or unsteady (2):		flagSTEADY =	1
+Steady (1) or unsteady (2):		flagSTEADY =	2
 Stiff (1) or Flexible (2) Wing:	flagSTIFFWING = 2
-Gust Type (0, 1, 2 or 3):		flagGUSTMODE =	0
+Gust Type (0, 1, 2 or 3):		flagGUSTMODE =	1
 
-Max. number of time steps:		valMAXTIME 	=	300
+Max. number of time steps:		valMAXTIME 	=	450
 Min. number of time steps: 		valMINTIME 	= 	0
-Width of each time step (sec):	valDELTIME 	=	0.05
+Width of each time step (sec):	valDELTIME 	=	0.005
 Convergence delta-span effic.:	valDELTAE 	=	0.000000	(0 if only timestepping)
 
-AOA sequence: 			seqALPHA 	= 	5.0
+AOA sequence: 			seqALPHA 	= 	0.0
 Sideslip angle [deg]:	seqBETA 	=	0.0
 Density:				valDENSITY 	= 	1.056
 Kinematic viscosity:	valKINV		=	1.460000e-05
 Freestream velocity:	valUINF		=	30.0
-Gust amplitude:			valGUSTAMP	=	0.1
-Gust length:			valGUSTL	=	7.3152
+Gust amplitude:			valGUSTAMP	=	3.0
+Gust length:			valGUSTL	=	10.0
 
 Reference area:				valAREA 	=	15.0
 Reference span:				valSPAN 	=	20.0
 Mean aerodynamic chord: 	valCMAC 	=	1
 Aircraft weight (N):		valWEIGHT 	=	4905
-Pitching Moment Coeff.:		valCM 		=	0.00
+Pitching Moment Coeff.:		valCM 		=	-0.1
 
 No. of panels:	valPANELS =	1
 
@@ -33,13 +33,13 @@ Defines leading edge of wing, all measured in metres:
 Keep vecM the same for all panels on a wing!
 
 Panel #:1. 
-Number of spanwise elements:	vecN 		= 16.
-Number of chordwise elements: 	vecM 		= 1.
-Airfoil number: 				vecAIRFOIL 	= 1
+Number of spanwise elements:	vecN 		= 12.
+Number of chordwise elements: 	vecM 		= 5.
+Airfoil number: 				vecAIRFOIL 	= 6
 Symmetry edge (0, 1 or 2): 		vecSYM 		= 1;
 xleft		yleft		zleft		chord		epsilon
-0.0000000	0.000000	0.0000000	1.000000	2.000000
-0.2500000	10.00000	0.0000000	0.500000	2.000000
+0.0000000	0.000000	0.0000000	1.000000	7.0000000
+0.2500000	10.00000	0.0000000	0.500000	7.0000000
 
 %<- special identifier
 Vertical tail information:

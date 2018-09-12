@@ -1,4 +1,4 @@
-function [matVLST, matCENTER, matNEWWAKE, matNPNEWWAKE, matNTVLST, matNPVLST, uinf] = fcnMOVEWING(valALPHA, valBETA, valDELTIME, matVLST, matCENTER, matDVE, vecDVETE, matNTVLST, matNPVLST, vecCL, valWEIGHT, valAREA, valDENSITY, valTIMESTEP, valUINF, matUINF)
+function [matVLST, matCENTER, matNEWWAKE, matNPNEWWAKE, matNTVLST, matNPVLST, uinf] = fcnMOVEWING(valALPHA, valBETA, valDELTIME, matVLST, matCENTER, matDVE, vecDVETE, matNTVLST, matNPVLST, vecCL, valWEIGHT, valAREA, valDENSITY, valTIMESTEP, valUINF, matUINF, matUINF_VLST, matUINF_NTVLST, matUINF_NPVLST, vecN, vecM)
 % This function moves a wing (NOT rotor) by translating all of the vertices
 % in the VLST and the in-centers of each triangle in CENTER.
 
@@ -30,7 +30,16 @@ function [matVLST, matCENTER, matNEWWAKE, matNPNEWWAKE, matNTVLST, matNPVLST, ui
 
 % uinf = [uinf*cos(valALPHA)*cos(valBETA) uinf*sin(valBETA) uinf*sin(valALPHA)*cos(valBETA)];
 
-translation = valDELTIME.*matUINF(1,:);
+% translation = valDELTIME.*matUINF(1,:);
+
+translation_center = valDELTIME.*matUINF;
+
+translation_vlst = valDELTIME.*matUINF_VLST;
+
+translation_ntvlst = valDELTIME.*matUINF_NTVLST;
+
+translation_npvlst = valDELTIME.*matUINF_NPVLST;
+        
 
 % Old trailing edge vertices
 matNEWWAKE(:,:,4) = matVLST(matDVE(vecDVETE>0,4),:);
@@ -40,12 +49,11 @@ matNEWWAKE(:,:,3) = matVLST(matDVE(vecDVETE>0,3),:);
 matNPNEWWAKE(:,:,4) = matNTVLST(matDVE(vecDVETE>0,4),:);
 matNPNEWWAKE(:,:,3) = matNTVLST(matDVE(vecDVETE>0,3),:);
 
-matVLST = matVLST - repmat(translation, length(matVLST(:,1)), 1);
-matCENTER = matCENTER - repmat(translation, length(matCENTER(:,1)), 1);
+matVLST = matVLST - translation_vlst;
+matCENTER = matCENTER - translation_center;
+matNTVLST = matNTVLST - translation_ntvlst;
 
-matNTVLST = matNTVLST - repmat(translation, length(matNTVLST(:,1)), 1);
-
-matNPVLST = matNPVLST - repmat(translation, length(matNPVLST(:,1)), 1);
+matNPVLST = matNPVLST - translation_npvlst;
 
 % New trailing edge vertices
 matNEWWAKE(:,:,1) = matVLST(matDVE(vecDVETE>0,4),:);

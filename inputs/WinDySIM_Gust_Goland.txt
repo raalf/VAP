@@ -8,7 +8,7 @@ Steady (1) or unsteady (2):		flagSTEADY =	2
 Stiff (1) or Flexible (2) Wing:	flagSTIFFWING = 2
 Gust Type (0, 1, 2 or 3):		flagGUSTMODE =	2
 
-Max. number of time steps:		valMAXTIME 	=	200
+Max. number of time steps:		valMAXTIME 	=	600
 Min. number of time steps: 		valMINTIME 	= 	0
 Width of each time step (sec):	valDELTIME 	=	0.001
 Convergence delta-span effic.:	valDELTAE 	=	0.000000	(0 if only timestepping)
@@ -18,37 +18,28 @@ Sideslip angle [deg]:	seqBETA 	=	0.0
 Density:				valDENSITY 	= 	1.225
 Kinematic viscosity:	valKINV		=	1.460000e-05
 Freestream velocity:	valUINF		=	100.0
-Gust amplitude:			valGUSTAMP	=	10.0
+Gust amplitude:			valGUSTAMP	=	0.1
 Gust length:			valGUSTL	=	7.3152
 
-Reference area:				valAREA 	=	11.148
-Reference span:				valSPAN 	=	6.096
+Reference area:				valAREA 	=	22.296
+Reference span:				valSPAN 	=	12.192
 Mean aerodynamic chord: 	valCMAC 	=	1
 Aircraft weight (N):		valWEIGHT 	=	3434
 Pitching Moment Coeff.:		valCM 		=	0.00
 
-No. of panels:	valPANELS =	2
+No. of panels:	valPANELS =	1
 
 Defines leading edge of wing, all measured in metres:
 Keep vecM the same for all panels on a wing!
 
 Panel #:1. 
-Number of spanwise elements:	vecN 		= 6.
-Number of chordwise elements: 	vecM 		= 6.
+Number of spanwise elements:	vecN 		= 12.
+Number of chordwise elements: 	vecM 		= 8.
 Airfoil number: 				vecAIRFOIL 	= 1
 Symmetry edge (0, 1 or 2): 		vecSYM 		= 1;
 xleft		yleft		zleft		chord		epsilon
-0.0000000	0.000000	0.0000000	1.828800	0.00100
-0.0000000	1.524000	0.0000000	1.828800	0.00100
-
-Panel #:2. 
-Number of spanwise elements:	vecN 		= 6.
-Number of chordwise elements: 	vecM 		= 6.
-Airfoil number: 				vecAIRFOIL 	= 1
-Symmetry edge (0, 1 or 2): 		vecSYM 		= 0;
-xleft		yleft		zleft		chord		epsilon
-0.0000000	1.524000	0.0000000	1.828800	0.00100
-0.0000000	3.048000	0.0000000	1.828800	0.00100
+0.0000000	0.000000	0.0000000	1.828800	0.00000
+0.0000000	6.096000	0.0000000	1.828800	0.00000
 
 %<- special identifier
 Vertical tail information:

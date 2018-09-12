@@ -66,9 +66,9 @@ vecLM = vecLMCOEFF(1).*vecSPANDIST.^2 + vecLMCOEFF(2).*vecSPANDIST + vecLMCOEFF(
 
 % Determining X,Y,Z location of elastic axis (shear center) and center of
 % mass (CG)
-tempEA = [vecEA, zeros(length(vecEA),2)]; % Distance to EA from LE in local coordinates
+tempEA = [vecEA.*tempDVEEDGECRD(:,1), zeros(length(vecEA),2)]; % Distance to EA from LE in local coordinates
 
-tempCG = [vecCG, zeros(length(vecCG),2)]; % Distance to CG from LE in local coordinates
+tempCG = [vecCG.*tempDVEEDGECRD(:,1), zeros(length(vecCG),2)]; % Distance to CG from LE in local coordinates
 
 matCG = fcnSTARGLOB(tempCG,[vecDVEROLL(matROWS(:,1));vecDVEROLL(matROWS(end,1))],[vecDVEPITCH(matROWS(:,1));vecDVEPITCH(matROWS(end,1))],[vecDVEYAW(matROWS(:,1));vecDVEYAW(matROWS(end,1))]); % Transform to global coordinates
 

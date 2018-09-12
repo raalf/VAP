@@ -1,22 +1,13 @@
 clear cd cd_t sectionCL
-load naca2412Mike.dat
+% load naca2412Mike.dat
 
-end_time = valMAXTIME-valGUSTSTART;
+valTIMEPER = ceil((valGUSTL/valUINF)/valDELTIME); % Number of time steps for one gust period
 
-for t=1:end_time
-    
-    sectionCL(t,1) = 0.75*vecCL(t-1+valGUSTSTART)./12;
-    cd_t(t,1) = linterp(naca2412Mike(:,2),naca2412Mike(:,3),sectionCL(t,1));
-    
-end
+int_stop = 3*valTIMEPER + valGUSTSTART; % Time step to stop time integration
 
-cd = mean(cd_t);
-cdtotal0 = cd + vecCDI(valGUSTSTART);
-cdi = mean(vecCDI(valGUSTSTART:end));
-cdtotal = cd + cdi;
+CD0 = vecCD(valGUSTSTART); % Reference total drag coefficient
+CD = mean(vecCD(valGUSTSTART:int_stop));
 
-cdtotal_t = cd_t + vecCDI(valGUSTSTART:end-1);
-cdtotal0_t = repmat(cdtotal0,size(cdtotal_t,1),1);
-integrand_t = (cdtotal_t-cdtotal0_t)./cdtotal0_t;
+integrand_t = (vecCD(valGUSTSTART:int_stop)-CD0)./CD0;
 
-reduction = (cdtotal-cdtotal0)/cdtotal0
+reduction = (CD - CD0)/CD0

@@ -34,9 +34,9 @@ disp(' ');
 
 %% Reading in geometry
 
-strFILE = 'inputs/WinDySIM_Gust_HALE.txt';
+strFILE = 'inputs/WinDySIM_Gust_Sailplane.txt';
 strSTRUCT_INPUT = 'inputs/Struct_Input_Sailplane.txt';
-strOUTPUTFILE = 'Sailplane_Rigid';
+strOUTPUTFILE = 'Sailplane_Constant_0.3c_3mps';
 save_interval = 200; % Interval for how often to save time step data
 
 [flagRELAX, flagSTEADY, flagSTIFFWING, flagGUSTMODE, valAREA, valSPAN,...
@@ -72,7 +72,7 @@ flagPLOTWAKEVEL = 0;
 flagVERBOSE = 0;
 
 save_count = 1; % Initializing counter for incrementing save interval
-valGUSTSTART = 250;
+valGUSTSTART = 200;
 
 %% Discretize geometry into DVEs
 
@@ -124,7 +124,13 @@ for ai = 1:length(seqALPHA)
         vecUINF = fcnUINFWING(valALPHA, valBETA, valUINF);
         
         matUINF0 = repmat(vecUINF,size(matCENTER,1),1);
+        matUINF0_VLST = repmat(vecUINF,size(matVLST,1),1);
+        matUINF0_NTVLST = repmat(vecUINF,size(matNTVLST,1),1);
+        matUINF0_NPVLST = repmat(vecUINF,size(matNPVLST,1),1);
         matUINF = matUINF0;
+        matUINF_VLST = matUINF0_VLST;
+        matUINF_NTVLST = matUINF0_NTVLST;
+        matUINF_NPVLST = matUINF0_NPVLST;
         
         % Initializing wake parameters
         matWAKEGEOM = [];
@@ -164,6 +170,9 @@ for ai = 1:length(seqALPHA)
         vecMOMSTATIC = [];
         valGUSTTIME = 1;
         gust_vel_old = zeros(valNELE,1);
+        gust_vel_old_vlst = zeros(size(matVLST,1),1);
+        gust_vel_old_ntvlst = zeros(size(matNTVLST,1),1);
+        gust_vel_old_npvlst = zeros(size(matNPVLST,1),1);
         zvel = zeros(valNELE,1);
         
         % Initialize unsteady aero terms
@@ -186,10 +195,10 @@ for ai = 1:length(seqALPHA)
                 vecEACOEFF, vecCGCOEFF, vecJTCOEFF, vecLMCOEFF, matNPVLST, matNPDVE, vecDVEPANEL, vecN, vecM, vecDVEWING, vecDVEROLL, vecDVEPITCH, vecDVEYAW);
         end
         
-%         load('outputs/AIAA_EA_40c_Sweep_4Gust_20171126_Timestep_2800.mat');
+%         load('outputs/Goland_Wing_Validation_5_Timestep_2000.mat');
         for valTIMESTEP = 1:valMAXTIME
 
-%         valMAXTIME = 3000;
+%         valMAXTIME = 2400;
             
 %         while valTIMESTEP < valMAXTIME
                 
@@ -213,9 +222,9 @@ for ai = 1:length(seqALPHA)
             if valTIMESTEP <= valSTIFFSTEPS || flagSTIFFWING == 1
 
                 [matVLST, matCENTER, matNEWWAKE, matNPNEWWAKE, matNTVLST, matNPVLST, matDEFGLOB, matTWISTGLOB, valUINF, valGUSTTIME, matUINF, flagSTEADY,...
-                    gust_vel_old] = fcnSTIFFWING(valALPHA, valBETA, valDELTIME, matVLST, matCENTER, matDVE, vecDVETE, matNTVLST, matNPVLST, vecN,...
+                    gust_vel_old, gust_vel_old_vlst, gust_vel_old_ntvlst, gust_vel_old_npvlst] = fcnSTIFFWING(valALPHA, valBETA, valDELTIME, matVLST, matCENTER, matDVE, vecDVETE, matNTVLST, matNPVLST, vecN,...
                     valTIMESTEP, vecCL, valWEIGHT, valAREA, valDENSITY, valUINF, valGUSTTIME, valGUSTL, valGUSTAMP, flagGUSTMODE, valGUSTSTART,...
-                    flagSTEADY, matUINF, gust_vel_old);
+                    flagSTEADY, matUINF, matUINF_VLST, matUINF_NTVLST, matUINF_NPVLST, gust_vel_old, gust_vel_old_vlst, gust_vel_old_ntvlst, gust_vel_old_npvlst, vecM);
                 
                 % Only update structure position if flex wing case is selected
                 if flagSTIFFWING == 2
@@ -367,6 +376,13 @@ for ai = 1:length(seqALPHA)
                 vecLEDVES, vecUINF, matSCLST, vecSPANDIST, matNPVLST, matNPDVE, matSC, vecMAC, valCM, valUINF, matAEROCNTR, flagSTIFFWING, temp,...
                 flagSTEADY, gamma_old, dGammadt, valDELTIME, vecWRBM, matUINF0);
             
+            [vecCLv(1,ai), vecCD(valTIMESTEP,ai), vecPREQ(1,ai), valVINF(1,ai), valLD(1,ai)] = fcnVISCOUS(vecCL(end,ai), vecCDI(end,ai), ...
+                valWEIGHT, valAREA, valDENSITY, valKINV, vecDVENFREE, vecDVENIND, ...
+                vecDVELFREE, vecDVELIND, vecDVESFREE, vecDVESIND, vecDVEPANEL, vecDVELE, vecDVEWING, vecN, vecM, vecDVEAREA, ...
+                matCENTER, vecDVEHVCRD, vecAIRFOIL, flagVERBOSE, vecSYM, valVSPANELS, matVSGEOM, valFPANELS, matFGEOM, valFTURB, ...
+                valFPWIDTH, valINTERF, vecDVEROLL, vecUINF);
+
+            
             if flagPRINT == 1 && valTIMESTEP == 1
                 fprintf(' TIMESTEP    CL          CDI      Tip Def. (m)       Twist (deg)\n'); %header
                 fprintf('----------------------------------------------------------------\n'); 
@@ -395,11 +411,11 @@ for ai = 1:length(seqALPHA)
         
         %% Viscous wrapper
         
-        [vecCLv(1,ai), vecCD(1,ai), vecPREQ(1,ai), valVINF(1,ai), valLD(1,ai)] = fcnVISCOUS(vecCL(end,ai), vecCDI(end,ai), ...
-            valWEIGHT, valAREA, valDENSITY, valKINV, vecDVENFREE, vecDVENIND, ...
-            vecDVELFREE, vecDVELIND, vecDVESFREE, vecDVESIND, vecDVEPANEL, vecDVELE, vecDVEWING, vecN, vecM, vecDVEAREA, ...
-            matCENTER, vecDVEHVCRD, vecAIRFOIL, flagVERBOSE, vecSYM, valVSPANELS, matVSGEOM, valFPANELS, matFGEOM, valFTURB, ...
-            valFPWIDTH, valINTERF, vecDVEROLL, vecUINF);
+%         [vecCLv(1,ai), vecCD(1,ai), vecPREQ(1,ai), valVINF(1,ai), valLD(1,ai)] = fcnVISCOUS(vecCL(end,ai), vecCDI(end,ai), ...
+%             valWEIGHT, valAREA, valDENSITY, valKINV, vecDVENFREE, vecDVENIND, ...
+%             vecDVELFREE, vecDVELIND, vecDVESFREE, vecDVESIND, vecDVEPANEL, vecDVELE, vecDVEWING, vecN, vecM, vecDVEAREA, ...
+%             matCENTER, vecDVEHVCRD, vecAIRFOIL, flagVERBOSE, vecSYM, valVSPANELS, matVSGEOM, valFPANELS, matFGEOM, valFTURB, ...
+%             valFPWIDTH, valINTERF, vecDVEROLL, vecUINF);
                 
     end
 end
@@ -435,21 +451,21 @@ grid on
 xlim([0 valSPAN/2])
 hold off
 
-% figure(5)
-% clf
+figure(10)
+clf
 % subplot(3,1,1)
-% plot(valDELTIME*(valGUSTSTART:valTIMESTEP)-valGUSTSTART.*valDELTIME,(180/pi)*matTWISTGLOB(valGUSTSTART:end,end))
-% ylabel('Tip Twist (deg)')
-% grid on
-% box on
-% 
-% subplot(3,1,2)
-% plot(valDELTIME*(valGUSTSTART:valTIMESTEP)-valGUSTSTART.*valDELTIME,matDEFGLOB(valGUSTSTART:end,end))
-% xlabel('Time (s)')
-% ylabel('Tip Deflection (m)')
-% grid on
-% box on
-% 
+plot(valDELTIME*(valGUSTSTART:valTIMESTEP)-valGUSTSTART.*valDELTIME,(180/pi)*matTWISTGLOB(valGUSTSTART:end,end)-(180/pi)*matTWISTGLOB(valGUSTSTART,end))
+ylabel('Tip Twist (deg)')
+grid on
+box on
+
+subplot(3,1,2)
+plot(valDELTIME*(valGUSTSTART:valTIMESTEP)-valGUSTSTART.*valDELTIME,matDEFGLOB(valGUSTSTART:end,end))
+xlabel('Time (s)')
+ylabel('Tip Deflection (m)')
+grid on
+box on
+
 % subplot(3,1,3)
 % plot((0:(valMAXTIME-valGUSTSTART-1)).*valDELTIME,integrand_t)
 % xlabel('Time (s)')

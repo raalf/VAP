@@ -31,10 +31,10 @@ ntind(2) = 0;
 ntfree(1) = sum(liftfree);
 ntfree(2) = sum(sidefree);
 
-ntind(1) = sum(liftind);
+ntind(1) = sum(liftind) + sum(inddraglift);
 ntind(2) = sum(sideind);
 
-inddrag = sum(inddrag);
+inddrag = sum(inddrag) + sum(dragind) + sum(dragfree);
 %double the force if we are using symmetry. This only works with sym for
 %the whole system
 if any(vecSYM) == 1 && valBETA ==0 %not sure why beta has to be zero 

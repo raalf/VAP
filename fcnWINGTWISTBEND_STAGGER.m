@@ -54,16 +54,16 @@ valSTRUCTDELTIME = valSDELTIME;
 
 %% Interpolate values at structural grid points
 
-[matEIx_interp(:,1)] = linterp(vecSPANDIST,matEIx(:,1)',temp_y);
-[matEIx_interp(:,2)] = linterp(vecSPANDIST,matEIx(:,2)',temp_y);
-[matEIx_interp(:,3)] = linterp(vecSPANDIST,matEIx(:,3)',temp_y);
-[matGJt_interp(:,1)] = linterp(vecSPANDIST,matGJt(:,1)',temp_y);
-[matGJt_interp(:,2)] = linterp(vecSPANDIST,matGJt(:,2)',temp_y);
-[vecLM] = linterp(vecSPANDIST,vecLM',temp_y);
-[vecJT] = linterp(vecSPANDIST,vecJT',temp_y);
-[vecLSM] = linterp(vecSPANDIST,vecLSM',temp_y);
-[vecLIFTDIST] = linterp(vecSPANDIST,vecLIFTDIST,temp_y);
-[vecMOMDIST] = linterp(vecSPANDIST,vecMOMDIST',temp_y);
+[matEIx_interp(:,1)] = interp1(vecSPANDIST,matEIx(:,1)',temp_y);
+[matEIx_interp(:,2)] = interp1(vecSPANDIST,matEIx(:,2)',temp_y);
+[matEIx_interp(:,3)] = interp1(vecSPANDIST,matEIx(:,3)',temp_y);
+[matGJt_interp(:,1)] = interp1(vecSPANDIST,matGJt(:,1)',temp_y);
+[matGJt_interp(:,2)] = interp1(vecSPANDIST,matGJt(:,2)',temp_y);
+[vecLM] = interp1(vecSPANDIST,vecLM',temp_y);
+[vecJT] = interp1(vecSPANDIST,vecJT',temp_y);
+[vecLSM] = interp1(vecSPANDIST,vecLSM',temp_y);
+[vecLIFTDIST] = interp1(vecSPANDIST,vecLIFTDIST,temp_y);
+[vecMOMDIST] = interp1(vecSPANDIST,vecMOMDIST',temp_y);
 
 % vecLSM = -vecLSM;
 matEIx = matEIx_interp;
@@ -96,7 +96,7 @@ vecDEF(3) = 0; % Zero deflection at root BC
 vecTWIST(3) = 0; % Zero twist at root BC
 
 % Assemble load matrix
-matLOAD = [vecLIFTDIST' - vecLM'.*9.81, vecMOMDIST' + vecLSM'.*vecLM'.*9.81];
+matLOAD = [vecLIFTDIST - vecLM.*9.81, vecMOMDIST + vecLSM.*vecLM.*9.81];
 % matLOAD = [vecLIFTDIST', vecMOMDIST'];
 % matLOAD(end,:) = [0,0]; 
 
@@ -111,7 +111,7 @@ for yy = 4:(valNSELE+2)
     matK_1 = [matEIx(yy-2,3), 0; 0, 0];
     matK_2 = [matEIx(yy-2,2), 0; 0, -matGJt(yy-2,2)];
     matK_3 = [matEIx(yy-2,1), 0; 0, -matGJt(yy-2,1)];
-    matB = [50 0; 0 100];
+    matB = [100 0; 0 200];
 
     %% Finite difference relations for partial derivatives
 
@@ -171,10 +171,10 @@ vecTWIST = matTWIST(end,:);
 vecSLOPE = [0; vecSLOPE'];
 
 % Spanwise deflection and twist wrt to global timestep
-matDEFGLOB(valTIMESTEP,:) = linterp(temp_y,matDEF(valSTRUCTTIME,3:end-1),vecSPANDIST);
-matTWISTGLOB(valTIMESTEP,:) = linterp(temp_y,matTWIST(valSTRUCTTIME,3:end-1),vecSPANDIST);
+matDEFGLOB(valTIMESTEP,:) = interp1(temp_y,matDEF(valSTRUCTTIME,3:end-1),vecSPANDIST);
+matTWISTGLOB(valTIMESTEP,:) = interp1(temp_y,matTWIST(valSTRUCTTIME,3:end-1),vecSPANDIST);
 
-matSLOPE(valTIMESTEP,:) = linterp(temp_y(1:end-1),vecSLOPE,vecSPANDIST(1:end-1));
+matSLOPE(valTIMESTEP,:) = interp1(temp_y(1:end-1),vecSLOPE,vecSPANDIST(1:end-1));
 
 
 end
