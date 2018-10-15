@@ -45,7 +45,7 @@ epsilon = reshape(epsilon',2,len-1);
 
 %% Output the 
 for i = 1:(len-1)
-test = fprintf('Panel #:%d\nNumber of spanwise elembers:\tvecN\t\t= 1\nNumber of chordwise elements:\tvecM\t\t= 1\nAirfoil number:\t\t\t\t\tvecAIRFOIL\t= 1;\nSymmetry edge (0,1 or 2):\t\tvecSYM\t\t= 0;\nx\t\t\ty\t\t\tz\t\t\tchord\t\tepsilon\n%f\t%f\t%f\t%f\t%f\n%f\t%f\t%f\t%f\t%f\n\n',i,x(1,i),y(1,i),z(1,i),c(1,i),epsilon(1,i),x(2,i),y(2,i),z(2,i),c(2,i),epsilon(2,i));
+test = fprintf('Panel #:%d\nNumber of spanwise elembers:\tvecN\t\t= 1\nNumber of chordwise elements:\tvecM\t\t= 1\nAirfoil number:\t\t\t\t\tvecAIRFOIL\t= 1;\nx\t\t\ty\t\t\tz\t\t\tchord\t\tbeta\n%f\t%f\t%f\t%f\t%f\n%f\t%f\t%f\t%f\t%f\n\n',i,x(1,i),y(1,i),z(1,i),c(1,i),epsilon(1,i),x(2,i),y(2,i),z(2,i),c(2,i),epsilon(2,i));
 end
 
 figure(1)

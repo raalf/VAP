@@ -58,7 +58,6 @@ tempROTATE(3,:,:) = reshape(tempLOW',[1, 3, valNUMB-1]);
 % 2D rotation matrix
 tempROTATE2D = (reshape(permute(tempROTATE,[2,1,3]),[3 (valNUMB-1)*3]))';
 
-
 %% Parameters the must Rotate
 % Make Each point relative to rotation axis
 % tempCENTER = matCENTER - vecROTAX;
@@ -92,7 +91,7 @@ end
 for i = 1:size(matDVE,1)
     for j = 1:size(matDVE,2)
         tempVLST = matVLST(matDVE(i,j),:);
-        idx = (sum(tempVLST(1,:) == matNEWVLST0(:,:),2) == 3);
+        idx = (sum(repmat(tempVLST(1,:),[size(matNEWVLST0(:,:),1),1]) == matNEWVLST0(:,:),2) == 3);
         matNEWDVE0(i,j) = find(idx == 1);
     end
 end
@@ -106,7 +105,7 @@ for i = 1:valNUMRO
     idxDVEBLADE = vecDVEWING==i;
     matDVEBLADE = matNEWDVE0(idxDVEBLADE,:);
     [idxVLSTBLADE,~,~] = unique(matDVEBLADE); % This line is critical thanks to T.D.K.
-    vecROTAX = matROTAX(i,:);
+    vecROTAX = repmat(matROTAX(i,:),[size(idxVLSTBLADE,1),1]);
     
     tempVLST = matNEWVLST0(idxVLSTBLADE,:) - vecROTAX;
     tempNPVLST = matNEWNPVLST0(idxVLSTBLADE,:) - vecROTAX;
@@ -204,7 +203,7 @@ vecDVEVLSTROTOR = zeros(size(matNEWVLST,1),1);
 for i = 1:size(matNEWDVE,1)
     for j = 1:size(matNEWDVE,2)
         tempVLST = matNEWVLST(matNEWDVE(i,j),:);
-        idx = (sum(tempVLST(1,:) == matNEWVLST(:,:),2) == 3);
+        idx = (sum(repmat(tempVLST(1,:),[size(matNEWVLST(:,:),1),1]) == matNEWVLST(:,:),2) == 3);
         vecDVEVLSTROTOR(idx) = vecDVEROTOR(i);
     end
 end

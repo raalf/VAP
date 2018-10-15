@@ -13,7 +13,7 @@ function [nfreecs,thrustCFfree, axialCFfree, sideCFfree] = fcnRCROSSFLOWFORCE(va
 tempCPLE = matVLST(matDVE(:,1),:)+(matVLST(matDVE(:,2),:)-matVLST(matDVE(:,1),:))/2;
 tempCPTE = matVLST(matDVE(:,3),:)+(matVLST(matDVE(:,4),:)-matVLST(matDVE(:,3),:))/2;
 % Create Xi unit vectors at control points
-matXi = (tempCPLE-tempCPTE)./(2*vecDVEHVCRD);
+matXi = (tempCPLE-tempCPTE)./repmat((2*vecDVEHVCRD),[1,3]);
 
 % UxXi
 tempb = cross(matUINF,matXi);

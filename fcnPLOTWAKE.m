@@ -2,7 +2,7 @@ function [hFig2] = fcnPLOTWAKE(verbose, hFig2, valWNELE, matWDVE, matWVLST, matW
 
 fig = hFig2;
 
-patch('Faces',matWDVE,'Vertices',matWVLST,'FaceColor','b')
+patch('Faces',matWDVE,'Vertices',matWVLST,'FaceColor',[0.3,0.3,0.3])
 hold on
 
 alpha(0.5)

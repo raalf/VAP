@@ -21,15 +21,15 @@ disp(' ');
 
 %% User Inputs
 % strFILE is a string with the input filename
-% strFILE = 'inputs/TMotor.txt';
-strFILE = 'inputs/TMotorQuad.txt';
+strFILE = 'inputs/TMotor.txt';
+% strFILE = 'inputs/TMotorQuad.txt';
 
 % Optional flags for more options
 flagVISCOUS = 1; % Apply viscous effects
-flagPRINT   = 1; % Print out results into command window
-flagPLOT    = 1; % Plot the rotor at the end of the run
+flagPRINT   = 0; % Print out results into command window
+flagPLOT    = 0; % Plot the rotor at the end of the run
 flagVERBOSE = 0; % Add numbers to plot
-flagPROGRESS = 1; % Use a progress bar when running performance sweeps
+flagPROGRESS = 0; % Use a progress bar when running performance sweeps
 flagHOVERWAKE = 1; % Propogate wake downward in hover simulations
 flagSAVE = 1; % Save results
 filename = 'Results'; % Save workspace name
@@ -80,20 +80,20 @@ valWSIZE = length(nonzeros(vecDVETE)); % Amount of wake DVEs shed each timestep
 
 %% Performance sweeps
 % Preallocating for a turbo-boost in performance
-OUTPUT.CT = zeros(valMAXTIME,valNUMRO,length(seqJ),length(seqALPHAR));
-OUTPUT.CP = zeros(valMAXTIME,valNUMRO,length(seqJ),length(seqALPHAR));
-OUTPUT.CFx = zeros(valMAXTIME,valNUMRO,length(seqJ),length(seqALPHAR));
-OUTPUT.CFy = zeros(valMAXTIME,valNUMRO,length(seqJ),length(seqALPHAR));
-OUTPUT.CQ = zeros(valMAXTIME,valNUMRO,length(seqJ),length(seqALPHAR));
-OUTPUT.CMx = zeros(valMAXTIME,valNUMRO,length(seqJ),length(seqALPHAR));
-OUTPUT.CMy = zeros(valMAXTIME,valNUMRO,length(seqJ),length(seqALPHAR));
-OUTPUT.matCTTIMESTEP = zeros(valMAXTIME,valNUMRO,length(seqJ),length(seqALPHAR));
-OUTPUT.matCPTIMESTEP = zeros(valMAXTIME,valNUMRO,length(seqJ),length(seqALPHAR));
-OUTPUT.matCFxTIMESTEP = zeros(valMAXTIME,valNUMRO,length(seqJ),length(seqALPHAR));
-OUTPUT.matCFyTIMESTEP = zeros(valMAXTIME,valNUMRO,length(seqJ),length(seqALPHAR));
-OUTPUT.matCQTIMESTEP = zeros(valMAXTIME,valNUMRO,length(seqJ),length(seqALPHAR));
-OUTPUT.matCMxTIMESTEP = zeros(valMAXTIME,valNUMRO,length(seqJ),length(seqALPHAR));
-OUTPUT.matCMyTIMESTEP = zeros(valMAXTIME,valNUMRO,length(seqJ),length(seqALPHAR));
+CT = zeros(valMAXTIME,valNUMRO,length(seqJ),length(seqALPHAR));
+CP = zeros(valMAXTIME,valNUMRO,length(seqJ),length(seqALPHAR));
+CFx = zeros(valMAXTIME,valNUMRO,length(seqJ),length(seqALPHAR));
+CFy = zeros(valMAXTIME,valNUMRO,length(seqJ),length(seqALPHAR));
+CQ = zeros(valMAXTIME,valNUMRO,length(seqJ),length(seqALPHAR));
+CMx = zeros(valMAXTIME,valNUMRO,length(seqJ),length(seqALPHAR));
+CMy = zeros(valMAXTIME,valNUMRO,length(seqJ),length(seqALPHAR));
+matCTTIMESTEP = zeros(valMAXTIME,valNUMRO,length(seqJ),length(seqALPHAR));
+matCPTIMESTEP = zeros(valMAXTIME,valNUMRO,length(seqJ),length(seqALPHAR));
+matCFxTIMESTEP = zeros(valMAXTIME,valNUMRO,length(seqJ),length(seqALPHAR));
+matCFyTIMESTEP = zeros(valMAXTIME,valNUMRO,length(seqJ),length(seqALPHAR));
+matCQTIMESTEP = zeros(valMAXTIME,valNUMRO,length(seqJ),length(seqALPHAR));
+matCMxTIMESTEP = zeros(valMAXTIME,valNUMRO,length(seqJ),length(seqALPHAR));
+matCMyTIMESTEP = zeros(valMAXTIME,valNUMRO,length(seqJ),length(seqALPHAR));
 matthrustind = zeros(valNELE,valMAXTIME,length(seqJ),length(seqALPHAR));
 matthrustfree = zeros(valNELE,valMAXTIME,length(seqJ),length(seqALPHAR));
 matthrustCFfree = zeros(valNELE,valMAXTIME,length(seqJ),length(seqALPHAR));
@@ -109,7 +109,7 @@ if flagPROGRESS == 1 % Apply progress bar
 end
 
 for ai = 1:length(seqALPHAR)
-    for ji= 1:length(seqJ)
+    parfor ji= 1:length(seqJ)
         valALPHAR = (pi/180)*(seqALPHAR(ai));
         valJ = seqJ(ji);
 
@@ -332,13 +332,13 @@ for ai = 1:length(seqALPHAR)
                 flagSTEADY, gamma_old, dGammadt, flagVISCOUS, valNUMRO, vecDVEROTOR);
 
             %% Parfor Data saving
-             OUTPUT.CT(valTIMESTEP,:,ji,ai) = mean(vecCTCONV,'omitnan');
-             OUTPUT.CP(valTIMESTEP,:,ji,ai) = mean(vecCPCONV,'omitnan');
-             OUTPUT.CFx(valTIMESTEP,:,ji,ai) = mean(vecCFxCONV,'omitnan');
-             OUTPUT.CFy(valTIMESTEP,:,ji,ai) = mean(vecCFyCONV,'omitnan');
-             OUTPUT.CQ(valTIMESTEP,:,ji,ai) = mean(vecCQCONV,'omitnan');
-             OUTPUT.CMx(valTIMESTEP,:,ji,ai) = mean(vecCMxCONV,'omitnan');
-             OUTPUT.CMy(valTIMESTEP,:,ji,ai) = mean(vecCMyCONV,'omitnan');
+             CT(valTIMESTEP,:,ji,ai) = mean(vecCTCONV,'omitnan');
+             CP(valTIMESTEP,:,ji,ai) = mean(vecCPCONV,'omitnan');
+             CFx(valTIMESTEP,:,ji,ai) = mean(vecCFxCONV,'omitnan');
+             CFy(valTIMESTEP,:,ji,ai) = mean(vecCFyCONV,'omitnan');
+             CQ(valTIMESTEP,:,ji,ai) = mean(vecCQCONV,'omitnan');
+             CMx(valTIMESTEP,:,ji,ai) = mean(vecCMxCONV,'omitnan');
+             CMy(valTIMESTEP,:,ji,ai) = mean(vecCMyCONV,'omitnan');
 
              matthrustind(:,valTIMESTEP,ji,ai) = thrustind;
              matthrustfree(:,valTIMESTEP,ji,ai) = thrustfree;
@@ -349,18 +349,18 @@ for ai = 1:length(seqALPHAR)
              matdifthrustP(:,valTIMESTEP,ji,ai) = difthrustP;
 
             temp = valTIMESTEP - ceil((floor((valTIMESTEP-1)./((vecAZNUM)))).*((vecAZNUM)));
-            for i = 1:valNUMRO
-                 OUTPUT.matCTTIMESTEP(valTIMESTEP,i,ji,ai) = vecCTCONV(temp(i),i);
-                 OUTPUT.matCFyTIMESTEP(valTIMESTEP,i,ji,ai) = vecCFyCONV(temp(i),i);
-                 OUTPUT.matCFxTIMESTEP(valTIMESTEP,i,ji,ai) = vecCFxCONV(temp(i),i);
-                 OUTPUT.matCPTIMESTEP(valTIMESTEP,i,ji,ai) = vecCPCONV(temp(i),i);
-                 OUTPUT.matCQTIMESTEP(valTIMESTEP,i,ji,ai) = vecCQCONV(temp(i),i);
-                 OUTPUT.matCMxTIMESTEP(valTIMESTEP,i,ji,ai) = vecCMxCONV(temp(i),i);
-                 OUTPUT.matCMyTIMESTEP(valTIMESTEP,i,ji,ai) = vecCMyCONV(temp(i),i);
-            end
-            if flagSAVE ==1
-                save(filename)
-            end
+%             for i = 1:valNUMRO
+                 matCTTIMESTEP(valTIMESTEP,:,ji,ai) = vecCTCONV(temp');
+                 matCFyTIMESTEP(valTIMESTEP,:,ji,ai) = vecCFyCONV(temp');
+                 matCFxTIMESTEP(valTIMESTEP,:,ji,ai) = vecCFxCONV(temp');
+                 matCPTIMESTEP(valTIMESTEP,:,ji,ai) = vecCPCONV(temp');
+                 matCQTIMESTEP(valTIMESTEP,:,ji,ai) = vecCQCONV(temp');
+                 matCMxTIMESTEP(valTIMESTEP,:,ji,ai) = vecCMxCONV(temp');
+                 matCMyTIMESTEP(valTIMESTEP,:,ji,ai) = vecCMyCONV(temp');
+%             end
+%             if flagSAVE ==1
+%                 save(filename)
+%             end
 
             if flagPRINT == 1   
                 fprintf('    %.0f    ',valTIMESTEP);
@@ -383,14 +383,29 @@ for ai = 1:length(seqALPHAR)
         progressbar(ai/length(seqALPHAR),[]);
 	end
 end
-
+OUTPUT.CT = CT;
+OUTPUT.CP = CP;
+OUTPUT.CQ = CQ;
+OUTPUT.CFx = CFx;
+OUTPUT.CFy = CFy;
+OUTPUT.CMx = CMx;
+OUTPUT.CMy = CMy;
+OUTPUT.matCTTIMESTEP = matCTTIMESTEP;
+OUTPUT.matCPTIMESTEP = matCPTIMESTEP;
+OUTPUT.matCQTIMESTEP = matCQTIMESTEP;
+OUTPUT.matCFxTIMESTEP = matCFxTIMESTEP;
+OUTPUT.matCFyTIMESTEP = matCFyTIMESTEP;
+OUTPUT.matCMxTIMESTEP = matCMxTIMESTEP;
+OUTPUT.matCMyTIMESTEP = matCMyTIMESTEP;
 if flagSAVE ==1
     save(filename)
 end
+
 fprintf('\nDONE\n');
 runtime = toc;
-if flagPLOT == 1
-    [hFig2] = fcnPLOTBODY(flagVERBOSE, valNELE, matDVE, matVLST, matCENTER);
-    [hLogo] = fcnPLOTLOGO(0.97,0.03,14,'k','none');
-    [hFig2] = fcnPLOTWAKE(flagVERBOSE, hFig2, valWNELE, matWDVE, matWVLST, matWCENTER);
-end
+
+% if flagPLOT == 1
+%     [hFig2] = fcnPLOTBODY(flagVERBOSE, valNELE, matDVE, matVLST, matCENTER);
+%     [hLogo] = fcnPLOTLOGO(0.97,0.03,14,'k','none');
+%     [hFig2] = fcnPLOTWAKE(flagVERBOSE, hFig2, valWNELE, matWDVE, matWVLST, matWCENTER);
+% end

@@ -1,22 +1,18 @@
-Input file for VAP
+Input file for VAPTOR
 Input file in m/N/sec
-NO TRIM
 Please note that the program uses equal, number and : signs as special recognizers!
 
-Relaxed wake (yes 1, no 0):		flagRELAX 	=	1
+Relaxed wake (yes 1, no 0):		flagRELAX 	=	0
 Steady (1) or unsteady (2):		flagSTEADY 	=	1
 
-Max. number of time steps:		valMAXTIME 	=	120
-Min. number of time steps: 		valMINTIME 	= 	1
+Max. number of time steps:		valMAXTIME 	=	52
 Number of azmith locations		valAZNUM 	=	20
-Convergence delta-span effic.:	valDELTAE 	=	0.0
 
-AOA sequence: 			seqALPHAR 	= 	0
-Advance ratio 			seqJ		= 	0
+AOA sequence: 			seqALPHAR 	= 	30
+Advance ratio 			seqJ		= 	0.5
 Density:				valDENSITY 	= 	1.2250
 Kinematic viscosity:	valKINV		=	1.460000e-05
 
-Reference area (one blade):	valAREA 	=	300
 Reference diameter:			valDIA		=	0.4572
 Number of blades			valNUMB		=	2
 
@@ -25,180 +21,163 @@ No. of rotors				valNUMRO	=	4
 Rotor #1
 Rotation axis x y z 	 	matROTAX	= 	0.2828 0.2828 0.0
 Rotation dir (CCW -1,CW 1) 	vecRODIR	= 	-1
-Rotor RPM					valRPM		=	2063
+Rotor RPM					vecRPM		=	2063
 
 Rotor #2
 Rotation axis x y z 	 	matROTAX	= 	0.2828 -0.2828 0.0
 Rotation dir (CCW -1,CW 1) 	vecRODIR	= 	1
-Rotor RPM					valRPM		=	2063
+Rotor RPM					vecRPM		=	2063
 
 Rotor #3
 Rotation axis x y z 	 	matROTAX	= 	-0.2828 -0.2828 0.0
 Rotation dir (CCW -1,CW 1)	vecRODIR	= 	-1
-Rotor RPM					valRPM		=	2063
+Rotor RPM					vecRPM		=	2063
 
 Rotor #4
 Rotation axis x y z 	 	matROTAX	= 	-0.2828 0.2828 0.0
 Rotation dir (CCW -1,CW 1) 	vecRODIR	= 	1
-Rotor RPM					valRPM		=	2063
+Rotor RPM					vecRPM		=	2063
 
 
 No. of panels:	valPANELS =	17
 
-Defines leading edge of wing, all measured in metres:
-Keep vecM the same for all panels on a wing!
+Defines leading edge of blade, all measured in metres:
+Keep vecM the same for all panels on a blade
 
 Local rotation axis			vecROTAXLOC	=	0 0 0
 
-Panel #:3
-Number of spanwise elembers:	vecN		= 1
+Panel #:1
+Number of spanwise elements:	vecN		= 1
 Number of chordwise elements:	vecM		= 1
 Airfoil number:					vecAIRFOIL	= 10;
-Symmetry edge (0,1 or 2):		vecSYM		= 0;
-x			y			z			chord		epsilon
+x			y			z			chord		beta
 -0.011244	0.034290	0.000000	0.025314	16.570000
 -0.013329	0.045720	0.000000	0.033232	24.199900
 
-Panel #:4
-Number of spanwise elembers:	vecN		= 1
+Panel #:2
+Number of spanwise elements:	vecN		= 1
 Number of chordwise elements:	vecM		= 1
 Airfoil number:					vecAIRFOIL	= 10;
-Symmetry edge (0,1 or 2):		vecSYM		= 0;
-x			y			z			chord		epsilon
+x			y			z			chord		beta
 -0.013329	0.045720	0.000000	0.033232	24.199900
 -0.014232	0.057150	0.000000	0.038645	23.737200
 
-Panel #:5
-Number of spanwise elembers:	vecN		= 1
+Panel #:3
+Number of spanwise elements:	vecN		= 1
 Number of chordwise elements:	vecM		= 1
 Airfoil number:					vecAIRFOIL	= 10;
-Symmetry edge (0,1 or 2):		vecSYM		= 0;
-x			y			z			chord		epsilon
+x			y			z			chord		beta
 -0.014232	0.057150	0.000000	0.038645	23.737200
 -0.014811	0.068580	0.000000	0.042025	22.837500
 
-Panel #:6
-Number of spanwise elembers:	vecN		= 1
+Panel #:4
+Number of spanwise elements:	vecN		= 1
 Number of chordwise elements:	vecM		= 1
 Airfoil number:					vecAIRFOIL	= 10;
-Symmetry edge (0,1 or 2):		vecSYM		= 0;
-x			y			z			chord		epsilon
+x			y			z			chord		beta
 -0.014811	0.068580	0.000000	0.042025	22.837500
 -0.015550	0.080010	0.000000	0.044301	20.047600
 
-Panel #:7
-Number of spanwise elembers:	vecN		= 1
+Panel #:5
+Number of spanwise elements:	vecN		= 1
 Number of chordwise elements:	vecM		= 1
 Airfoil number:					vecAIRFOIL	= 10;
-Symmetry edge (0,1 or 2):		vecSYM		= 0;
-x			y			z			chord		epsilon
+x			y			z			chord		beta
 -0.015550	0.080010	0.000000	0.044301	20.047600
 -0.015335	0.091440	0.000000	0.043820	18.414700
 
-Panel #:8
-Number of spanwise elembers:	vecN		= 1
+Panel #:6
+Number of spanwise elements:	vecN		= 1
 Number of chordwise elements:	vecM		= 1
 Airfoil number:					vecAIRFOIL	= 10;
-Symmetry edge (0,1 or 2):		vecSYM		= 0;
-x			y			z			chord		epsilon
+x			y			z			chord		beta
 -0.015335	0.091440	0.000000	0.043820	18.414700
 -0.015650	0.102870	0.000000	0.043009	16.673400
 
-Panel #:9
-Number of spanwise elembers:	vecN		= 1
+Panel #:7
+Number of spanwise elements:	vecN		= 1
 Number of chordwise elements:	vecM		= 1
 Airfoil number:					vecAIRFOIL	= 10;
-Symmetry edge (0,1 or 2):		vecSYM		= 0;
-x			y			z			chord		epsilon
+x			y			z			chord		beta
 -0.015650	0.102870	0.000000	0.043009	16.673400
 -0.015396	0.114300	0.000000	0.041574	14.934100
 
-Panel #:10
-Number of spanwise elembers:	vecN		= 1
+Panel #:8
+Number of spanwise elements:	vecN		= 1
 Number of chordwise elements:	vecM		= 1
 Airfoil number:					vecAIRFOIL	= 10;
-Symmetry edge (0,1 or 2):		vecSYM		= 0;
-x			y			z			chord		epsilon
+x			y			z			chord		beta
 -0.015396	0.114300	0.000000	0.041574	14.934100
 -0.014999	0.125730	0.000000	0.040027	13.911800
 
-Panel #:11
-Number of spanwise elembers:	vecN		= 1
+Panel #:9
+Number of spanwise elements:	vecN		= 1
 Number of chordwise elements:	vecM		= 1
 Airfoil number:					vecAIRFOIL	= 10;
-Symmetry edge (0,1 or 2):		vecSYM		= 0;
-x			y			z			chord		epsilon
+x			y			z			chord		beta
 -0.014999	0.125730	0.000000	0.040027	13.911800
 -0.014279	0.137160	0.000000	0.038589	12.498400
 
-Panel #:12
-Number of spanwise elembers:	vecN		= 1
+Panel #:10
+Number of spanwise elements:	vecN		= 1
 Number of chordwise elements:	vecM		= 1
 Airfoil number:					vecAIRFOIL	= 10;
-Symmetry edge (0,1 or 2):		vecSYM		= 0;
-x			y			z			chord		epsilon
+x			y			z			chord		beta
 -0.014279	0.137160	0.000000	0.038589	12.498400
 -0.013695	0.148590	0.000000	0.036457	12.326000
 
-Panel #:13
-Number of spanwise elembers:	vecN		= 1
+Panel #:11
+Number of spanwise elements:	vecN		= 1
 Number of chordwise elements:	vecM		= 1
 Airfoil number:					vecAIRFOIL	= 9;
-Symmetry edge (0,1 or 2):		vecSYM		= 0;
-x			y			z			chord		epsilon
+x			y			z			chord		beta
 -0.013695	0.148590	0.000000	0.036457	12.326000
 -0.013271	0.160020	0.000000	0.034285	11.701500
 
-Panel #:14
-Number of spanwise elembers:	vecN		= 1
+Panel #:12
+Number of spanwise elements:	vecN		= 1
 Number of chordwise elements:	vecM		= 1
 Airfoil number:					vecAIRFOIL	= 9;
-Symmetry edge (0,1 or 2):		vecSYM		= 0;
-x			y			z			chord		epsilon
+x			y			z			chord		beta
 -0.013271	0.160020	0.000000	0.034285	11.701500
 -0.012640	0.171450	0.000000	0.032684	12.100000
 
-Panel #:15
-Number of spanwise elembers:	vecN		= 1
+Panel #:13
+Number of spanwise elements:	vecN		= 1
 Number of chordwise elements:	vecM		= 1
 Airfoil number:					vecAIRFOIL	= 9;
-Symmetry edge (0,1 or 2):		vecSYM		= 0;
-x			y			z			chord		epsilon
+x			y			z			chord		beta
 -0.012640	0.171450	0.000000	0.032684	12.100000
 -0.011986	0.182880	0.000000	0.030497	11.433000
 
-Panel #:16
-Number of spanwise elembers:	vecN		= 1
+Panel #:14
+Number of spanwise elements:	vecN		= 1
 Number of chordwise elements:	vecM		= 1
 Airfoil number:					vecAIRFOIL	= 9;
-Symmetry edge (0,1 or 2):		vecSYM		= 0;
-x			y			z			chord		epsilon
+x			y			z			chord		beta
 -0.011986	0.182880	0.000000	0.030497	11.433000
 -0.011068	0.194310	0.000000	0.027804	10.004000
 
-Panel #:17
-Number of spanwise elembers:	vecN		= 1
+Panel #:15
+Number of spanwise elements:	vecN		= 1
 Number of chordwise elements:	vecM		= 1
 Airfoil number:					vecAIRFOIL	= 9;
-Symmetry edge (0,1 or 2):		vecSYM		= 0;
-x			y			z			chord		epsilon
+x			y			z			chord		beta
 -0.011068	0.194310	0.000000	0.027804	10.004000
 -0.009946	0.205740	0.000000	0.024821	8.140000
 
-Panel #:18
-Number of spanwise elembers:	vecN		= 1
+Panel #:16
+Number of spanwise elements:	vecN		= 1
 Number of chordwise elements:	vecM		= 1
 Airfoil number:					vecAIRFOIL	= 9;
-Symmetry edge (0,1 or 2):		vecSYM		= 0;
-x			y			z			chord		epsilon
+x			y			z			chord		beta
 -0.009946	0.205740	0.000000	0.024821	8.140000
 -0.007915	0.217170	0.000000	0.021075	7.517000
 	
-Panel #:19
-Number of spanwise elembers:	vecN		= 1
+Panel #:17
+Number of spanwise elements:	vecN		= 1
 Number of chordwise elements:	vecM		= 1
 Airfoil number:					vecAIRFOIL	= 9;
-Symmetry edge (0,1 or 2):		vecSYM		= 0;
-x			y			z			chord		epsilon
+x			y			z			chord		beta
 -0.007915	0.217170	0.000000	0.021075	7.517000
 0.002194	0.228600	0.000000	0.009098	7.526000

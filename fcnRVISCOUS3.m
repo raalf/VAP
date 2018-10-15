@@ -96,7 +96,7 @@ for j = 1:length(idxpanel)
         cl_max_alpha = interp1([re1 re2],[cl_max_alpha1, cl_max_alpha2], vecREDIST(len + j));
     end
     % correcting the section cl if we are above cl_max
-    if radtodeg(alpha) > cl_max_alpha
+    if (180/pi)*alpha > cl_max_alpha
         if flagVERBOSE == 1
             fprintf('\nBlade Stall on Section %d, alpha = %f Re = %0.0f', j, radtodeg(alpha), vecREDIST(len + j))
         end
@@ -122,7 +122,7 @@ for j = 1:length(idxpanel)
     else
         warning off
         F = scatteredInterpolant(airfoil(:,4), airfoil(:,1), airfoil(:,3),'nearest');
-        vecCDPDIST(len + j, 1) = F(vecREDIST(len + j), radtodeg(alpha));
+        vecCDPDIST(len + j, 1) = F(vecREDIST(len + j), (180/pi)*alpha);
     end
 end
 % Calculate viscous drag distribution
@@ -134,8 +134,8 @@ tempUINFY = matUINF(:,2) + matWUINF(:,2);
 tempUINFZ = matUINF(:,3) + matWUINF(:,3);
 matUINFAVG = [sum(tempUINFX(rows),2)/(size(rows,2)) sum(tempUINFY(rows),2)/(size(rows,2)) sum(tempUINFZ(rows),2)/(size(rows,2))];
 tempDIR = [matUINFAVG(:,1).*cos(vecTHETA(rows(:,1))) matUINFAVG(:,2).*sin(vecTHETA(rows(:,1))) matUINFAVG(:,3)];
-tempDIR = tempDIR./(sqrt(sum(tempDIR.^2,2)));
-matDPDIST = vecDPDIST.*tempDIR;
+tempDIR = tempDIR./repmat((sqrt(sum(tempDIR.^2,2))),[1,3]);
+matDPDIST = repmat(vecDPDIST,[1,3]).*tempDIR;
 
 % Resolve to viscous thrust and torque
 THRUSTDIST = matDPDIST(:,3);

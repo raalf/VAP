@@ -1,7 +1,7 @@
-function [flagRELAX, flagSTEADY, valMAXTIME, valMINTIME, valAZNUM, ...
-    valDELTAE, seqALPHAR, valJ, vecRPM, valDENSITY, valKINV, valAREA, valDIA,...
-    valNUMB, valNUMRO, matROTAX, vecRODIR, valPANELS, vecROTAXLOC, matGEOM, vecAIRFOIL, vecN, vecM, vecSYM, ...
-    valINTERF] = fcnVAPTORREADMULTI(strFILE)
+function [flagRELAX, flagSTEADY, valMAXTIME, valAZNUM, seqALPHAR, valJ, ...
+    vecRPM, valDENSITY, valKINV, valDIA, valNUMB, valNUMRO, ...
+    matROTAX, vecRODIR, valPANELS, vecROTAXLOC, matGEOM, vecAIRFOIL, ...
+    vecN, vecM, vecSYM] = fcnVAPTORREADMULTI(strFILE)
 
 % INPUT:
 %   strFILE - file name of input text file in the local directory (or if not, with the appropriate path in the name)
@@ -10,13 +10,11 @@ function [flagRELAX, flagSTEADY, valMAXTIME, valMINTIME, valAZNUM, ...
 %   flagSTEADY - 0 if unsteady, 1 if steady
 
 %   valMAXTIME - maximum number of timesteps
-%   valMINTIME - minimum number of timestep
 %   valAZNUM  - number of azimuth locations
-%   valDELTAE - convergence criteria of change in span efficiency between timesteps
 
 %   seqALPHAR - sequence of rotor plane angle of attacks
 %   valJ - Advance ratio
-%   valRPM - Rotor rpm
+%   vecRPM - Rotor rpm
 %   valDENSITY - fluid density, kg/m^3
 %   valKINV - kinematic viscosity (1.46e-05 as standard)
 
@@ -33,7 +31,6 @@ function [flagRELAX, flagSTEADY, valMAXTIME, valMINTIME, valAZNUM, ...
 %   vecN - valPANELS x 1 vector of spanwise elements per DVE
 %   vecM - valPANELS x 1 vector of chordwise elements per DVE
 
-%   valINTERF - interference drag value (%)
 
 fp = fopen(strFILE);
 %% Reading header flags
@@ -59,26 +56,12 @@ while(ch~='=');
 end
 valMAXTIME = fscanf(fp,'%d');
 
-% Reading minimum number of time steps
-ch = fscanf(fp,'%c',1);
-while(ch~='=');
-    ch = fscanf(fp,'%c',1);
-end
-valMINTIME = fscanf(fp,'%d');
-
 % Reading number of azmith locations
 ch = fscanf(fp,'%c',1);
 while(ch~='=');
     ch = fscanf(fp,'%c',1);
 end
 valAZNUM = fscanf(fp,'%lf');
-
-% Reading deltae
-ch = fscanf(fp,'%c',1);
-while(ch~='=');
-    ch = fscanf(fp,'%c',1);
-end
-valDELTAE = fscanf(fp,'%lf');
 
 %% Reading flow conditions
 
@@ -110,13 +93,6 @@ while(ch~='=');
 end
 valKINV = fscanf(fp,'%lf');
 %% Reading Rotor Reference Values
-% Reading reference area
-ch = fscanf(fp,'%c',1);
-while(ch~='=');
-    ch = fscanf(fp,'%c',1);
-end
-valAREA = fscanf(fp,'%lf');
-
 % Reading rotor diameter
 ch = fscanf(fp,'%c',1);
 while(ch~='=');
@@ -213,12 +189,12 @@ for i = 1:valPANELS
     vecAIRFOIL(i) = fscanf(fp,'%lf',1);
     
     % Reading symmetry information
-    ch = fscanf(fp,'%c',1);
-    while(ch~='=');
-        ch = fscanf(fp,'%c',1);
-    end
-    vecSYM(i) = fscanf(fp,'%lf',1);
-    
+%     ch = fscanf(fp,'%c',1);
+%     while(ch~='=');
+%         ch = fscanf(fp,'%c',1);
+%     end
+%     vecSYM(i) = fscanf(fp,'%lf',1);
+    vecSYM = 0;
     % Skipping geometry column header
     fgets(fp);
     fgets(fp);
@@ -244,16 +220,6 @@ for i = 1:valPANELS
     matGEOM(2,:,i) = fscanf(fp,'%lf');
     
 end
-
-% Reading intereference drag
-ch = fscanf(fp,'%c',1);
-while(ch~='=');
-    ch = fscanf(fp,'%c',1);
-end
-
-valINTERF = fscanf(fp,'%lf',1);
-
-fclose(fp);
 
 clear ans ch i j fp idx1
 

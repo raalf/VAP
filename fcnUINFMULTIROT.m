@@ -40,7 +40,7 @@ tempCENTER = matCENTER - matROTAX(vecDVEROTOR,:);
 vecCPRADI = sqrt(tempCENTER(:,1).^2+tempCENTER(:,2).^2+tempCENTER(:,3).^2);
 
 % Rotation matrix and traslation vector
-matUROT = tempRADPS(vecDVEROTOR).*[vecCPRADI.*cos(vecTHETA) vecCPRADI.*sin(vecTHETA) zeros(tempTOTDVE,1)];
+matUROT =  repmat(tempRADPS(vecDVEROTOR),[1,3]).*[vecCPRADI.*cos(vecTHETA) vecCPRADI.*sin(vecTHETA) zeros(tempTOTDVE,1)];
 vecUTRANS = (valDIA.*vecJ(vecDVEROTOR).*vecRPM(vecDVEROTOR)./60)*[-cos(valALPHAR) 0 sin(valALPHAR)];
 
 if valJ == 0
@@ -89,10 +89,10 @@ tempTE = matTEPTS - repmat(matROTAX(vecDVEROTOR(idxte),:),1,1,3);
 tempRMAGTE = sqrt(tempTE(:,1,:).^2+tempTE(:,2,:).^2+tempTE(:,3,:).^2);
 
 % TE rotation matrix
-matUROTTE = tempRADPS(vecDVEROTOR).*[tempRMAGTE.*cos(vecTHETA(idte)) tempRMAGTE.*sin(vecTHETA(idte)) zeros(numte,1,3)];
+matUROTTE = repmat(tempRADPS(vecDVEROTOR),[1,3,3]).*[tempRMAGTE.*repmat(cos(vecTHETA(idte)),[1,1,3]) tempRMAGTE.*repmat(sin(vecTHETA(idte)),[1,1,3]) zeros(numte,1,3)];
 
 % TE velocity matrix
-matUINFTE = matUROTTE - vecUTRANS;
+matUINFTE = matUROTTE - repmat(vecUTRANS,[1,1,3]);
 
 %quiver3(matTEPTS(:,1,2),matTEPTS(:,2,2),matTEPTS(:,3,2),matUINFTE(:,1,2),matUINFTE(:,2,2),matUINFTE(:,3,2))
 %quiver3(matCENTER(:,1,1),matCENTER(:,2,1),matCENTER(:,3,1),matUINF(:,1,1),matUINF(:,2,1),matUINF(:,3,1))

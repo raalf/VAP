@@ -94,8 +94,8 @@ clear tempB tempC temp1
 
 for i = 1:valPANELS
     
-    rchord = matGEOM(1,4,i); repsilon = deg2rad(matGEOM(1,5,i));
-    tchord = matGEOM(2,4,i); tepsilon = deg2rad(matGEOM(2,5,i));
+    rchord = matGEOM(1,4,i); repsilon = (pi/180)*(matGEOM(1,5,i));
+    tchord = matGEOM(2,4,i); tepsilon = (pi/180)*(matGEOM(2,5,i));
     rLE = matGEOM(1,1:3,i);
     tLE = matGEOM(2,1:3,i);
     

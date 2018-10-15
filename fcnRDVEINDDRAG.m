@@ -40,7 +40,7 @@ xte = (matVLST(matDVE(idte,3),:) + matVLST(matDVE(idte,4),:))/2;
 %need to repmat te points to get each tepoint numte times (induced)
 %this will account for the induction of all the wake elements in the
 %current timestep, on all the te points.
-tepoints = repmat(xte,[numte,1,1]);
+tepoints = repmat(xte,[numte,1,3]);
 
 %need to repmat the wing index of te elements (induced)
 tewings = repmat(vecDVEWING(idte),[numte,1,1]);
@@ -65,7 +65,7 @@ delx  = tepoints-repmat(xte(repmat(1:numte,numte,1),:),[1 1 3]);
 
 % Normalize inflow velocity
 %matUINFTE = (matUINFTE./sqrt(sum(matUINFTE.^2,2)).*(abs(matUINFTE)./max(sqrt(sum(abs(matUINFTE(:,:,:).^2),2))));
-matUINFTE = (matUINFTE./sqrt(sum(matUINFTE.^2,2)));
+matUINFTE = (matUINFTE./repmat(sqrt(sum(matUINFTE.^2,2)),[1,3,1]));
 % Project into freestream direction
 % NOTE: the induced point is moved in its associated velocity direction
 temps = dot(delx,repmat(matUINFTE,[numte 1]),2);
