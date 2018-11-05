@@ -113,15 +113,6 @@ for ai = 1:length(seqALPHAR)
         valALPHAR = (pi/180)*(seqALPHAR(ai));
         valJ = seqJ(ji);
 
-        if valJ == 0 && flagHOVERWAKE == 1
-            flagHOVER = 1;
-            hoverSCALING = 0.001;
-            valJ = -(1)*vecRPM(1)/(valAZNUM)*(hoverSCALING) + (valMAXTIME-valAZNUM)*vecRPM(1)/(valAZNUM)*(hoverSCALING);
-            valALPHAR = pi/2;
-        else
-            flagHOVER = 0;
-        end
-
         % This is done for when we are using a parfor loop
         matCENTER = matCENTER0;
         matVLST = matVLST0;
@@ -184,13 +175,13 @@ for ai = 1:length(seqALPHAR)
         vecWDVESYM = [];
         vecWDVETIP = [];
         vecWDVEWING = [];
-        vecCTCONV = nan(max(vecAZNUM),valNUMRO);
-        vecCFyCONV = nan(max(vecAZNUM),valNUMRO);
-        vecCFxCONV = nan(max(vecAZNUM),valNUMRO);
-        vecCPCONV = nan(max(vecAZNUM),valNUMRO);
-        vecCQCONV = nan(max(vecAZNUM),valNUMRO);
-        vecCMxCONV = nan(max(vecAZNUM),valNUMRO);
-        vecCMyCONV = nan(max(vecAZNUM),valNUMRO);
+        vecCTCONV = nan(round(max(vecAZNUM)),valNUMRO);
+        vecCFyCONV = nan(round(max(vecAZNUM)),valNUMRO);
+        vecCFxCONV = nan(round(max(vecAZNUM)),valNUMRO);
+        vecCPCONV = nan(round(max(vecAZNUM)),valNUMRO);
+        vecCQCONV = nan(round(max(vecAZNUM)),valNUMRO);
+        vecCMxCONV = nan(round(max(vecAZNUM)),valNUMRO);
+        vecCMyCONV = nan(round(max(vecAZNUM)),valNUMRO);
         matDISNORM = [];
         matDISTHRUST = [];
         matDISAXIAL = [];
@@ -222,10 +213,7 @@ for ai = 1:length(seqALPHAR)
             %   Calculate induced drag
             %   Calculate force and moment coefficents
             %   Calculate viscous effects
-            if flagHOVER == 1 && valJ ~= 0
-                valJ = -(valTIMESTEP)*vecRPM(1)/(valAZNUM)*(hoverSCALING) + (valMAXTIME-valAZNUM)*vecRPM(1)/(valAZNUM)*(hoverSCALING);
-            end
-
+            
             %% Moving the rotor  
             [matVLST, matCENTER, matROTAX, matNEWWAKE, matNPNEWWAKE, ...
                 vecDVEHVSPN, vecDVEHVCRD, vecDVEROLL, vecDVEPITCH, ...
@@ -302,7 +290,8 @@ for ai = 1:length(seqALPHAR)
                     vecDVEROLL, vecDVETESWP, vecDVEYAW, vecK, vecSYM, ...
                     vecWDVEHVSPN, vecWDVEHVCRD, vecWDVELESWP, vecWDVEPITCH, ...
                     vecWDVEROLL, vecWDVESYM, vecWDVETESWP, vecWDVETIP, ...
-                    vecWDVEYAW, vecWK, vecWDVEWING, flagSTEADY);   
+                    vecWDVEYAW, vecWK, vecWDVEWING, flagSTEADY, ...
+                    valAZNUM, flagHOVERWAKE);   
                 % Creating and solving WD-Matrix
                 [matWD, vecWR] = fcnWDWAKE([1:valWNELE]', matWADJE, ...
                     vecWDVEHVSPN, vecWDVESYM, vecWDVETIP, vecWKGAM);
@@ -403,9 +392,3 @@ end
 
 fprintf('\nDONE\n');
 runtime = toc;
-
-% if flagPLOT == 1
-%     [hFig2] = fcnPLOTBODY(flagVERBOSE, valNELE, matDVE, matVLST, matCENTER);
-%     [hLogo] = fcnPLOTLOGO(0.97,0.03,14,'k','none');
-%     [hFig2] = fcnPLOTWAKE(flagVERBOSE, hFig2, valWNELE, matWDVE, matWVLST, matWCENTER);
-% end

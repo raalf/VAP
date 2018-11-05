@@ -8,8 +8,8 @@ Steady (1) or unsteady (2):		flagSTEADY 	=	1
 Max. number of time steps:		valMAXTIME 	=	160
 Number of azmith locations		valAZNUM 	=	20
 
-AOA sequence: 			seqALPHAR 	= 	90
-Advance ratio 			seqJ		= 	0.2225
+AOA sequence: 			seqALPHAR 	= 	90 30 15
+Advance ratio 			seqJ		= 	0.25 0.5 0.75
 Density:				valDENSITY 	= 	1.2250
 Kinematic viscosity:	valKINV		=	1.460000e-05
 

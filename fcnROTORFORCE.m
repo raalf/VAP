@@ -66,7 +66,7 @@ for i = 1:valNUMRO
     vecCMxCONV(temp(i),i) = valCMx(i);
 end
 
-temp = valTIMESTEP - (floor((valTIMESTEP-1)/(max(vecAZNUM))))*(max(vecAZNUM));
+temp = valTIMESTEP - round((floor((valTIMESTEP-1)/(max(vecAZNUM))))*(max(vecAZNUM)));
 matDISNORM(:,temp) = vecDISNORM;
 matDISTHRUST(:,temp) = vecDISTHRUST;
 matDISAXIAL(:,temp) = vecDISAXIAL;
