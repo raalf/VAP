@@ -29,10 +29,15 @@ flagVISCOUS = 1; % Apply viscous effects
 flagPRINT   = 1; % Print out results into command window
 flagPLOT    = 1; % Plot the rotor at the end of the run
 flagVERBOSE = 0; % Add numbers to plot
-flagPROGRESS = 1; % Use a progress bar when running performance sweeps
+flagPROGRESS = 0; % Use a progress bar when running performance sweeps
 flagHOVERWAKE = 1; % Propogate wake downward in hover simulations
 flagSAVE = 1; % Save results
 filename = 'Results'; % Save workspace name
+
+maxRot = 2; % If hoverwake is active, difine the number of
+                    % rotations to propogate the initial wake. Ex. if set
+                    % to 2, that the wake will be forced to propagate for
+                    % the first 2 full rotations.                     
 
 % Adding a collective pitch
 valCOLLECTIVE = 0;
@@ -292,7 +297,7 @@ for ai = 1:length(seqALPHAR)
                     vecWDVEROLL, vecWDVESYM, vecWDVETESWP, vecWDVETIP, ...
                     vecWDVEYAW, vecWK, vecWDVEWING, flagSTEADY, ...
                     valAZNUM, flagHOVERWAKE, vecN, vecM, vecDVELE, ...
-                    vecDVEPANEL);   
+                    vecDVEPANEL, maxRot);   
                 % Creating and solving WD-Matrix
                 [matWD, vecWR] = fcnWDWAKE([1:valWNELE]', matWADJE, ...
                     vecWDVEHVSPN, vecWDVESYM, vecWDVETIP, vecWKGAM);
