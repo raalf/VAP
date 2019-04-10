@@ -89,10 +89,10 @@ tempTE = matTEPTS - repmat(matROTAX(vecDVEROTOR(idxte),:),1,1,3);
 tempRMAGTE = sqrt(tempTE(:,1,:).^2+tempTE(:,2,:).^2+tempTE(:,3,:).^2);
 
 % TE rotation matrix
-matUROTTE = repmat(tempRADPS(vecDVEROTOR),[1,3,3]).*[tempRMAGTE.*repmat(cos(vecTHETA(idte)),[1,1,3]) tempRMAGTE.*repmat(sin(vecTHETA(idte)),[1,1,3]) zeros(numte,1,3)];
+matUROTTE = repmat(tempRADPS(vecDVEROTOR(idxte)),[1,3,3]).*[tempRMAGTE.*repmat(cos(vecTHETA(idte)),[1,1,3]) tempRMAGTE.*repmat(sin(vecTHETA(idte)),[1,1,3]) zeros(numte,1,3)];
 
 % TE velocity matrix
-matUINFTE = matUROTTE - repmat(vecUTRANS,[1,1,3]);
+matUINFTE = matUROTTE - repmat(vecUTRANS(idxte,:),[1,1,3]);
 
 %quiver3(matTEPTS(:,1,2),matTEPTS(:,2,2),matTEPTS(:,3,2),matUINFTE(:,1,2),matUINFTE(:,2,2),matUINFTE(:,3,2))
 %quiver3(matCENTER(:,1,1),matCENTER(:,2,1),matCENTER(:,3,1),matUINF(:,1,1),matUINF(:,2,1),matUINF(:,3,1))

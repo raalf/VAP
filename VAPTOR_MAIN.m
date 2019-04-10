@@ -291,7 +291,8 @@ for ai = 1:length(seqALPHAR)
                     vecWDVEHVSPN, vecWDVEHVCRD, vecWDVELESWP, vecWDVEPITCH, ...
                     vecWDVEROLL, vecWDVESYM, vecWDVETESWP, vecWDVETIP, ...
                     vecWDVEYAW, vecWK, vecWDVEWING, flagSTEADY, ...
-                    valAZNUM, flagHOVERWAKE);   
+                    valAZNUM, flagHOVERWAKE, vecN, vecM, vecDVELE, ...
+                    vecDVEPANEL);   
                 % Creating and solving WD-Matrix
                 [matWD, vecWR] = fcnWDWAKE([1:valWNELE]', matWADJE, ...
                     vecWDVEHVSPN, vecWDVESYM, vecWDVETIP, vecWKGAM);
@@ -329,13 +330,13 @@ for ai = 1:length(seqALPHAR)
              OUTPUT.CMx(valTIMESTEP,:,ji,ai) = mean(vecCMxCONV,'omitnan');
              OUTPUT.CMy(valTIMESTEP,:,ji,ai) = mean(vecCMyCONV,'omitnan');
 
-             matthrustind(:,valTIMESTEP,ji,ai) = thrustind;
-             matthrustfree(:,valTIMESTEP,ji,ai) = thrustfree;
-             matthrustCFfree(:,valTIMESTEP,ji,ai) = thrustCFfree;
-             mattempTi(:,valTIMESTEP,ji,ai) = tempTi;
-             matPthrust(:,valTIMESTEP,ji,ai) = Pthrust;
-             matPtorque(:,valTIMESTEP,ji,ai) = Ptorque;
-             matdifthrustP(:,valTIMESTEP,ji,ai) = difthrustP;
+%              matthrustind(:,valTIMESTEP,ji,ai) = thrustind;
+%              matthrustfree(:,valTIMESTEP,ji,ai) = thrustfree;
+%              matthrustCFfree(:,valTIMESTEP,ji,ai) = thrustCFfree;
+%              mattempTi(:,valTIMESTEP,ji,ai) = tempTi;
+%              matPthrust(:,valTIMESTEP,ji,ai) = Pthrust;
+%              matPtorque(:,valTIMESTEP,ji,ai) = Ptorque;
+%              matdifthrustP(:,valTIMESTEP,ji,ai) = difthrustP;
 
             temp = valTIMESTEP - ceil((floor((valTIMESTEP-1)./((vecAZNUM)))).*((vecAZNUM)));
             for i = 1:valNUMRO

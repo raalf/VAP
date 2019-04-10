@@ -3,7 +3,7 @@ function [vecWDVEHVSPN, vecWDVEHVCRD, vecWDVEROLL, vecWDVEPITCH, vecWDVEYAW,...
     matWVLST, matWDVE, matWDVEMP, matWDVEMPIND, idxWVLST, vecWK] = fcnRELAXROTORWAKE(matUINF, matCOEFF, matDVE, matVLST, matWADJE, matWCOEFF, ...
     matWDVE, matWVLST, valDELTIME, valNELE, valTIMESTEP, valWNELE, valWSIZE, vecDVEHVSPN, vecDVEHVCRD, vecDVELESWP, ...
     vecDVEPITCH, vecDVEROLL, vecDVETESWP, vecDVEYAW, vecK, vecSYM, vecWDVEHVSPN, vecWDVEHVCRD, vecWDVELESWP, vecWDVEPITCH, ...
-    vecWDVEROLL, vecWDVESYM, vecWDVETESWP, vecWDVETIP, vecWDVEYAW, vecWK, vecWDVEWING, flagSTEADY, valAZNUM, flagHOVERWAKE)
+    vecWDVEROLL, vecWDVESYM, vecWDVETESWP, vecWDVETIP, vecWDVEYAW, vecWK, vecWDVEWING, flagSTEADY, valAZNUM, flagHOVERWAKE, vecN, vecM, vecDVELE, vecDVEPANEL)
 %FCNRLXWAKE Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -51,8 +51,24 @@ spnvec = matWDVEMPRLX(matWDVEMPIDX(:,2),:) - matWCENTER;
 semiinfvec = matWCENTER(matWDVELEMPIDX(end-1,:),:)-matWDVELEMP(matWDVELEMPIDX(end-1,:),:);
 % matWCENTER(matWDVELEMPIDX(end,:),:) = matWDVELEMP(matWDVELEMPIDX(end,:),:)+semiinfvec;
 
+% Average Chordwise element velocities
+[ledves, ~, ~] = find(vecDVELE > 0);
+lepanels = vecDVEPANEL(ledves);
+len = size(vecDVEPANEL,1);
+tempDVEROTOR = ones(len,1);
+idxdve = ledves(tempDVEROTOR(ledves) == 1);
+idxpanel = lepanels(tempDVEROTOR(ledves) == 1);
+
+m = vecM(idxpanel);
+tempm = repmat(vecN(idxpanel),1, m(1)).*repmat([0:m(1)-1],length(idxpanel),1);
+rows = repmat(idxdve,1,m(1)) + tempm;
+x = matUINF(:,1); y = matUINF(:,2); z = matUINF(:,3);
+tempUING = [mean(x(rows),2),mean(y(rows),2),mean(z(rows),2)];
+
 xsi0 = repmat(sqrt(semiinfvec(:,1).^2+semiinfvec(:,2).^2+semiinfvec(:,3).^2),1,3);
-matWCENTER(matWDVELEMPIDX(end,:),:) = matWCENTER(matWDVELEMPIDX(end-1,:),:)+semiinfvec+matUINF.*xsi0;
+matWCENTER(matWDVELEMPIDX(end,:),:) = matWCENTER(matWDVELEMPIDX(end-1,:),:)+semiinfvec+tempUING.*xsi0;
+
+% matWCENTER(matWDVELEMPIDX(end,:),:) = matWCENTER(matWDVELEMPIDX(end-1,:),:)+semiinfvec+matUINF.*xsi0;
 
 % crdvec(matWDVELEMPIDX(end,:),:) = crdvec(matWDVELEMPIDX(end-1,:),:);
 % spnvec(matWDVELEMPIDX(end,:),:) = spnvec(matWDVELEMPIDX(end-1,:),:);
@@ -70,7 +86,8 @@ oldestwake = reshape(matWDVELEMPIDX(end,:),[],1);
 secondoldestwake = reshape(matWDVELEMPIDX(end-1,:),[],1);
 WP1(oldestwake,:) = WP4(secondoldestwake,:);
 WP2(oldestwake,:) = WP3(secondoldestwake,:);
-timesteptranslate = matUINF.*valDELTIME;
+timesteptranslate = tempUING.*valDELTIME;
+% timesteptranslate = matUINF.*valDELTIME;
 WP4(oldestwake,:) = WP1(oldestwake,:)+timesteptranslate;
 WP3(oldestwake,:) = WP2(oldestwake,:)+timesteptranslate;
 matWCENTER(oldestwake,:) = (WP1(oldestwake,:)+WP2(oldestwake,:)+WP3(oldestwake,:)+WP4(oldestwake,:))./4;

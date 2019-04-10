@@ -17,12 +17,16 @@ tempSi(vecDVETE==3) = sideinddrag;
 
 tempPthrust = zeros(size(axialfree,1),1);
 tempPtorque = zeros(size(axialfree,1),1);
+tempdifthrustP = zeros(size(axialfree,1),1);
+tempdiffaxialP = zeros(size(axialfree,1),1);
 tempPthrust(vecDVETE==3) = Pthrust;
 tempPtorque(vecDVETE==3) = Ptorque;
+tempdifthrustP(vecDVETE==3) = difthrustP;
+tempdiffaxialP(vecDVETE==3) = diffaxialP;
 
 % Flow distributions
 vecDISNORM = nind + nfree + nfreecs;
-vecDISTHRUST = thrustind + thrustfree + thrustCFfree + tempTi + tempPthrust + difthrustP;
+vecDISTHRUST = thrustind + thrustfree + thrustCFfree + tempTi + tempPthrust + tempdifthrustP;
 vecDISAXIAL = axialind + axialfree + tempDi + axialCFfree; 
 vecDISSIDE = sideind + sidefree + sideCFfree + tempSi;
 
@@ -30,11 +34,11 @@ for i = 1:valNUMRO
     idx = vecDVEROTOR == i;
     idx2 = (vecDVETE==3 & vecDVEROTOR == i);
     % Calculate total force and moment values per density
-    thrust(i) = sum(thrustind(idx))+sum(thrustfree(idx))+sum(thrustCFfree(idx)) + sum(tempTi(idx)) + sum(tempPthrust(idx)) + sum(difthrustP(idx));
+    thrust(i) = sum(thrustind(idx))+sum(thrustfree(idx))+sum(thrustCFfree(idx)) + sum(tempTi(idx)) + sum(tempPthrust(idx)) + sum(tempdifthrustP(idx));
     Fy(i) = sum(vecDISSIDE(idx).*sin(vecTHETA(idx)) + vecDISAXIAL(idx).*sin(pi - vecTHETA(idx)));
     Fx(i) = sum(vecDISSIDE(idx).*cos(vecTHETA(idx)) + vecDISAXIAL(idx).*cos(pi - vecTHETA(idx))); % ADD viscous
 
-    torque(i) = sum(axialind(idx).*vecQARM(idx))+sum(axialfree(idx).*vecQARM(idx))+sum(tempDi(idx).*vecQARM(idx)) + sum(axialCFfree(idx).*vecQARM(idx)) + sum(tempPtorque(idx)) + sum(diffaxialP(idx).*vecQARM(idx)); %sum(diffaxialP);
+    torque(i) = sum(axialind(idx).*vecQARM(idx))+sum(axialfree(idx).*vecQARM(idx))+sum(tempDi(idx).*vecQARM(idx)) + sum(axialCFfree(idx).*vecQARM(idx)) + sum(tempPtorque(idx)) + sum(tempdiffaxialP(idx).*vecQARM(idx)); %sum(diffaxialP);
     
     Mx(i) = sum(vecDISTHRUST(idx).*(vecQARM(idx).*sin(vecTHETA(idx))));
     My(i) = sum(vecDISTHRUST(idx).*(vecQARM(idx).*cos(vecTHETA(idx))));

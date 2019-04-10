@@ -33,15 +33,15 @@ if valTIMESTEP > valMAXTIME - max(vecAZNUM) && flagVISCOUS == 1% Only run for la
 %     vecCLPDIST = [];
 %     Pthrust = zeros(valNELE,1);
 %     Ptorque = zeros(valNELE,1);
-    difthrustP = zeros(valNELE,1);
-    diffsideP = zeros(valNELE,1);
-    diffaxialP = zeros(valNELE,1);
+    difthrustP = zeros(sum(vecDVELE),1);
+    diffsideP = zeros(sum(vecDVELE),1);
+    diffaxialP = zeros(sum(vecDVELE),1);
 else
-    Pthrust = zeros(valNELE,1);
-    Ptorque = zeros(valNELE,1);
-    difthrustP = zeros(valNELE,1);
-    diffsideP = zeros(valNELE,1);
-    diffaxialP = zeros(valNELE,1);
+    Pthrust = zeros(sum(vecDVELE),1);
+    Ptorque = zeros(sum(vecDVELE),1);
+    difthrustP = zeros(sum(vecDVELE),1);
+    diffsideP = zeros(sum(vecDVELE),1);
+    diffaxialP = zeros(sum(vecDVELE),1);
     vecCDPDIST = [];
     vecCLPDIST = [];
 end

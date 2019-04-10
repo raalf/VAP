@@ -140,7 +140,7 @@ matDPDIST = repmat(vecDPDIST,[1,3]).*tempDIR;
 % Resolve to viscous thrust and torque
 THRUSTDIST = matDPDIST(:,3);
 TORQUEDIST = (dot(matDPDIST,[abs(cos(vecTHETA(rows(:,1)))) abs(sin(vecTHETA(rows(:,1)))) zeros(size(matDPDIST,1),1)],2)).*vecQARM(vecDVELE==1);
-POWERDIST = TORQUEDIST*2.*pi.*(vecRPM(vecDVEROTOR)./60);
+% POWERDIST = TORQUEDIST*2.*pi.*(vecRPM(vecDVEROTOR)./60);
 
 % vecCNDISTDIF = vecCNDIST0 - vecCNDIST;
 % vecDELNORMDISTP = 0.5*vecCNDISTDIF.*vecV.^2.*sum(vecDVEAREA(rows),2);
