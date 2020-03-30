@@ -1,0 +1,184 @@
+Input file for VAP
+Input file in m/N/sec
+NO TRIM
+Please note that the program uses equal, number and : signs as special recognizers!
+
+Relaxed wake (yes 1, no 0):		flagRELAX 	=	0
+Steady (1) or unsteady (2):		flagSTEADY 	=	1
+
+Max. number of time steps:		valMAXTIME 	=	120
+Number of azmith locations		valAZNUM 	=	20
+
+
+AOA sequence: 			seqALPHAR 	= 	5
+Advance ratio 			seqJ		= 	0.5094
+Density:				valDENSITY 	= 	1.2250
+Kinematic viscosity:	valKINV		=	1.460000e-05
+
+Reference diameter:			valDIA		=	0.3048
+Number of blades			valNUMB		=	2
+
+No. of rotors				valNUMRO	=	4
+
+Rotor #1
+Rotation axis x y z 	 	matROTAX	= 	-0.3048 0.0 0.0
+Rotation dir (CCW -1,CW 1) 	vecRODIR	= 	1
+Rotor RPM					valRPM		=	3864
+
+Rotor #2
+Rotation axis x y z 	 	matROTAX	= 	0 -0.3048 0.0
+Rotation dir (CCW -1,CW 1) 	vecRODIR	= 	-1
+Rotor RPM					valRPM		=	4255
+
+Rotor #3
+Rotation axis x y z 	 	matROTAX	= 	0.3048 0.0 0.0
+Rotation dir (CCW -1,CW 1) 	vecRODIR	= 	1
+Rotor RPM					valRPM		=	4575
+
+Rotor #4
+Rotation axis x y z 	 	matROTAX	= 	0.0 0.3048 0.0
+Rotation dir (CCW -1,CW 1) 	vecRODIR	= 	-1
+Rotor RPM					valRPM		=	4255
+
+No. of panels:	valPANELS =	17
+
+Defines leading edge of wing, all measured in metres:
+Keep vecM the same for all panels on a wing!
+
+Local rotation axis			vecROTAXLOC	=	0 0 0
+
+Panel #:1
+Number of spanwise elembers:	vecN		= 1
+Number of chordwise elements:	vecM		= 1
+Airfoil number:					vecAIRFOIL	= 21;
+x			y			z			chord		beta
+-0.008031	0.015240	0.000000	0.016063	21.880000
+-0.010113	0.023308	0.000000	0.020226	28.010588
+
+Panel #:2
+Number of spanwise elembers:	vecN		= 1
+Number of chordwise elements:	vecM		= 1
+Airfoil number:					vecAIRFOIL	= 21;
+x			y			z			chord		beta
+-0.010113	0.023308	0.000000	0.020226	28.010588
+-0.012165	0.031376	0.000000	0.024330	33.182353
+
+Panel #:3
+Number of spanwise elembers:	vecN		= 1
+Number of chordwise elements:	vecM		= 1
+Airfoil number:					vecAIRFOIL	= 21;
+x			y			z			chord		beta
+-0.012165	0.031376	0.000000	0.024330	33.182353
+-0.013980	0.039445	0.000000	0.027961	30.683529
+
+Panel #:4
+Number of spanwise elembers:	vecN		= 1
+Number of chordwise elements:	vecM		= 1
+Airfoil number:					vecAIRFOIL	= 21;
+x			y			z			chord		beta
+-0.013980	0.039445	0.000000	0.027961	30.683529
+-0.015464	0.047513	0.000000	0.030928	27.972941
+
+Panel #:5
+Number of spanwise elembers:	vecN		= 1
+Number of chordwise elements:	vecM		= 1
+Airfoil number:					vecAIRFOIL	= 21;
+x			y			z			chord		beta
+-0.015464	0.047513	0.000000	0.030928	27.972941
+-0.015787	0.055581	0.000000	0.031574	24.521176
+
+Panel #:6
+Number of spanwise elembers:	vecN		= 1
+Number of chordwise elements:	vecM		= 1
+Airfoil number:					vecAIRFOIL	= 21;
+x			y			z			chord		beta
+-0.015787	0.055581	0.000000	0.031574	24.521176
+-0.015838	0.063649	0.000000	0.031676	21.581176
+
+Panel #:7
+Number of spanwise elembers:	vecN		= 1
+Number of chordwise elements:	vecM		= 1
+Airfoil number:					vecAIRFOIL	= 21;
+x			y			z			chord		beta
+-0.015838	0.063649	0.000000	0.031676	21.581176
+-0.015346	0.071718	0.000000	0.030692	19.664706
+
+Panel #:8
+Number of spanwise elembers:	vecN		= 1
+Number of chordwise elements:	vecM		= 1
+Airfoil number:					vecAIRFOIL	= 21;
+x			y			z			chord		beta
+-0.015346	0.071718	0.000000	0.030692	19.664706
+-0.014764	0.079786	0.000000	0.029528	17.748235
+
+Panel #:9
+Number of spanwise elembers:	vecN		= 1
+Number of chordwise elements:	vecM		= 1
+Airfoil number:					vecAIRFOIL	= 20;
+x			y			z			chord		beta
+-0.014764	0.079786	0.000000	0.029528	17.748235
+-0.014070	0.087854	0.000000	0.028140	15.831765
+
+Panel #:10
+Number of spanwise elembers:	vecN		= 1
+Number of chordwise elements:	vecM		= 1
+Airfoil number:					vecAIRFOIL	= 20;
+x			y			z			chord		beta
+-0.014070	0.087854	0.000000	0.028140	15.831765
+-0.013260	0.095922	0.000000	0.026519	13.915294
+
+Panel #:11
+Number of spanwise elembers:	vecN		= 1
+Number of chordwise elements:	vecM		= 1
+Airfoil number:					vecAIRFOIL	= 20;
+x			y			z			chord		beta
+-0.013260	0.095922	0.000000	0.026519	13.915294
+-0.012356	0.103991	0.000000	0.024712	11.998824
+
+Panel #:12
+Number of spanwise elembers:	vecN		= 1
+Number of chordwise elements:	vecM		= 1
+Airfoil number:					vecAIRFOIL	= 20;
+x			y			z			chord		beta
+-0.012356	0.103991	0.000000	0.024712	11.998824
+-0.011253	0.112059	0.000000	0.022507	10.788235
+
+Panel #:13
+Number of spanwise elembers:	vecN		= 1
+Number of chordwise elements:	vecM		= 1
+Airfoil number:					vecAIRFOIL	= 20;
+x			y			z			chord		beta
+-0.011253	0.112059	0.000000	0.022507	10.788235
+-0.010051	0.120127	0.000000	0.020102	9.930588
+
+Panel #:14
+Number of spanwise elembers:	vecN		= 1
+Number of chordwise elements:	vecM		= 1
+Airfoil number:					vecAIRFOIL	= 20;
+x			y			z			chord		beta
+-0.010051	0.120127	0.000000	0.020102	9.930588
+-0.008749	0.128195	0.000000	0.017497	9.072941
+
+Panel #:15
+Number of spanwise elembers:	vecN		= 1
+Number of chordwise elements:	vecM		= 1
+Airfoil number:					vecAIRFOIL	= 20;
+x			y			z			chord		beta
+-0.008749	0.128195	0.000000	0.017497	9.072941
+-0.007417	0.136264	0.000000	0.014835	8.215294
+
+Panel #:16
+Number of spanwise elembers:	vecN		= 1
+Number of chordwise elements:	vecM		= 1
+Airfoil number:					vecAIRFOIL	= 20;
+x			y			z			chord		beta
+-0.007417	0.136264	0.000000	0.014835	8.215294
+-0.006509	0.144332	0.000000	0.013019	7.357647
+
+Panel #:17
+Number of spanwise elembers:	vecN		= 1
+Number of chordwise elements:	vecM		= 1
+Airfoil number:					vecAIRFOIL	= 20;
+x			y			z			chord		beta
+-0.006509	0.144332	0.000000	0.013019	7.357647
+-0.005654	0.152400	0.000000	0.011308	6.500000
